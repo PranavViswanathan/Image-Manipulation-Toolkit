@@ -1,0 +1,34 @@
+#load bird.png and call it 'bird'
+load test/com/vanarp/model/TestResources/Source/bird.png bird
+
+#brighten bird by adding 10  
+brighten 100 bird bird-brighter 
+
+#flip bird vertically
+vertical-flip bird bird-vertical
+
+#flip the vertically flipped bird horizontally
+horizontal-flip bird-vertical bird-vertical-horizontal
+
+#create a greyscale using only the value component, as an image bird-greyscale
+value-component bird bird-greyscale
+
+#save bird-brighter
+save test/com/vanarp/model/TestResources/Save/bird-brighter.png bird-brighter
+
+#save bird-greyscale
+save test/com/vanarp/model/TestResources/Save/bird-gs.png bird-greyscale
+
+#overwrite koala with another file
+load test/com/vanarp/model/TestResources/Source/goat.jpg bird
+
+#give the koala a red tint
+rgb-split bird bird-red bird-green bird-blue
+
+#brighten just the red image
+brighten 50 bird-red bird-red
+
+#combine them back, but by using the brightened red we get a red tint
+rgb-combine bird-red-tint bird-red bird-green bird-blue
+save test/com/vanarp/model/TestResources/Save/bird-red-tint.jpg bird-red-tint
+
