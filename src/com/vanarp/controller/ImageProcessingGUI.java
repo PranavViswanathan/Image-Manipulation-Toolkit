@@ -6,7 +6,6 @@ import com.vanarp.model.ImageCompressionFunctionality;
 import com.vanarp.model.ImageRepresentation;
 import com.vanarp.model.Operations;
 import com.vanarp.model.Transform;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -28,7 +27,9 @@ import javax.swing.SwingUtilities;
 public class ImageProcessingGUI extends JFrame {
 
   private JLabel imageLabel;
+  private JLabel histogramLabel; // Add a label for the histogram
   private ImageRepresentation loadedImage; // Store the currently displayed image
+  private ImageRepresentation histogramImage; // Store the histogram image
   private ImageCache imageCache; // Use ImageCache instead of HashMap
   private JComboBox<String> imageSelector; // Dropdown to select images
   private ImageCommandProcessor commandProcessor;
@@ -44,12 +45,17 @@ public class ImageProcessingGUI extends JFrame {
     imageLabel = new JLabel();
     imageLabel.setHorizontalAlignment(JLabel.CENTER);
 
+    // Create labels for the image and histogram
+    histogramLabel = new JLabel();
+    histogramLabel.setHorizontalAlignment(JLabel.CENTER);
+
     // Create a panel for the histogram
     JPanel histogramPanel = new JPanel();
     histogramPanel.setPreferredSize(new Dimension(200, 600));
+    histogramPanel.add(histogramLabel);
 
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(imageLabel),
-            new JScrollPane(histogramPanel));
+        new JScrollPane(histogramPanel));
     splitPane.setDividerLocation(600);
     add(splitPane, BorderLayout.CENTER);
 
@@ -133,12 +139,14 @@ public class ImageProcessingGUI extends JFrame {
       File file = fileChooser.getSelectedFile();
       String imageName = file.getName(); // Use file name as key
       try {
-        commandProcessor.loadImage(file.getAbsolutePath(), imageName); // Load image through command processor
+        commandProcessor.loadImage(file.getAbsolutePath(),
+            imageName); // Load image through command processor
         loadedImage = commandProcessor.getImage(imageName); // Get the image using command processor
         if (loadedImage != null) {
           imageCache.putImage(imageName, loadedImage); // Store the image in the cache
           imageSelector.addItem(imageName); // Add the image name to the dropdown
           selectImage(); // Update the displayed image
+          generateHistogram(); // Generate histogram after loading image
         } else {
           JOptionPane.showMessageDialog(this, "Failed to load image.");
         }
@@ -156,6 +164,7 @@ public class ImageProcessingGUI extends JFrame {
         // Assuming loadedImage has a method to get a BufferedImage
         BufferedImage bufferedImage = loadedImage.toBufferedImage(); // Convert to BufferedImage
         imageLabel.setIcon(new ImageIcon(bufferedImage)); // Create ImageIcon and set it
+        generateHistogram(); // Generate histogram after selecting image
       } catch (IllegalArgumentException e) {
         JOptionPane.showMessageDialog(this, e.getMessage());
       }
@@ -183,24 +192,15 @@ public class ImageProcessingGUI extends JFrame {
     String selectedImageName = (String) imageSelector.getSelectedItem();
     if (selectedImageName != null) {
       String destName = selectedImageName.substring(0, selectedImageName.lastIndexOf('.'))
-              + "_" + componentType
-              + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
+          + "_" + componentType
+          + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
       try {
-        // Call the command processor to extract the component
         commandProcessor.extractComponent(selectedImageName, destName, componentType);
-
-        // Retrieve the extracted image using the command processor
-        loadedImage = commandProcessor.getImage(destName); // Get the new image
-
-        // Store the new image in cache
+        loadedImage = commandProcessor.getImage(destName);
         imageCache.putImage(destName, loadedImage);
-
-        // Add new image to dropdown
         imageSelector.addItem(destName);
-
-        // Use toBufferedImage to get the BufferedImage for display
-        imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage())); // Update the displayed image
-
+        imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
+        generateHistogram(); // Generate histogram after extracting component
         JOptionPane.showMessageDialog(this, componentType + " component extracted successfully.");
       } catch (IOException e) {
         JOptionPane.showMessageDialog(this, "Failed to extract component: " + e.getMessage());
@@ -214,24 +214,14 @@ public class ImageProcessingGUI extends JFrame {
     String selectedImageName = (String) imageSelector.getSelectedItem();
     if (selectedImageName != null) {
       String destName = selectedImageName.substring(0, selectedImageName.lastIndexOf('.'))
-              + "_" + filterType + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
-
+          + "_" + filterType + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
       try {
-        // Call the command processor to apply the filter
         commandProcessor.applyFilter(selectedImageName, destName, filterType, null);
-
-        // Retrieve the new image using the command processor
         loadedImage = commandProcessor.getImage(destName);
-
-        // Store the new image in cache
         imageCache.putImage(destName, loadedImage);
-
-        // Add new image to dropdown
         imageSelector.addItem(destName);
-
-        // Use toBufferedImage to get the BufferedImage for display
-        imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage())); // Update the displayed image
-
+        imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
+        generateHistogram(); // Generate histogram after applying filter
         JOptionPane.showMessageDialog(this, filterType + " filter applied successfully.");
       } catch (IOException e) {
         JOptionPane.showMessageDialog(this, "Failed to apply filter: " + e.getMessage());
@@ -240,29 +230,20 @@ public class ImageProcessingGUI extends JFrame {
       JOptionPane.showMessageDialog(this, "No image selected.");
     }
   }
+
   private void flipImage(String direction) {
     String selectedImageName = (String) imageSelector.getSelectedItem();
     if (selectedImageName != null) {
       String destName =
-              selectedImageName.substring(0, selectedImageName.lastIndexOf('.')) + "_flipped"
-                      + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
-
+          selectedImageName.substring(0, selectedImageName.lastIndexOf('.')) + "_flipped"
+              + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
       try {
-        // Call the command processor to flip the image
         commandProcessor.flipImage(selectedImageName, destName, direction);
-
-        // Retrieve the new image using the command processor
-        loadedImage = commandProcessor.getImage(destName); // Get the new image
-
-        // Store the new image in cache
+        loadedImage = commandProcessor.getImage(destName);
         imageCache.putImage(destName, loadedImage);
-
-        // Add new image to dropdown
         imageSelector.addItem(destName);
-
-        // Use toBufferedImage to get the BufferedImage for display
-        imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage())); // Update the displayed image
-
+        imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
+        generateHistogram(); // Generate histogram after flipping image
         JOptionPane.showMessageDialog(this, "Image flipped successfully.");
       } catch (IOException e) {
         JOptionPane.showMessageDialog(this, "Failed to flip image: " + e.getMessage());
@@ -271,30 +252,24 @@ public class ImageProcessingGUI extends JFrame {
       JOptionPane.showMessageDialog(this, "No image selected.");
     }
   }
+
   private void brightenImage() {
     String selectedImageName = (String) imageSelector.getSelectedItem();
     if (selectedImageName != null) {
       String input = JOptionPane.showInputDialog(this, "Enter the increment value for brightness:",
-              "Brighten Image", JOptionPane.PLAIN_MESSAGE);
-
+          "Brighten Image", JOptionPane.PLAIN_MESSAGE);
       if (input != null) {
         try {
           int increment = Integer.parseInt(input);
           String destName =
-                  selectedImageName.substring(0, selectedImageName.lastIndexOf('.')) + "_brightened"
-                          + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
-
-          // Assuming commandProcessor.brightenImage modifies the image and saves it
+              selectedImageName.substring(0, selectedImageName.lastIndexOf('.')) + "_brightened"
+                  + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
           commandProcessor.brightenImage(selectedImageName, increment, destName);
-
-          // Retrieve the brightened image using the command processor
-          loadedImage = commandProcessor.getImage(destName); // Get the new brightened image
-          imageCache.putImage(destName, loadedImage); // Store the new image in cache
-          imageSelector.addItem(destName); // Add new image to dropdown
-
-          // Use toBufferedImage to get the BufferedImage for display
-          imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage())); // Update the displayed image
-
+          loadedImage = commandProcessor.getImage(destName);
+          imageCache.putImage(destName, loadedImage);
+          imageSelector.addItem(destName);
+          imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
+          generateHistogram(); // Generate histogram after brightening image
           JOptionPane.showMessageDialog(this, "Image brightened successfully.");
         } catch (NumberFormatException e) {
           JOptionPane.showMessageDialog(this, "Invalid input. Please enter a valid number.");
@@ -311,23 +286,14 @@ public class ImageProcessingGUI extends JFrame {
     String selectedImageName = (String) imageSelector.getSelectedItem();
     if (selectedImageName != null) {
       String destName =
-              selectedImageName + "_compressed"; // Create a new name for the compressed image
+          selectedImageName + "_compressed"; // Create a new name for the compressed image
       try {
-        // Call the command processor to compress the image
-        commandProcessor.compressImage(percentage, selectedImageName, destName); // Compress image through command processor
-
-        // Retrieve the new image using the command processor
-        loadedImage = commandProcessor.getImage(destName); // Get the new image
-
-        // Store the new image in cache
+        commandProcessor.compressImage(percentage, selectedImageName, destName);
+        loadedImage = commandProcessor.getImage(destName);
         imageCache.putImage(destName, loadedImage);
-
-        // Add new image to dropdown
         imageSelector.addItem(destName);
-
-        // Use toBufferedImage to get the BufferedImage for display
-        imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage())); // Update the displayed image
-
+        imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
+        generateHistogram(); // Generate histogram after compressing image
         JOptionPane.showMessageDialog(this, "Image compressed successfully.");
       } catch (IOException e) {
         JOptionPane.showMessageDialog(this, "Failed to compress image: " + e.getMessage());
@@ -341,23 +307,14 @@ public class ImageProcessingGUI extends JFrame {
     String selectedImageName = (String) imageSelector.getSelectedItem();
     if (selectedImageName != null) {
       String destName = selectedImageName.substring(0, selectedImageName.lastIndexOf('.'))
-              + "_histogram" + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
+          + "_histogram" + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
       try {
-        // Generate the histogram through the command processor
         commandProcessor.getHistogram(selectedImageName, destName);
-
-        // Load the generated histogram image
-        loadedImage = commandProcessor.getImage(destName); // Get the histogram image using command processor
-
-        // Store the histogram in the cache
-        imageCache.putImage(destName, loadedImage);
-
-        // Add the histogram to the dropdown
-        imageSelector.addItem(destName);
-
-        // Use toBufferedImage to get the BufferedImage for display
-        imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage())); // Update the displayed image
-
+        histogramImage = commandProcessor.getImage(
+            destName); // Get the histogram image using command processor
+        imageCache.putImage(destName, histogramImage); // Store the histogram in the cache
+        histogramLabel.setIcon(
+            new ImageIcon(histogramImage.toBufferedImage())); // Update the histogram display
         JOptionPane.showMessageDialog(this, "Histogram generated successfully.");
       } catch (IOException e) {
         JOptionPane.showMessageDialog(this, "Failed to generate histogram: " + e.getMessage());
@@ -368,12 +325,10 @@ public class ImageProcessingGUI extends JFrame {
   }
 
   private void colorCorrectImage() {
-    // Implement color correction logic here
     JOptionPane.showMessageDialog(this, "Color correction is not yet implemented.");
   }
 
   private void adjustLevels() {
-    // Implement levels adjustment logic here
     JOptionPane.showMessageDialog(this, "Levels adjustment is not yet implemented.");
   }
 
@@ -384,9 +339,11 @@ public class ImageProcessingGUI extends JFrame {
     Filtering filtering = new Filtering();
     ImageCompressionFunctionality compress = new ImageCompression();
 
-    Operations operations = new Operations(transformation, filtering, compressedIO, uncompressedIO, compress);
+    Operations operations = new Operations(transformation, filtering, compressedIO, uncompressedIO,
+        compress);
     SwingUtilities.invokeLater(() -> {
-      ImageCommandProcessor commandProcessor = new CommandProcessor(operations); // Initialize your command processor
+      ImageCommandProcessor commandProcessor = new CommandProcessor(
+          operations); // Initialize your command processor
       ImageProcessingGUI gui = new ImageProcessingGUI(commandProcessor);
       gui.setVisible(true);
     });
