@@ -7,10 +7,13 @@ import com.vanarp.model.ImageRepresentation;
 import com.vanarp.model.Operations;
 import com.vanarp.model.Transform;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -18,7 +21,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
@@ -34,90 +36,85 @@ public class ImageProcessingGUI extends JFrame {
     this.commandProcessor = commandProcessor;
     ImageCache imageCache = new ImageCache();
     setTitle("Image Processing GUI");
-    setSize(800, 600);
+    setSize(1000, 600);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
 
     imageLabel = new JLabel();
     imageLabel.setHorizontalAlignment(JLabel.CENTER);
-
     histogramLabel = new JLabel();
     histogramLabel.setHorizontalAlignment(JLabel.CENTER);
 
-    JPanel histogramPanel = new JPanel();
-    histogramPanel.setPreferredSize(new Dimension(200, 600));
-    histogramPanel.add(histogramLabel);
+    JPanel imagePanel = new JPanel(new BorderLayout());
+    imagePanel.add(imageLabel, BorderLayout.CENTER);
+    imagePanel.setBorder(BorderFactory.createTitledBorder("Image"));
 
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(imageLabel),
-        new JScrollPane(histogramPanel));
-    splitPane.setDividerLocation(600);
-    add(splitPane, BorderLayout.CENTER);
+    JPanel histogramPanel = new JPanel(new BorderLayout());
+    histogramPanel.add(histogramLabel, BorderLayout.CENTER);
+    histogramPanel.setBorder(BorderFactory.createTitledBorder("Histogram"));
 
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.setLayout(new GridLayout(4, 4, 10, 10));
+    JSplitPane imageAndHistogramPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, imagePanel,
+        histogramPanel);
+    imageAndHistogramPane.setDividerLocation(600);
 
-    JButton loadImageButton = new JButton("Load Image");
-    loadImageButton.addActionListener(e -> loadImage());
-    buttonPanel.add(loadImageButton);
+    JPanel buttonPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.insets = new Insets(5, 5, 5, 5); // Padding for buttons
+    gbc.gridx = 0;
+    gbc.gridy = 0;
 
-    JButton saveImageButton = new JButton("Save Image");
-    saveImageButton.addActionListener(e -> saveImage());
-    buttonPanel.add(saveImageButton);
+    // Load and Save Buttons
+    gbc.gridwidth = 2;
+    buttonPanel.add(createButton("Load Image", e -> loadImage()), gbc);
+    gbc.gridwidth = 1;
+    gbc.gridy++;
+    buttonPanel.add(createButton("Save Image", e -> saveImage()), gbc);
 
-    JButton extractRedButton = new JButton("Extract Red");
-    extractRedButton.addActionListener(e -> extractComponent("red"));
-    buttonPanel.add(extractRedButton);
+    // Color Component Extraction
+    gbc.gridy++;
+    buttonPanel.add(createLabel("Extract Color Components:"), gbc);
+    gbc.gridy++;
+    buttonPanel.add(createButton("Extract Red", e -> extractComponent("red")), gbc);
+    gbc.gridx = 1;
+    buttonPanel.add(createButton("Extract Green", e -> extractComponent("green")), gbc);
+    gbc.gridx = 0;
+    gbc.gridy++;
+    buttonPanel.add(createButton("Extract Blue", e -> extractComponent("blue")), gbc);
+    gbc.gridx = 1;
+    buttonPanel.add(createButton("Extract Luma", e -> extractComponent("luma")), gbc);
+    gbc.gridx = 0;
+    buttonPanel.add(createButton("Extract Intensity", e -> extractComponent("intensity")), gbc);
+    gbc.gridx = 1;
+    buttonPanel.add(createButton("Extract Value", e -> extractComponent("value")), gbc);
 
-    JButton extractGreenButton = new JButton("Extract Green");
-    extractGreenButton.addActionListener(e -> extractComponent("green"));
-    buttonPanel.add(extractGreenButton);
+    // Filters
+    gbc.gridx = 0;
+    gbc.gridy++;
+    buttonPanel.add(createLabel("Filters:"), gbc);
+    gbc.gridy++;
+    buttonPanel.add(createButton("Blur", e -> applyFilter("blur")), gbc);
+    gbc.gridx = 1;
+    buttonPanel.add(createButton("Sharpen", e -> applyFilter("sharpen")), gbc);
+    gbc.gridx = 0;
+    gbc.gridy++;
+    buttonPanel.add(createButton("Sepia", e -> applyFilter("sepia")), gbc);
+    gbc.gridx = 1;
+    buttonPanel.add(createButton("Greyscale", e -> applyFilter("greyscale")), gbc);
 
-    JButton extractBlueButton = new JButton("Extract Blue");
-    extractBlueButton.addActionListener(e -> extractComponent("blue"));
-    buttonPanel.add(extractBlueButton);
-
-    JButton extractLumaButton = new JButton("Extract Luma");
-    extractLumaButton.addActionListener(e -> extractComponent("luma"));
-    buttonPanel.add(extractLumaButton);
-
-    JButton extractIntensityButton = new JButton("Extract Intensity");
-    extractIntensityButton.addActionListener(e -> extractComponent("intensity"));
-    buttonPanel.add(extractIntensityButton);
-
-    JButton extractValueButton = new JButton("Extract Value");
-    extractValueButton.addActionListener(e -> extractComponent("value"));
-    buttonPanel.add(extractValueButton);
-
-    JButton blurButton = new JButton("Blur");
-    blurButton.addActionListener(e -> applyFilter("blur"));
-    buttonPanel.add(blurButton);
-
-    JButton sharpenButton = new JButton("Sharpen");
-    sharpenButton.addActionListener(e -> applyFilter("sharpen"));
-    buttonPanel.add(sharpenButton);
-
-    JButton sepiaButton = new JButton("Sepia");
-    sepiaButton.addActionListener(e -> applyFilter("sepia"));
-    buttonPanel.add(sepiaButton);
-
-    JButton greyscaleButton = new JButton("Greyscale");
-    greyscaleButton.addActionListener(e -> applyFilter("greyscale"));
-    buttonPanel.add(greyscaleButton);
-
-    JButton flipHorizontalButton = new JButton("Flip Horizontal");
-    flipHorizontalButton.addActionListener(e -> flipImage("horizontal"));
-    buttonPanel.add(flipHorizontalButton);
-
-    JButton flipVerticalButton = new JButton("Flip Vertical");
-    flipVerticalButton.addActionListener(e -> flipImage("vertical"));
-    buttonPanel.add(flipVerticalButton);
-
-    JButton brightenImageButton = new JButton("Adjust Brightness");
-    brightenImageButton.addActionListener(e -> brightenImage());
-    buttonPanel.add(brightenImageButton);
-
-    JButton compressImageButton = new JButton("Compress Image");
-    compressImageButton.addActionListener(e -> {
+    // Transformations
+    gbc.gridx = 0;
+    gbc.gridy++;
+    buttonPanel.add(createLabel("Transformations:"), gbc);
+    gbc.gridy++;
+    buttonPanel.add(createButton("Flip Horizontal", e -> flipImage("horizontal")), gbc);
+    gbc.gridx = 1;
+    buttonPanel.add(createButton("Flip Vertical", e -> flipImage("vertical")), gbc);
+    gbc.gridx = 0;
+    gbc.gridy++;
+    buttonPanel.add(createButton("Adjust Brightness", e -> brightenImage()), gbc);
+    gbc.gridx = 1;
+    buttonPanel.add(createButton("Compress Image", e -> {
       String input = JOptionPane.showInputDialog(this, "Enter the compression percentage (0-100):",
           "Compress Image", JOptionPane.PLAIN_MESSAGE);
       if (input != null) {
@@ -134,22 +131,33 @@ public class ImageProcessingGUI extends JFrame {
           showErrorDialog("Invalid argument: " + ex.getMessage());
         }
       }
-    });
-    buttonPanel.add(compressImageButton);
+    }), gbc);
 
-    JButton generateHistogramButton = new JButton("Generate Histogram");
-    generateHistogramButton.addActionListener(e -> generateHistogram());
-    buttonPanel.add(generateHistogramButton);
+    // Histogram and Color Correction
+    gbc.gridx = 0;
+    gbc.gridy++;
+    buttonPanel.add(createButton("Generate Histogram", e -> generateHistogram()), gbc);
+    gbc.gridx = 1;
+    buttonPanel.add(createButton("Color Correct", e -> colorCorrectImage()), gbc);
+    gbc.gridx = 0;
+    gbc.gridy++;
+    buttonPanel.add(createButton("Adjust Levels", e -> adjustLevels()), gbc);
 
-    JButton colorCorrectButton = new JButton("Color Correct");
-    colorCorrectButton.addActionListener(e -> colorCorrectImage());
-    buttonPanel.add(colorCorrectButton);
+    JPanel mainPanel = new JPanel(new BorderLayout());
+    mainPanel.add(buttonPanel, BorderLayout.WEST);
+    mainPanel.add(imageAndHistogramPane, BorderLayout.CENTER);
 
-    JButton levelsAdjustButton = new JButton("Adjust Levels");
-    levelsAdjustButton.addActionListener(e -> adjustLevels());
-    buttonPanel.add(levelsAdjustButton);
+    add(mainPanel, BorderLayout.CENTER);
+  }
 
-    add(buttonPanel, BorderLayout.SOUTH);
+  private JButton createButton(String text, ActionListener action) {
+    JButton button = new JButton(text);
+    button.addActionListener(action);
+    return button;
+  }
+
+  private JLabel createLabel(String text) {
+    return new JLabel(text);
   }
 
   private void showErrorDialog(String message) {
