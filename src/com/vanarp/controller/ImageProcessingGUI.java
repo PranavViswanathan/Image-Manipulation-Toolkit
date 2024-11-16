@@ -9,12 +9,10 @@ import com.vanarp.model.Transform;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,17 +24,15 @@ import javax.swing.SwingUtilities;
 
 public class ImageProcessingGUI extends JFrame {
 
-  private JLabel imageLabel;
-  private JLabel histogramLabel; // Add a label for the histogram
-  private ImageRepresentation loadedImage; // Store the currently displayed image
-  private ImageRepresentation histogramImage; // Store the histogram image
-  private ImageCache imageCache; // Use ImageCache instead of HashMap
-  private JComboBox<String> imageSelector; // Dropdown to select images
-  private ImageCommandProcessor commandProcessor;
+  private final JLabel imageLabel;
+  private final JLabel histogramLabel;
+  private ImageRepresentation loadedImage;
+  private String currentImageName;
+  private final ImageCommandProcessor commandProcessor;
 
   public ImageProcessingGUI(ImageCommandProcessor commandProcessor) {
-    this.commandProcessor = commandProcessor; // Initialize the command processor
-    this.imageCache = new ImageCache(); // Initialize the ImageCache
+    this.commandProcessor = commandProcessor;
+    ImageCache imageCache = new ImageCache();
     setTitle("Image Processing GUI");
     setSize(800, 600);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,11 +41,9 @@ public class ImageProcessingGUI extends JFrame {
     imageLabel = new JLabel();
     imageLabel.setHorizontalAlignment(JLabel.CENTER);
 
-    // Create labels for the image and histogram
     histogramLabel = new JLabel();
     histogramLabel.setHorizontalAlignment(JLabel.CENTER);
 
-    // Create a panel for the histogram
     JPanel histogramPanel = new JPanel();
     histogramPanel.setPreferredSize(new Dimension(200, 600));
     histogramPanel.add(histogramLabel);
@@ -59,24 +53,17 @@ public class ImageProcessingGUI extends JFrame {
     splitPane.setDividerLocation(600);
     add(splitPane, BorderLayout.CENTER);
 
-    // Button panel
     JPanel buttonPanel = new JPanel();
-    buttonPanel.setLayout(new GridLayout(3, 3, 10, 10));
+    buttonPanel.setLayout(new GridLayout(4, 4, 10, 10));
 
     JButton loadImageButton = new JButton("Load Image");
     loadImageButton.addActionListener(e -> loadImage());
     buttonPanel.add(loadImageButton);
 
-    // Image selector dropdown
-    imageSelector = new JComboBox<>();
-    imageSelector.addActionListener(e -> selectImage());
-    buttonPanel.add(imageSelector);
-
     JButton saveImageButton = new JButton("Save Image");
     saveImageButton.addActionListener(e -> saveImage());
     buttonPanel.add(saveImageButton);
 
-    // Add buttons for extracting color components
     JButton extractRedButton = new JButton("Extract Red");
     extractRedButton.addActionListener(e -> extractComponent("red"));
     buttonPanel.add(extractRedButton);
@@ -89,7 +76,18 @@ public class ImageProcessingGUI extends JFrame {
     extractBlueButton.addActionListener(e -> extractComponent("blue"));
     buttonPanel.add(extractBlueButton);
 
-    // Add specific filter buttons
+    JButton extractLumaButton = new JButton("Extract Luma");
+    extractLumaButton.addActionListener(e -> extractComponent("luma"));
+    buttonPanel.add(extractLumaButton);
+
+    JButton extractIntensityButton = new JButton("Extract Intensity");
+    extractIntensityButton.addActionListener(e -> extractComponent("intensity"));
+    buttonPanel.add(extractIntensityButton);
+
+    JButton extractValueButton = new JButton("Extract Value");
+    extractValueButton.addActionListener(e -> extractComponent("value"));
+    buttonPanel.add(extractValueButton);
+
     JButton blurButton = new JButton("Blur");
     blurButton.addActionListener(e -> applyFilter("blur"));
     buttonPanel.add(blurButton);
@@ -106,16 +104,37 @@ public class ImageProcessingGUI extends JFrame {
     greyscaleButton.addActionListener(e -> applyFilter("greyscale"));
     buttonPanel.add(greyscaleButton);
 
-    JButton flipImageButton = new JButton("Flip Image");
-    flipImageButton.addActionListener(e -> flipImage("horizontal")); // Example direction
-    buttonPanel.add(flipImageButton);
+    JButton flipHorizontalButton = new JButton("Flip Horizontal");
+    flipHorizontalButton.addActionListener(e -> flipImage("horizontal"));
+    buttonPanel.add(flipHorizontalButton);
 
-    JButton brightenImageButton = new JButton("Brighten Image");
+    JButton flipVerticalButton = new JButton("Flip Vertical");
+    flipVerticalButton.addActionListener(e -> flipImage("vertical"));
+    buttonPanel.add(flipVerticalButton);
+
+    JButton brightenImageButton = new JButton("Adjust Brightness");
     brightenImageButton.addActionListener(e -> brightenImage());
     buttonPanel.add(brightenImageButton);
 
     JButton compressImageButton = new JButton("Compress Image");
-    compressImageButton.addActionListener(e -> compressImage(50)); // Example percentage
+    compressImageButton.addActionListener(e -> {
+      String input = JOptionPane.showInputDialog(this, "Enter the compression percentage (0-100):",
+          "Compress Image", JOptionPane.PLAIN_MESSAGE);
+      if (input != null) {
+        try {
+          int percentage = Integer.parseInt(input);
+          if (percentage < 0 || percentage > 100) {
+            showErrorDialog("Please enter a valid percentage between 0 and 100.");
+          } else {
+            compressImage(percentage);
+          }
+        } catch (NumberFormatException ex) {
+          showErrorDialog("Invalid input. Please enter a valid number.");
+        } catch (IllegalArgumentException ex) {
+          showErrorDialog("Invalid argument: " + ex.getMessage());
+        }
+      }
+    });
     buttonPanel.add(compressImageButton);
 
     JButton generateHistogramButton = new JButton("Generate Histogram");
@@ -130,206 +149,305 @@ public class ImageProcessingGUI extends JFrame {
     levelsAdjustButton.addActionListener(e -> adjustLevels());
     buttonPanel.add(levelsAdjustButton);
 
+    JButton rgbSplitButton = new JButton("RGB Split");
+    rgbSplitButton.addActionListener(e -> rgbSplit());
+    buttonPanel.add(rgbSplitButton);
+
+    JButton rgbCombineButton = new JButton("RGB Combine");
+    rgbCombineButton.addActionListener(e -> rgbCombine());
+    buttonPanel.add(rgbCombineButton);
+
     add(buttonPanel, BorderLayout.SOUTH);
+  }
+
+  private void showErrorDialog(String message) {
+    JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
   }
 
   private void loadImage() {
     JFileChooser fileChooser = new JFileChooser();
     if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
       File file = fileChooser.getSelectedFile();
-      String imageName = file.getName(); // Use file name as key
+      currentImageName = file.getName();
       try {
-        commandProcessor.loadImage(file.getAbsolutePath(),
-            imageName); // Load image through command processor
-        loadedImage = commandProcessor.getImage(imageName); // Get the image using command processor
+        commandProcessor.loadImage(file.getAbsolutePath(), currentImageName);
+        loadedImage = commandProcessor.getImage(currentImageName);
         if (loadedImage != null) {
-          imageCache.putImage(imageName, loadedImage); // Store the image in the cache
-          imageSelector.addItem(imageName); // Add the image name to the dropdown
-          selectImage(); // Update the displayed image
-          generateHistogram(); // Generate histogram after loading image
+          imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
+          generateHistogram();
         } else {
-          JOptionPane.showMessageDialog(this, "Failed to load image.");
+          showErrorDialog("Failed to load image.");
         }
       } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Failed to load image: " + e.getMessage());
-      }
-    }
-  }
-
-  private void selectImage() {
-    String selectedImageName = (String) imageSelector.getSelectedItem();
-    if (selectedImageName != null) {
-      try {
-        loadedImage = imageCache.getImage(selectedImageName); // Get image from the cache
-        // Assuming loadedImage has a method to get a BufferedImage
-        BufferedImage bufferedImage = loadedImage.toBufferedImage(); // Convert to BufferedImage
-        imageLabel.setIcon(new ImageIcon(bufferedImage)); // Create ImageIcon and set it
-        generateHistogram(); // Generate histogram after selecting image
+        showErrorDialog("Failed to load image: " + e.getMessage());
       } catch (IllegalArgumentException e) {
-        JOptionPane.showMessageDialog(this, e.getMessage());
+        showErrorDialog("Invalid argument: " + e.getMessage());
       }
     }
   }
 
   private void saveImage() {
-    String selectedImageName = (String) imageSelector.getSelectedItem();
-    if (selectedImageName != null) {
+    if (loadedImage != null) {
       JFileChooser fileChooser = new JFileChooser();
       if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
         File file = fileChooser.getSelectedFile();
         String format = "png";
         try {
-          commandProcessor.saveImage(selectedImageName, file.getAbsolutePath(), format);
+          commandProcessor.saveImage(currentImageName, file.getAbsolutePath(), format);
           JOptionPane.showMessageDialog(this, "Image saved successfully.");
         } catch (IOException e) {
-          JOptionPane.showMessageDialog(this, "Failed to save image: " + e.getMessage());
+          showErrorDialog("Failed to save image: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+          showErrorDialog("Invalid argument: " + e.getMessage());
         }
       }
+    } else {
+      showErrorDialog("No image to save.");
     }
   }
 
   private void extractComponent(String componentType) {
-    String selectedImageName = (String) imageSelector.getSelectedItem();
-    if (selectedImageName != null) {
-      String destName = selectedImageName.substring(0, selectedImageName.lastIndexOf('.'))
-          + "_" + componentType
-          + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
+    if (loadedImage != null) {
+      String destName = currentImageName.substring(0, currentImageName.lastIndexOf('.'))
+          + "_" + componentType + currentImageName.substring(currentImageName.lastIndexOf('.'));
       try {
-        commandProcessor.extractComponent(selectedImageName, destName, componentType);
+        commandProcessor.extractComponent(currentImageName, destName, componentType);
         loadedImage = commandProcessor.getImage(destName);
-        imageCache.putImage(destName, loadedImage);
-        imageSelector.addItem(destName);
+        currentImageName = destName;
         imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
-        generateHistogram(); // Generate histogram after extracting component
+        generateHistogram();
         JOptionPane.showMessageDialog(this, componentType + " component extracted successfully.");
       } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Failed to extract component: " + e.getMessage());
+        showErrorDialog("Failed to extract component: " + e.getMessage());
+      } catch (IllegalArgumentException e) {
+        showErrorDialog("Invalid argument: " + e.getMessage());
       }
     } else {
-      JOptionPane.showMessageDialog(this, "No image selected.");
+      showErrorDialog("No image selected.");
     }
   }
 
   private void applyFilter(String filterType) {
-    String selectedImageName = (String) imageSelector.getSelectedItem();
-    if (selectedImageName != null) {
-      String destName = selectedImageName.substring(0, selectedImageName.lastIndexOf('.'))
-          + "_" + filterType + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
+    if (loadedImage != null) {
+      String destName = currentImageName.substring(0, currentImageName.lastIndexOf('.'))
+          + "_" + filterType + currentImageName.substring(currentImageName.lastIndexOf('.'));
       try {
-        commandProcessor.applyFilter(selectedImageName, destName, filterType, null);
+        commandProcessor.applyFilter(currentImageName, destName, filterType, null);
         loadedImage = commandProcessor.getImage(destName);
-        imageCache.putImage(destName, loadedImage);
-        imageSelector.addItem(destName);
+        currentImageName = destName;
         imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
-        generateHistogram(); // Generate histogram after applying filter
+        generateHistogram();
         JOptionPane.showMessageDialog(this, filterType + " filter applied successfully.");
       } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Failed to apply filter: " + e.getMessage());
+        showErrorDialog("Failed to apply filter: " + e.getMessage());
+      } catch (IllegalArgumentException e) {
+        showErrorDialog("Invalid argument: " + e.getMessage());
       }
     } else {
-      JOptionPane.showMessageDialog(this, "No image selected.");
+      showErrorDialog("No image selected.");
     }
   }
 
   private void flipImage(String direction) {
-    String selectedImageName = (String) imageSelector.getSelectedItem();
-    if (selectedImageName != null) {
+    if (loadedImage != null) {
       String destName =
-          selectedImageName.substring(0, selectedImageName.lastIndexOf('.')) + "_flipped"
-              + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
+          currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_flipped"
+              + currentImageName.substring(currentImageName.lastIndexOf('.'));
       try {
-        commandProcessor.flipImage(selectedImageName, destName, direction);
+        commandProcessor.flipImage(currentImageName, destName, direction);
         loadedImage = commandProcessor.getImage(destName);
-        imageCache.putImage(destName, loadedImage);
-        imageSelector.addItem(destName);
+        currentImageName = destName;
         imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
-        generateHistogram(); // Generate histogram after flipping image
+        generateHistogram();
         JOptionPane.showMessageDialog(this, "Image flipped successfully.");
       } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Failed to flip image: " + e.getMessage());
+        showErrorDialog("Failed to flip image: " + e.getMessage());
+      } catch (IllegalArgumentException e) {
+        showErrorDialog("Invalid argument: " + e.getMessage());
       }
     } else {
-      JOptionPane.showMessageDialog(this, "No image selected.");
+      showErrorDialog("No image selected.");
     }
   }
 
   private void brightenImage() {
-    String selectedImageName = (String) imageSelector.getSelectedItem();
-    if (selectedImageName != null) {
+    if (loadedImage != null) {
       String input = JOptionPane.showInputDialog(this, "Enter the increment value for brightness:",
           "Brighten Image", JOptionPane.PLAIN_MESSAGE);
       if (input != null) {
         try {
           int increment = Integer.parseInt(input);
           String destName =
-              selectedImageName.substring(0, selectedImageName.lastIndexOf('.')) + "_brightened"
-                  + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
-          commandProcessor.brightenImage(selectedImageName, increment, destName);
+              currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_brightened"
+                  + currentImageName.substring(currentImageName.lastIndexOf('.'));
+          commandProcessor.brightenImage(currentImageName, increment, destName);
           loadedImage = commandProcessor.getImage(destName);
-          imageCache.putImage(destName, loadedImage);
-          imageSelector.addItem(destName);
+          currentImageName = destName;
           imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
-          generateHistogram(); // Generate histogram after brightening image
+          generateHistogram();
           JOptionPane.showMessageDialog(this, "Image brightened successfully.");
         } catch (NumberFormatException e) {
-          JOptionPane.showMessageDialog(this, "Invalid input. Please enter a valid number.");
+          showErrorDialog("Invalid input. Please enter a valid number.");
         } catch (IOException e) {
-          JOptionPane.showMessageDialog(this, "Failed to brighten image: " + e.getMessage());
+          showErrorDialog("Failed to brighten image: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+          showErrorDialog("Invalid argument: " + e.getMessage());
         }
       }
     } else {
-      JOptionPane.showMessageDialog(this, "No image selected.");
+      showErrorDialog("No image selected.");
     }
   }
 
   private void compressImage(int percentage) {
-    String selectedImageName = (String) imageSelector.getSelectedItem();
-    if (selectedImageName != null) {
-      String destName =
-          selectedImageName + "_compressed"; // Create a new name for the compressed image
+    if (loadedImage != null) {
+      String destName = currentImageName + "_compressed";
       try {
-        commandProcessor.compressImage(percentage, selectedImageName, destName);
+        commandProcessor.compressImage(percentage, currentImageName, destName);
         loadedImage = commandProcessor.getImage(destName);
-        imageCache.putImage(destName, loadedImage);
-        imageSelector.addItem(destName);
+        currentImageName = destName;
         imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
-        generateHistogram(); // Generate histogram after compressing image
+        generateHistogram();
         JOptionPane.showMessageDialog(this, "Image compressed successfully.");
       } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Failed to compress image: " + e.getMessage());
+        showErrorDialog("Failed to compress image: " + e.getMessage());
+      } catch (IllegalArgumentException e) {
+        showErrorDialog("Invalid argument: " + e.getMessage());
       }
     } else {
-      JOptionPane.showMessageDialog(this, "No image selected.");
+      showErrorDialog("No image selected.");
     }
   }
 
   private void generateHistogram() {
-    String selectedImageName = (String) imageSelector.getSelectedItem();
-    if (selectedImageName != null) {
-      String destName = selectedImageName.substring(0, selectedImageName.lastIndexOf('.'))
-          + "_histogram" + selectedImageName.substring(selectedImageName.lastIndexOf('.'));
+    if (loadedImage != null) {
+      String destName = currentImageName.substring(0, currentImageName.lastIndexOf('.'))
+          + "_histogram" + currentImageName.substring(currentImageName.lastIndexOf('.'));
       try {
-        commandProcessor.getHistogram(selectedImageName, destName);
-        histogramImage = commandProcessor.getImage(
-            destName); // Get the histogram image using command processor
-        imageCache.putImage(destName, histogramImage); // Store the histogram in the cache
-        histogramLabel.setIcon(
-            new ImageIcon(histogramImage.toBufferedImage())); // Update the histogram display
-        JOptionPane.showMessageDialog(this, "Histogram generated successfully.");
+        commandProcessor.getHistogram(currentImageName, destName);
+        ImageRepresentation histogramImage = commandProcessor.getImage(destName);
+        histogramLabel.setIcon(new ImageIcon(histogramImage.toBufferedImage()));
       } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Failed to generate histogram: " + e.getMessage());
+        showErrorDialog("Failed to generate histogram: " + e.getMessage());
+      } catch (IllegalArgumentException e) {
+        showErrorDialog("Invalid argument: " + e.getMessage());
       }
     } else {
-      JOptionPane.showMessageDialog(this, "No image selected.");
+      showErrorDialog("No image selected.");
     }
   }
 
   private void colorCorrectImage() {
-    JOptionPane.showMessageDialog(this, "Color correction is not yet implemented.");
+    if (loadedImage != null) {
+      String destName = currentImageName.substring(0, currentImageName.lastIndexOf('.'))
+          + "_color_corrected" + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      try {
+        commandProcessor.colorCorrectImage(currentImageName, destName, null); // No split for now
+        loadedImage = commandProcessor.getImage(destName);
+        currentImageName = destName;
+        imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
+        generateHistogram();
+        JOptionPane.showMessageDialog(this, "Color correction applied successfully.");
+      } catch (IOException e) {
+        showErrorDialog("Failed to apply color correction: " + e.getMessage());
+      } catch (IllegalArgumentException e) {
+        showErrorDialog("Invalid argument: " + e.getMessage());
+      }
+    } else {
+      showErrorDialog("No image selected.");
+    }
   }
 
   private void adjustLevels() {
-    JOptionPane.showMessageDialog(this, "Levels adjustment is not yet implemented.");
+    if (loadedImage != null) {
+      String inputBrightness = JOptionPane.showInputDialog(this,
+          "Enter brightness adjustment value:(0-255)",
+          "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
+      String inputMidtone = JOptionPane.showInputDialog(this,
+          "Enter midtone adjustment value:(0-255)",
+          "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
+      String inputWhitePoint = JOptionPane.showInputDialog(this,
+          "Enter white point adjustment value:(0-255)",
+          "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
+
+      if (inputBrightness != null && inputMidtone != null && inputWhitePoint != null) {
+        try {
+          int brightness = Integer.parseInt(inputBrightness);
+          int midtone = Integer.parseInt(inputMidtone);
+          int whitePoint = Integer.parseInt(inputWhitePoint);
+
+          String destName = currentImageName.substring(0, currentImageName.lastIndexOf('.'))
+              + "_levels_adjusted" + currentImageName.substring(currentImageName.lastIndexOf('.'));
+          commandProcessor.levelsAdjust(currentImageName, brightness, midtone, whitePoint, destName,
+              null); // No split for now
+          loadedImage = commandProcessor.getImage(destName);
+          currentImageName = destName;
+          imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
+          generateHistogram();
+          JOptionPane.showMessageDialog(this, "Levels adjusted successfully.");
+        } catch (NumberFormatException e) {
+          showErrorDialog("Invalid input. Please enter valid numbers.");
+        } catch (IOException e) {
+          showErrorDialog("Failed to adjust levels: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+          showErrorDialog("Invalid argument: " + e.getMessage());
+        }
+      }
+    } else {
+      showErrorDialog("No image selected.");
+    }
+  }
+
+  private void rgbSplit() {
+    if (loadedImage != null) {
+      String redName = currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_red"
+          + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      String greenName = currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_green"
+          + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      String blueName = currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_blue"
+          + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      try {
+        commandProcessor.rgbSplit(currentImageName, redName, greenName, blueName);
+        JOptionPane.showMessageDialog(this, "RGB split completed successfully.");
+      } catch (IOException e) {
+        showErrorDialog("Failed to split RGB: " + e.getMessage());
+      } catch (IllegalArgumentException e) {
+        showErrorDialog("Invalid argument: " + e.getMessage());
+      }
+    } else {
+      showErrorDialog("No image selected.");
+    }
+  }
+
+  private void rgbCombine() {
+    if (loadedImage != null) {
+      String destName =
+          currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_combined"
+              + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      String redImageName =
+          currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_red"
+              + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      String greenImageName =
+          currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_green"
+              + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      String blueImageName =
+          currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_blue"
+              + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      try {
+        commandProcessor.rgbCombine(destName, redImageName, greenImageName, blueImageName);
+        loadedImage = commandProcessor.getImage(destName);
+        currentImageName = destName;
+        imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
+        generateHistogram();
+        JOptionPane.showMessageDialog(this, "RGB combined successfully.");
+      } catch (IOException e) {
+        showErrorDialog("Failed to combine RGB: " + e.getMessage());
+      } catch (IllegalArgumentException e) {
+        showErrorDialog("Invalid argument: " + e.getMessage());
+      }
+    } else {
+      showErrorDialog("No image selected.");
+    }
   }
 
   public static void main(String[] args) {
@@ -342,8 +460,7 @@ public class ImageProcessingGUI extends JFrame {
     Operations operations = new Operations(transformation, filtering, compressedIO, uncompressedIO,
         compress);
     SwingUtilities.invokeLater(() -> {
-      ImageCommandProcessor commandProcessor = new CommandProcessor(
-          operations); // Initialize your command processor
+      ImageCommandProcessor commandProcessor = new CommandProcessor(operations);
       ImageProcessingGUI gui = new ImageProcessingGUI(commandProcessor);
       gui.setVisible(true);
     });

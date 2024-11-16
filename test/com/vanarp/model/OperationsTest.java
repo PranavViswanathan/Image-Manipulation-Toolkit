@@ -1,26 +1,27 @@
 package com.vanarp.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
 import com.vanarp.controller.CompressedImageIO;
 import com.vanarp.controller.ImageFileIO;
 import com.vanarp.controller.UncompressedImageIO;
-
+import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
 
 /**
  * Test class for the operations of the program.
  */
 public class OperationsTest {
 
+  private ImageRepresentation testImagePng;
   private ImageOperations operations;
   private final String validPngPath = "test/com/vanarp/model/TestResources/Source/bird.png";
   private final String ManhattanPath = "test/com/vanarp/model/TestResources/Source/"
       + "manhattan-small.png";
+
   private final String GalaxyPath = "test/com/vanarp/model/TestResources/Source/galaxy.png";
   private final String outputDirectory = "test/com/vanarp/model/TestResources/SampleOperations/";
 
@@ -33,7 +34,7 @@ public class OperationsTest {
     ImageCompressionFunctionality compress = new ImageCompression();
 
     operations = new Operations(transform, filter, compressedIO, uncompressedIO, compress);
-    ImageRepresentation testImagePng = operations.loadImage(validPngPath);
+    testImagePng = operations.loadImage(validPngPath);
   }
 
   private ImageRepresentation createImageWithColor(int red, int green, int blue) {
@@ -88,7 +89,6 @@ public class OperationsTest {
     operations.saveImage(testImage, outputDirectory + "output.abc", "abc");
   }
 
-  /*
   @Test
   public void testRedComponentForPng() throws IOException {
     ImageRepresentation redImage = operations.redComponent(testImagePng);
@@ -696,7 +696,6 @@ public class OperationsTest {
     ImageRepresentation loadedPpmImage = operations.loadImage(ppmOutputPath);
     assertEquals(originalImage, loadedPpmImage);
   }
- */
 
   @Test
   public void testHistogram() throws IOException {

@@ -1,0 +1,94 @@
+# Loading a PNG image
+load test/com/vanarp/model/TestResources/Source/bird.png l1
+
+# Getting just the Red-component
+red-component l1 l1-red-component
+
+# Saving the red component
+save test/com/vanarp/model/TestResources/Save/bird-red-component.png l1-red-component
+
+# Getting just the Green-component
+green-component l1 l1-green-component
+
+# Saving the green component
+save test/com/vanarp/model/TestResources/Save/bird-green-component.png l1-green-component
+
+# Getting just the Blue-component
+blue-component l1 l1-blue-component
+
+# Saving the blue component
+save test/com/vanarp/model/TestResources/Save/bird-blue-component.png l1-blue-component
+
+# Blurring the image
+blur l1 l1-blur
+
+# Saving the blurred image
+save test/com/vanarp/model/TestResources/Save/bird-blur.png l1-blur
+
+# Sharpening the image
+sharpen l1 l1-sharper
+
+# Saving the sharper image
+save test/com/vanarp/model/TestResources/Save/bird-sharper.png l1-sharper
+
+# Brightening the image
+brighten 20 l1 l1-brighter
+
+# Saving the brighter image
+save test/com/vanarp/model/TestResources/Save/bird-brighter.png l1-brighter
+
+# Splitting the image into three i.e., red, green, and blue components
+rgb-split l1 l1-red-split l1-green-split l1-blue-split
+
+# Save the 3 split images
+save test/com/vanarp/model/TestResources/Save/bird-red-split.png l1-red-split
+save test/com/vanarp/model/TestResources/Save/bird-green-split.png l1-green-split
+save test/com/vanarp/model/TestResources/Save/bird-blue-split.png l1-blue-split
+
+# Combine the 3 color components
+rgb-combine l1-combine l1-red-split l1-green-split l1-blue-split
+
+# Save the combined image
+save test/com/vanarp/model/TestResources/Save/bird-combine.png l1-combine
+
+# Flip the image vertically
+vertical-flip l1 l1-vertical-flip
+
+# Save the vertically flipped image
+save test/com/vanarp/model/TestResources/Save/bird-vertical-flip.png l1-vertical-flip
+
+# Flip the image horizontally
+horizontal-flip l1 l1-horizontal-flip
+
+# Save the horizontally flipped image
+save test/com/vanarp/model/TestResources/Save/bird-horizontal-flip.png l1-horizontal-flip
+
+# Convert the image into greyscale
+greyscale l1 l1-greyscale
+
+# Save the greyscale image
+save test/com/vanarp/model/TestResources/Save/bird-greyscale.png l1-greyscale
+
+# Convert the image into sepia
+sepia l1 l1-sepia
+
+# Save the sepia image
+save test/com/vanarp/model/TestResources/Save/bird-sepia.png l1-sepia
+
+# Convert the image into luma
+luma-component l1 l1-luma
+
+# Save the luma image
+save test/com/vanarp/model/TestResources/Save/bird-luma.png l1-luma
+
+# Convert the image into value
+value-component l1 l1-value
+
+# Save the value component image
+save test/com/vanarp/model/TestResources/Save/bird-value.png l1-value
+
+# Convert the image into intensity
+intensity-component l1 l1-intensity
+
+# Save the intensity component image
+save test/com/vanarp/model/TestResources/Save/bird-intensity.png l1-intensity

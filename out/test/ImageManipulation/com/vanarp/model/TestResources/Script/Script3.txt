@@ -1,0 +1,59 @@
+# Load a PNG image
+load test/com/vanarp/model/TestResources/Source/bird.png l1
+
+# Compress the image to reduce its size
+compress 50 l1 l1-compressed
+
+# Save the compressed image
+save test/com/vanarp/model/TestResources/Save/bird-compressed.png l1-compressed
+
+# Generate a histogram of the image
+histogram l1 l1-histogram
+
+# Save the histogram
+save test/com/vanarp/model/TestResources/Save/bird-histogram.png l1-histogram
+
+# Color correct the image
+color-correct l1 l1-color-corrected
+
+# Save the color-corrected image
+save test/com/vanarp/model/TestResources/Save/bird-color-corrected.png l1-color-corrected
+
+# Levels-Adjust the image with brightness=10, midtone=100, white point=255
+levels-adjust 10 100 255 l1 l1-levels-adjusted
+
+# Save the Levels-Adjusted image
+save test/com/vanarp/model/TestResources/Save/bird-levels-adjusted.png l1-levels-adjusted
+
+# Blur the image and split
+blur l1 l1-blurred-split split 70
+
+# Save the blurred image and split
+save test/com/vanarp/model/TestResources/Save/bird-blurred-split.png l1-blurred-split
+
+# Sharpen the image and split
+sharpen l1 l1-sharpened-split split 70
+
+# Save the sharpened image 
+save test/com/vanarp/model/TestResources/Save/bird-sharpened-split.png l1-sharpened-split
+
+# Apply Sepia tone to the image and split
+sepia l1 l1-sepia-split split 70
+
+# Save the sepia-toned image
+save test/com/vanarp/model/TestResources/Save/bird-sepia-split.png l1-sepia-split
+
+# Apply Greyscale to the image and split
+greyscale l1 l1-greyscale-split split 70
+
+# Save the greyscale image 
+save test/com/vanarp/model/TestResources/Save/bird-greyscale-split.png l1-greyscale-split
+
+# Apply levels-adjust to the image and split
+levels-adjust 10 100 255 l1 l1-levels-adjust-split split 70
+
+# Save the greyscale image
+save test/com/vanarp/model/TestResources/Save/levels-adjust--split.png l1-levels-adjust-split
+
+
+

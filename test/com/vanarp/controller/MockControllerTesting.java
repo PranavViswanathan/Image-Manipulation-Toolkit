@@ -3,6 +3,7 @@ package com.vanarp.controller;
 import com.vanarp.model.ImageOperations;
 import com.vanarp.model.ImageRepresentation;
 import com.vanarp.model.PixelInterface;
+import java.awt.image.BufferedImage;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -61,6 +62,11 @@ public class MockControllerTesting {
         @Override
         public int getHeight() {
           return pixels[0].length;
+        }
+
+        @Override
+        public BufferedImage toBufferedImage() {
+          return null;
         }
       };
     }

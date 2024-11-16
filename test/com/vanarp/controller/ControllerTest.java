@@ -1,23 +1,22 @@
 package com.vanarp.controller;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import com.vanarp.model.Filtering;
 import com.vanarp.model.FilteringOperationEnhanced;
 import com.vanarp.model.ImageCompression;
 import com.vanarp.model.ImageCompressionFunctionality;
-import com.vanarp.model.ImageRepresentation;
 import com.vanarp.model.ImageOperations;
+import com.vanarp.model.ImageRepresentation;
 import com.vanarp.model.ImageTransformationEnhanced;
 import com.vanarp.model.Operations;
 import com.vanarp.model.Transform;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This class contains unit tests for the functionality of the Image Command Processor and CLI View.
@@ -75,208 +74,207 @@ public class ControllerTest {
     assertEquals(expectedImage, savedImage);
   }
 
-  /*
-    @Test
-    public void testRedComponent() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("red-component testImage redImage");
-      assertNotNull("Red image should not be null", commandProcessor.getImage("redImage"));
-      ImageRepresentation expectedRedImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/redComponent.png");
-      ImageRepresentation actualRedImage = commandProcessor.getImage("redImage");
-      assertEquals(expectedRedImage, actualRedImage);
-    }
+  @Test
+  public void testRedComponent() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("red-component testImage redImage");
+    assertNotNull("Red image should not be null", commandProcessor.getImage("redImage"));
+    ImageRepresentation expectedRedImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/redComponent.png");
+    ImageRepresentation actualRedImage = commandProcessor.getImage("redImage");
+    assertEquals(expectedRedImage, actualRedImage);
+  }
 
-    @Test
-    public void testGreenComponent() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("green-component testImage greenImage");
-      assertNotNull("Green image should not be null", commandProcessor.getImage("greenImage"));
-      ImageRepresentation expectedGreenImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/greenComponent.png");
-      ImageRepresentation actualGreenImage = commandProcessor.getImage("greenImage");
-      assertEquals(expectedGreenImage, actualGreenImage);
-    }
+  @Test
+  public void testGreenComponent() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("green-component testImage greenImage");
+    assertNotNull("Green image should not be null", commandProcessor.getImage("greenImage"));
+    ImageRepresentation expectedGreenImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/greenComponent.png");
+    ImageRepresentation actualGreenImage = commandProcessor.getImage("greenImage");
+    assertEquals(expectedGreenImage, actualGreenImage);
+  }
 
-    @Test
-    public void testBlueComponent() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("blue-component testImage blueImage");
-      assertNotNull("Blue image should not be null", commandProcessor.getImage("blueImage"));
-      ImageRepresentation expectedBlueImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/blueComponent.png");
-      ImageRepresentation actualBlueImage = commandProcessor.getImage("blueImage");
-      assertEquals(expectedBlueImage, actualBlueImage);
-    }
+  @Test
+  public void testBlueComponent() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("blue-component testImage blueImage");
+    assertNotNull("Blue image should not be null", commandProcessor.getImage("blueImage"));
+    ImageRepresentation expectedBlueImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/blueComponent.png");
+    ImageRepresentation actualBlueImage = commandProcessor.getImage("blueImage");
+    assertEquals(expectedBlueImage, actualBlueImage);
+  }
 
-    @Test
-    public void testHorizontalFlip() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("horizontal-flip testImage flippedImage");
-      assertNotNull("Flipped image should not be null", commandProcessor.getImage("flippedImage"));
-      ImageRepresentation expectedFlippedImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/flippedHorizontally.png");
-      ImageRepresentation actualFlippedImage = commandProcessor.getImage("flippedImage");
-      assertEquals(expectedFlippedImage, actualFlippedImage);
-    }
+  @Test
+  public void testHorizontalFlip() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("horizontal-flip testImage flippedImage");
+    assertNotNull("Flipped image should not be null", commandProcessor.getImage("flippedImage"));
+    ImageRepresentation expectedFlippedImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/flippedHorizontally.png");
+    ImageRepresentation actualFlippedImage = commandProcessor.getImage("flippedImage");
+    assertEquals(expectedFlippedImage, actualFlippedImage);
+  }
 
-    @Test
-    public void testVerticalFlip() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("vertical-flip testImage flippedImage");
-      assertNotNull("Flipped image should not be null", commandProcessor.getImage("flippedImage"));
-      ImageRepresentation expectedFlippedImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/flippedVertically.png");
-      ImageRepresentation actualFlippedImage = commandProcessor.getImage("flippedImage");
-      assertEquals(expectedFlippedImage, actualFlippedImage);
-    }
+  @Test
+  public void testVerticalFlip() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("vertical-flip testImage flippedImage");
+    assertNotNull("Flipped image should not be null", commandProcessor.getImage("flippedImage"));
+    ImageRepresentation expectedFlippedImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/flippedVertically.png");
+    ImageRepresentation actualFlippedImage = commandProcessor.getImage("flippedImage");
+    assertEquals(expectedFlippedImage, actualFlippedImage);
+  }
 
-    @Test
-    public void testBrighten() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("brighten 10 testImage brightenedImage");
-      assertNotNull("Brightened image should not be null",
-          commandProcessor.getImage("brightenedImage"));
-      ImageRepresentation expectedBrightenedImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/brightenedImage.png");
-      ImageRepresentation actualBrightenedImage = commandProcessor.getImage("brightenedImage");
-      assertEquals(expectedBrightenedImage, actualBrightenedImage);
-    }
+  @Test
+  public void testBrighten() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("brighten 10 testImage brightenedImage");
+    assertNotNull("Brightened image should not be null",
+        commandProcessor.getImage("brightenedImage"));
+    ImageRepresentation expectedBrightenedImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/brightenedImage.png");
+    ImageRepresentation actualBrightenedImage = commandProcessor.getImage("brightenedImage");
+    assertEquals(expectedBrightenedImage, actualBrightenedImage);
+  }
 
-    @Test
-    public void testRgbSplit() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("rgb-split testImage redImage greenImage blueImage");
-      assertNotNull("Red image should not be null", commandProcessor.getImage("redImage"));
-      assertNotNull("Green image should not be null", commandProcessor.getImage("greenImage"));
-      assertNotNull("Blue image should not be null", commandProcessor.getImage("blueImage"));
+  @Test
+  public void testRgbSplit() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("rgb-split testImage redImage greenImage blueImage");
+    assertNotNull("Red image should not be null", commandProcessor.getImage("redImage"));
+    assertNotNull("Green image should not be null", commandProcessor.getImage("greenImage"));
+    assertNotNull("Blue image should not be null", commandProcessor.getImage("blueImage"));
 
-      ImageRepresentation expectedRedImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/redComponent.png");
-      ImageRepresentation expectedGreenImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/greenComponent.png");
-      ImageRepresentation expectedBlueImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/blueComponent.png");
+    ImageRepresentation expectedRedImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/redComponent.png");
+    ImageRepresentation expectedGreenImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/greenComponent.png");
+    ImageRepresentation expectedBlueImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/blueComponent.png");
 
-      assertEquals(expectedRedImage, commandProcessor.getImage("redImage"));
-      assertEquals(expectedGreenImage, commandProcessor.getImage("greenImage"));
-      assertEquals(expectedBlueImage, commandProcessor.getImage("blueImage"));
-    }
+    assertEquals(expectedRedImage, commandProcessor.getImage("redImage"));
+    assertEquals(expectedGreenImage, commandProcessor.getImage("greenImage"));
+    assertEquals(expectedBlueImage, commandProcessor.getImage("blueImage"));
+  }
 
-    @Test
-    public void testBlur() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("blur testImage blurredImage");
-      assertNotNull("Blurred image should not be null", commandProcessor.getImage("blurredImage"));
-      ImageRepresentation expectedBlurredImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/blurredImage.png");
-      ImageRepresentation actualBlurredImage = commandProcessor.getImage("blurredImage");
-      assertEquals(expectedBlurredImage, actualBlurredImage);
-    }
+  @Test
+  public void testBlur() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("blur testImage blurredImage");
+    assertNotNull("Blurred image should not be null", commandProcessor.getImage("blurredImage"));
+    ImageRepresentation expectedBlurredImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/blurredImage.png");
+    ImageRepresentation actualBlurredImage = commandProcessor.getImage("blurredImage");
+    assertEquals(expectedBlurredImage, actualBlurredImage);
+  }
 
-    @Test
-    public void testSharpen() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("sharpen testImage sharpenedImage");
-      assertNotNull("Sharpened image should not be null",
-          commandProcessor.getImage("sharpenedImage"));
-      ImageRepresentation expectedSharpenedImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/sharpenedImage.png");
-      ImageRepresentation actualSharpenedImage = commandProcessor.getImage("sharpenedImage");
-      assertEquals(expectedSharpenedImage, actualSharpenedImage);
-    }
+  @Test
+  public void testSharpen() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("sharpen testImage sharpenedImage");
+    assertNotNull("Sharpened image should not be null",
+        commandProcessor.getImage("sharpenedImage"));
+    ImageRepresentation expectedSharpenedImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/sharpenedImage.png");
+    ImageRepresentation actualSharpenedImage = commandProcessor.getImage("sharpenedImage");
+    assertEquals(expectedSharpenedImage, actualSharpenedImage);
+  }
 
-    @Test
-    public void testApplySepia() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("sepia testImage sepiaImage");
-      assertNotNull("Sepia image should not be null", commandProcessor.getImage("sepiaImage"));
-      ImageRepresentation expectedSepiaImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/sepiaImage.png");
-      ImageRepresentation actualSepiaImage = commandProcessor.getImage("sepiaImage");
-      assertEquals(expectedSepiaImage, actualSepiaImage);
-    }
+  @Test
+  public void testApplySepia() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("sepia testImage sepiaImage");
+    assertNotNull("Sepia image should not be null", commandProcessor.getImage("sepiaImage"));
+    ImageRepresentation expectedSepiaImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/sepiaImage.png");
+    ImageRepresentation actualSepiaImage = commandProcessor.getImage("sepiaImage");
+    assertEquals(expectedSepiaImage, actualSepiaImage);
+  }
 
-    @Test
-    public void testApplyGreyscale() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("greyscale testImage greyscaleImage");
-      assertNotNull("Greyscale image should not be null",
-          commandProcessor.getImage("greyscaleImage"));
-      ImageRepresentation expectedGreyscaleImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/greyscaleImage.png");
-      ImageRepresentation actualGreyscaleImage = commandProcessor.getImage("greyscaleImage");
-      assertEquals(expectedGreyscaleImage, actualGreyscaleImage);
-    }
+  @Test
+  public void testApplyGreyscale() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("greyscale testImage greyscaleImage");
+    assertNotNull("Greyscale image should not be null",
+        commandProcessor.getImage("greyscaleImage"));
+    ImageRepresentation expectedGreyscaleImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/greyscaleImage.png");
+    ImageRepresentation actualGreyscaleImage = commandProcessor.getImage("greyscaleImage");
+    assertEquals(expectedGreyscaleImage, actualGreyscaleImage);
+  }
 
-    @Test
-    public void testValueComponent() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("value-component testImage valueImage");
-      assertNotNull("Value image should not be null", commandProcessor.getImage("valueImage"));
-      ImageRepresentation expectedValueImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/valueComponent.png");
-      ImageRepresentation actualValueImage = commandProcessor.getImage("valueImage");
-      assertEquals(expectedValueImage, actualValueImage);
-    }
+  @Test
+  public void testValueComponent() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("value-component testImage valueImage");
+    assertNotNull("Value image should not be null", commandProcessor.getImage("valueImage"));
+    ImageRepresentation expectedValueImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/valueComponent.png");
+    ImageRepresentation actualValueImage = commandProcessor.getImage("valueImage");
+    assertEquals(expectedValueImage, actualValueImage);
+  }
 
-    @Test
-    public void testLumaComponent() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("luma-component testImage lumaImage");
-      assertNotNull("Luma image should not be null", commandProcessor.getImage("lumaImage"));
-      ImageRepresentation expectedLumaImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/lumaComponent.png");
-      ImageRepresentation actualLumaImage = commandProcessor.getImage("lumaImage");
-      assertEquals(expectedLumaImage, actualLumaImage);
-    }
+  @Test
+  public void testLumaComponent() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("luma-component testImage lumaImage");
+    assertNotNull("Luma image should not be null", commandProcessor.getImage("lumaImage"));
+    ImageRepresentation expectedLumaImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/lumaComponent.png");
+    ImageRepresentation actualLumaImage = commandProcessor.getImage("lumaImage");
+    assertEquals(expectedLumaImage, actualLumaImage);
+  }
 
-    @Test
-    public void testIntensityComponent() throws IOException {
-      commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-      "testImage");
-      cliView.processCommand("intensity-component testImage intensityImage");
-      assertNotNull("Intensity image should not be null",
-          commandProcessor.getImage("intensityImage"));
-      ImageRepresentation expectedIntensityImage = loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/intensityComponent.png");
-      ImageRepresentation actualIntensityImage = commandProcessor.getImage("intensityImage");
-      assertEquals(expectedIntensityImage, actualIntensityImage);
-    }
+  @Test
+  public void testIntensityComponent() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("intensity-component testImage intensityImage");
+    assertNotNull("Intensity image should not be null",
+        commandProcessor.getImage("intensityImage"));
+    ImageRepresentation expectedIntensityImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/intensityComponent.png");
+    ImageRepresentation actualIntensityImage = commandProcessor.getImage("intensityImage");
+    assertEquals(expectedIntensityImage, actualIntensityImage);
+  }
 
-    @Test
-    public void testRgbCombine() throws IOException {
-      commandProcessor.loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/redComponent.png",
-          "redImage");
-      commandProcessor.loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/greenComponent.png",
-          "greenImage");
-      commandProcessor.loadImage(
-          "test/com/vanarp/model/TestResources/SampleOperations/blueComponent.png",
-          "blueImage");
-      cliView.processCommand("rgb-combine combinedImage redImage greenImage blueImage");
-      assertNotNull("Combined image should not be null", commandProcessor.getImage
-      ("combinedImage"));
-      ImageRepresentation expectedCombinedImage = loadImage(
-          "test/com/vanarp/model/TestResources/Source/bird.png");
-      ImageRepresentation actualCombinedImage = commandProcessor.getImage("combinedImage");
-      assertEquals(expectedCombinedImage, actualCombinedImage);
-    }
-  */
+  @Test
+  public void testRgbCombine() throws IOException {
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/redComponent.png",
+        "redImage");
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/greenComponent.png",
+        "greenImage");
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/blueComponent.png",
+        "blueImage");
+    cliView.processCommand("rgb-combine combinedImage redImage greenImage blueImage");
+    assertNotNull("Combined image should not be null", commandProcessor.getImage
+        ("combinedImage"));
+    ImageRepresentation expectedCombinedImage = loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation actualCombinedImage = commandProcessor.getImage("combinedImage");
+    assertEquals(expectedCombinedImage, actualCombinedImage);
+  }
+
   @Test
   public void testScriptExecution() throws IOException {
     cliView.processCommand("script test/com/vanarp/model/TestResources/Script/Script1.txt");
@@ -344,9 +342,9 @@ public class ControllerTest {
             + "Script executed successfully.";
     String actualOutput = outputStream.toString().trim();
     expectedOutput = expectedOutput.replace("\r\n", "\n")
-            .replace("\r", "\n");
+        .replace("\r", "\n");
     actualOutput = actualOutput.replace("\r\n", "\n")
-            .replace("\r", "\n");
+        .replace("\r", "\n");
     assertEquals(expectedOutput, actualOutput);
   }
 
