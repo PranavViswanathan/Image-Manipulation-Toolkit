@@ -138,14 +138,14 @@ public class ImageProcessingGUI extends JFrame {
       }
     }), gbc);
 
-    gbc.gridx = 0;
     gbc.gridy++;
-    buttonPanel.add(createButton("Generate Histogram", e -> generateHistogram()), gbc);
-    gbc.gridx = 1;
+    gbc.gridx = 0;
     buttonPanel.add(createButton("Color Correct", e -> colorCorrectImage()), gbc);
+    gbc.gridx = 1;
+    buttonPanel.add(createButton("Adjust Levels", e -> adjustLevels()), gbc);
     gbc.gridx = 0;
     gbc.gridy++;
-    buttonPanel.add(createButton("Adjust Levels", e -> adjustLevels()), gbc);
+    buttonPanel.add(createButton("Downscale Image", e -> downscaleImage()), gbc);
 
     JPanel mainPanel = new JPanel(new BorderLayout());
     mainPanel.add(buttonPanel, BorderLayout.WEST);
@@ -497,6 +497,42 @@ public class ImageProcessingGUI extends JFrame {
           showErrorDialog("Invalid input. Please enter valid numbers.");
         } catch (IOException e) {
           showErrorDialog("Failed to adjust levels: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+          showErrorDialog("Invalid argument: " + e.getMessage());
+        }
+      }
+    } else {
+      showErrorDialog("No image selected.");
+    }
+  }
+
+  private void downscaleImage() {
+    saveImageState();
+    if (loadedImage != null) {
+      String widthInput = JOptionPane.showInputDialog(this, "Enter the new width:",
+          "Downscale Image", JOptionPane.PLAIN_MESSAGE);
+      String heightInput = JOptionPane.showInputDialog(this, "Enter the new height:",
+          "Downscale Image", JOptionPane.PLAIN_MESSAGE);
+
+      if (widthInput != null && heightInput != null) {
+        try {
+          int newWidth = Integer.parseInt(widthInput);
+          int newHeight = Integer.parseInt(heightInput);
+
+          String destName =
+              currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_downscaled"
+                  + currentImageName.substring(currentImageName.lastIndexOf('.'));
+          commandProcessor.downscaleImage(currentImageName, destName, newWidth, newHeight);
+
+          loadedImage = commandProcessor.getImage(destName);
+          currentImageName = destName;
+          imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
+          generateHistogram();
+          JOptionPane.showMessageDialog(this, "Image downscaled successfully.");
+        } catch (NumberFormatException e) {
+          showErrorDialog("Invalid input. Please enter valid numbers.");
+        } catch (IOException e) {
+          showErrorDialog("Failed to downscale image: " + e.getMessage());
         } catch (IllegalArgumentException e) {
           showErrorDialog("Invalid argument: " + e.getMessage());
         }

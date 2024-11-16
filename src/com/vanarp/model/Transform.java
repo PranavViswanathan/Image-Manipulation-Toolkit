@@ -231,7 +231,6 @@ public class Transform extends AbstractImageTransformation {
       throw new IllegalArgumentException("New dimensions must be greater than zero.");
     }
 
-    // Create a new BufferedImage for the downscaled image
     BufferedImage downscaledImage = new BufferedImage(newWidth, newHeight,
         BufferedImage.TYPE_INT_RGB);
 
