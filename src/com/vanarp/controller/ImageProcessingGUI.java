@@ -148,7 +148,7 @@ public class ImageProcessingGUI extends JFrame {
     JButton levelsAdjustButton = new JButton("Adjust Levels");
     levelsAdjustButton.addActionListener(e -> adjustLevels());
     buttonPanel.add(levelsAdjustButton);
-    
+
     add(buttonPanel, BorderLayout.SOUTH);
   }
 
