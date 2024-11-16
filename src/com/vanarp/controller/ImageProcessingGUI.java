@@ -11,8 +11,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Stack;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
+
 public class ImageProcessingGUI extends JFrame {
 
   private final JLabel imageLabel;
@@ -31,10 +35,11 @@ public class ImageProcessingGUI extends JFrame {
   private ImageRepresentation loadedImage;
   private String currentImageName;
   private final ImageCommandProcessor commandProcessor;
+  private final Stack<Object[]> imageHistory;
 
   public ImageProcessingGUI(ImageCommandProcessor commandProcessor) {
     this.commandProcessor = commandProcessor;
-    ImageCache imageCache = new ImageCache();
+    this.imageHistory = new Stack<>();
     setTitle("Image Processing GUI");
     setSize(1000, 600);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -60,18 +65,18 @@ public class ImageProcessingGUI extends JFrame {
     JPanel buttonPanel = new JPanel(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.fill = GridBagConstraints.HORIZONTAL;
-    gbc.insets = new Insets(5, 5, 5, 5); // Padding for buttons
+    gbc.insets = new Insets(5, 5, 5, 5);
     gbc.gridx = 0;
     gbc.gridy = 0;
 
-    // Load and Save Buttons
     gbc.gridwidth = 2;
     buttonPanel.add(createButton("Load Image", e -> loadImage()), gbc);
     gbc.gridwidth = 1;
     gbc.gridy++;
     buttonPanel.add(createButton("Save Image", e -> saveImage()), gbc);
+    gbc.gridy++;
+    buttonPanel.add(createButton("Undo", e -> undo()), gbc);
 
-    // Color Component Extraction
     gbc.gridy++;
     buttonPanel.add(createLabel("Extract Color Components:"), gbc);
     gbc.gridy++;
@@ -88,7 +93,6 @@ public class ImageProcessingGUI extends JFrame {
     gbc.gridx = 1;
     buttonPanel.add(createButton("Extract Value", e -> extractComponent("value")), gbc);
 
-    // Filters
     gbc.gridx = 0;
     gbc.gridy++;
     buttonPanel.add(createLabel("Filters:"), gbc);
@@ -102,7 +106,6 @@ public class ImageProcessingGUI extends JFrame {
     gbc.gridx = 1;
     buttonPanel.add(createButton("Greyscale", e -> applyFilter("greyscale")), gbc);
 
-    // Transformations
     gbc.gridx = 0;
     gbc.gridy++;
     buttonPanel.add(createLabel("Transformations:"), gbc);
@@ -133,7 +136,6 @@ public class ImageProcessingGUI extends JFrame {
       }
     }), gbc);
 
-    // Histogram and Color Correction
     gbc.gridx = 0;
     gbc.gridy++;
     buttonPanel.add(createButton("Generate Histogram", e -> generateHistogram()), gbc);
@@ -148,6 +150,28 @@ public class ImageProcessingGUI extends JFrame {
     mainPanel.add(imageAndHistogramPane, BorderLayout.CENTER);
 
     add(mainPanel, BorderLayout.CENTER);
+
+    addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        promptBeforeExit();
+      }
+    });
+  }
+
+  private void promptBeforeExit() {
+    int option = JOptionPane.showConfirmDialog(
+        this,
+        "Do you want to save the image before exiting?",
+        "Exit Confirmation",
+        JOptionPane.YES_NO_CANCEL_OPTION);
+
+    if (option == JOptionPane.YES_OPTION) {
+      saveImage();
+      System.exit(0);
+    } else if (option == JOptionPane.NO_OPTION) {
+      System.exit(0);
+    }
   }
 
   private JButton createButton(String text, ActionListener action) {
@@ -206,10 +230,39 @@ public class ImageProcessingGUI extends JFrame {
     }
   }
 
-  private void extractComponent(String componentType) {
+  private void saveImageState() {
     if (loadedImage != null) {
-      String destName = currentImageName.substring(0, currentImageName.lastIndexOf('.'))
-          + "_" + componentType + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      imageHistory.push(new Object[]{loadedImage, currentImageName});
+    }
+  }
+
+  private void undo() {
+    if (!imageHistory.isEmpty()) {
+      Object[] previousState = imageHistory.pop();
+      loadedImage = (ImageRepresentation) previousState[0];
+      currentImageName = (String) previousState[1];
+      imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
+      generateHistogram();
+      JOptionPane.showMessageDialog(this, "Undo successful.");
+    } else {
+      showErrorDialog("No actions to undo.");
+    }
+  }
+
+  private void extractComponent(String componentType) {
+    saveImageState();
+    if (loadedImage != null) {
+      String destName;
+      int lastDotIndex = currentImageName.lastIndexOf('.');
+
+      if (lastDotIndex != -1) {
+        destName = currentImageName.substring(0, lastDotIndex) + "_" + componentType
+            + currentImageName.substring(lastDotIndex);
+      } else {
+        destName =
+            currentImageName + "_" + componentType;
+      }
+
       try {
         commandProcessor.extractComponent(currentImageName, destName, componentType);
         loadedImage = commandProcessor.getImage(destName);
@@ -228,9 +281,18 @@ public class ImageProcessingGUI extends JFrame {
   }
 
   private void applyFilter(String filterType) {
+    saveImageState();
     if (loadedImage != null) {
-      String destName = currentImageName.substring(0, currentImageName.lastIndexOf('.'))
-          + "_" + filterType + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      String destName;
+      int lastDotIndex = currentImageName.lastIndexOf('.');
+
+      if (lastDotIndex != -1) {
+        destName = currentImageName.substring(0, lastDotIndex) + "_" + filterType
+            + currentImageName.substring(lastDotIndex);
+      } else {
+        destName = currentImageName + "_" + filterType;
+      }
+
       try {
         commandProcessor.applyFilter(currentImageName, destName, filterType, null);
         loadedImage = commandProcessor.getImage(destName);
@@ -249,10 +311,19 @@ public class ImageProcessingGUI extends JFrame {
   }
 
   private void flipImage(String direction) {
+    saveImageState();
     if (loadedImage != null) {
-      String destName =
-          currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_flipped"
-              + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      String destName;
+      int lastDotIndex = currentImageName.lastIndexOf('.');
+
+      if (lastDotIndex != -1) {
+        destName =
+            currentImageName.substring(0, lastDotIndex) + "_flipped" + currentImageName.substring(
+                lastDotIndex);
+      } else {
+        destName = currentImageName + "_flipped";
+      }
+
       try {
         commandProcessor.flipImage(currentImageName, destName, direction);
         loadedImage = commandProcessor.getImage(destName);
@@ -271,15 +342,22 @@ public class ImageProcessingGUI extends JFrame {
   }
 
   private void brightenImage() {
+    saveImageState();
     if (loadedImage != null) {
       String input = JOptionPane.showInputDialog(this, "Enter the increment value for brightness:",
           "Brighten Image", JOptionPane.PLAIN_MESSAGE);
       if (input != null) {
         try {
           int increment = Integer.parseInt(input);
-          String destName =
-              currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_brightened"
-                  + currentImageName.substring(currentImageName.lastIndexOf('.'));
+          String destName;
+          int lastDotIndex = currentImageName.lastIndexOf('.');
+
+          if (lastDotIndex != -1) {
+            destName = currentImageName.substring(0, lastDotIndex) + "_brightened"
+                + currentImageName.substring(lastDotIndex);
+          } else {
+            destName = currentImageName + "_brightened";
+          }
           commandProcessor.brightenImage(currentImageName, increment, destName);
           loadedImage = commandProcessor.getImage(destName);
           currentImageName = destName;
@@ -300,6 +378,7 @@ public class ImageProcessingGUI extends JFrame {
   }
 
   private void compressImage(int percentage) {
+    saveImageState();
     if (loadedImage != null) {
       String destName = currentImageName + "_compressed";
       try {
@@ -338,11 +417,20 @@ public class ImageProcessingGUI extends JFrame {
   }
 
   private void colorCorrectImage() {
+    saveImageState();
     if (loadedImage != null) {
-      String destName = currentImageName.substring(0, currentImageName.lastIndexOf('.'))
-          + "_color_corrected" + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      String destName;
+      int lastDotIndex = currentImageName.lastIndexOf('.');
+
+      if (lastDotIndex != -1) {
+        destName = currentImageName.substring(0, lastDotIndex) + "_color_corrected"
+            + currentImageName.substring(lastDotIndex);
+      } else {
+        destName = currentImageName + "_color_corrected";
+      }
+
       try {
-        commandProcessor.colorCorrectImage(currentImageName, destName, null); // No split for now
+        commandProcessor.colorCorrectImage(currentImageName, destName, null);
         loadedImage = commandProcessor.getImage(destName);
         currentImageName = destName;
         imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
@@ -359,6 +447,7 @@ public class ImageProcessingGUI extends JFrame {
   }
 
   private void adjustLevels() {
+    saveImageState();
     if (loadedImage != null) {
       String inputBrightness = JOptionPane.showInputDialog(this,
           "Enter brightness adjustment value:(0-255)",
@@ -384,6 +473,7 @@ public class ImageProcessingGUI extends JFrame {
           currentImageName = destName;
           imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
           generateHistogram();
+
           JOptionPane.showMessageDialog(this, "Levels adjusted successfully.");
         } catch (NumberFormatException e) {
           showErrorDialog("Invalid input. Please enter valid numbers.");
