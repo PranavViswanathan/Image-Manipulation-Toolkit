@@ -148,15 +148,7 @@ public class ImageProcessingGUI extends JFrame {
     JButton levelsAdjustButton = new JButton("Adjust Levels");
     levelsAdjustButton.addActionListener(e -> adjustLevels());
     buttonPanel.add(levelsAdjustButton);
-
-    JButton rgbSplitButton = new JButton("RGB Split");
-    rgbSplitButton.addActionListener(e -> rgbSplit());
-    buttonPanel.add(rgbSplitButton);
-
-    JButton rgbCombineButton = new JButton("RGB Combine");
-    rgbCombineButton.addActionListener(e -> rgbCombine());
-    buttonPanel.add(rgbCombineButton);
-
+    
     add(buttonPanel, BorderLayout.SOUTH);
   }
 
@@ -379,7 +371,7 @@ public class ImageProcessingGUI extends JFrame {
           String destName = currentImageName.substring(0, currentImageName.lastIndexOf('.'))
               + "_levels_adjusted" + currentImageName.substring(currentImageName.lastIndexOf('.'));
           commandProcessor.levelsAdjust(currentImageName, brightness, midtone, whitePoint, destName,
-              null); // No split for now
+              null);
           loadedImage = commandProcessor.getImage(destName);
           currentImageName = destName;
           imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
@@ -392,58 +384,6 @@ public class ImageProcessingGUI extends JFrame {
         } catch (IllegalArgumentException e) {
           showErrorDialog("Invalid argument: " + e.getMessage());
         }
-      }
-    } else {
-      showErrorDialog("No image selected.");
-    }
-  }
-
-  private void rgbSplit() {
-    if (loadedImage != null) {
-      String redName = currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_red"
-          + currentImageName.substring(currentImageName.lastIndexOf('.'));
-      String greenName = currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_green"
-          + currentImageName.substring(currentImageName.lastIndexOf('.'));
-      String blueName = currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_blue"
-          + currentImageName.substring(currentImageName.lastIndexOf('.'));
-      try {
-        commandProcessor.rgbSplit(currentImageName, redName, greenName, blueName);
-        JOptionPane.showMessageDialog(this, "RGB split completed successfully.");
-      } catch (IOException e) {
-        showErrorDialog("Failed to split RGB: " + e.getMessage());
-      } catch (IllegalArgumentException e) {
-        showErrorDialog("Invalid argument: " + e.getMessage());
-      }
-    } else {
-      showErrorDialog("No image selected.");
-    }
-  }
-
-  private void rgbCombine() {
-    if (loadedImage != null) {
-      String destName =
-          currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_combined"
-              + currentImageName.substring(currentImageName.lastIndexOf('.'));
-      String redImageName =
-          currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_red"
-              + currentImageName.substring(currentImageName.lastIndexOf('.'));
-      String greenImageName =
-          currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_green"
-              + currentImageName.substring(currentImageName.lastIndexOf('.'));
-      String blueImageName =
-          currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_blue"
-              + currentImageName.substring(currentImageName.lastIndexOf('.'));
-      try {
-        commandProcessor.rgbCombine(destName, redImageName, greenImageName, blueImageName);
-        loadedImage = commandProcessor.getImage(destName);
-        currentImageName = destName;
-        imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
-        generateHistogram();
-        JOptionPane.showMessageDialog(this, "RGB combined successfully.");
-      } catch (IOException e) {
-        showErrorDialog("Failed to combine RGB: " + e.getMessage());
-      } catch (IllegalArgumentException e) {
-        showErrorDialog("Invalid argument: " + e.getMessage());
       }
     } else {
       showErrorDialog("No image selected.");
