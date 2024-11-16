@@ -71,14 +71,16 @@ public class ImageProcessingGUI extends JFrame {
 
     gbc.gridwidth = 2;
     buttonPanel.add(createButton("Load Image", e -> loadImage()), gbc);
-    gbc.gridwidth = 1;
+    gbc.gridwidth = 2;
     gbc.gridy++;
     buttonPanel.add(createButton("Save Image", e -> saveImage()), gbc);
+    gbc.gridwidth = 2;
     gbc.gridy++;
     buttonPanel.add(createButton("Undo", e -> undo()), gbc);
+    gbc.gridwidth = 2;
     gbc.gridy++;
     buttonPanel.add(createButton("Revert to Original", e -> revertToOriginal()), gbc);
-
+    gbc.gridwidth = 1;
     gbc.gridy++;
     buttonPanel.add(createLabel("Extract Color Components:"), gbc);
     gbc.gridy++;
@@ -91,6 +93,7 @@ public class ImageProcessingGUI extends JFrame {
     gbc.gridx = 1;
     buttonPanel.add(createButton("Extract Luma", e -> extractComponent("luma")), gbc);
     gbc.gridx = 0;
+    gbc.gridy++;
     buttonPanel.add(createButton("Extract Intensity", e -> extractComponent("intensity")), gbc);
     gbc.gridx = 1;
     buttonPanel.add(createButton("Extract Value", e -> extractComponent("value")), gbc);
