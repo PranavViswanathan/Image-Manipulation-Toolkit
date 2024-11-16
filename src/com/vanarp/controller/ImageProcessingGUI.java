@@ -76,6 +76,8 @@ public class ImageProcessingGUI extends JFrame {
     buttonPanel.add(createButton("Save Image", e -> saveImage()), gbc);
     gbc.gridy++;
     buttonPanel.add(createButton("Undo", e -> undo()), gbc);
+    gbc.gridy++;
+    buttonPanel.add(createButton("Revert to Original", e -> revertToOriginal()), gbc);
 
     gbc.gridy++;
     buttonPanel.add(createLabel("Extract Color Components:"), gbc);
@@ -197,6 +199,8 @@ public class ImageProcessingGUI extends JFrame {
         commandProcessor.loadImage(file.getAbsolutePath(), currentImageName);
         loadedImage = commandProcessor.getImage(currentImageName);
         if (loadedImage != null) {
+          // Push the original image onto the stack
+          imageHistory.push(new Object[]{loadedImage, currentImageName});
           imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
           generateHistogram();
         } else {
@@ -207,6 +211,20 @@ public class ImageProcessingGUI extends JFrame {
       } catch (IllegalArgumentException e) {
         showErrorDialog("Invalid argument: " + e.getMessage());
       }
+    }
+  }
+
+  private void revertToOriginal() {
+    if (!imageHistory.isEmpty()) {
+      // Get the first element from the stack (the original image)
+      Object[] originalState = imageHistory.firstElement(); // Get the original image state
+      loadedImage = (ImageRepresentation) originalState[0];
+      currentImageName = (String) originalState[1];
+      imageLabel.setIcon(new ImageIcon(loadedImage.toBufferedImage()));
+      generateHistogram();
+      JOptionPane.showMessageDialog(this, "Reverted to original image.");
+    } else {
+      showErrorDialog("No original image to revert to.");
     }
   }
 
