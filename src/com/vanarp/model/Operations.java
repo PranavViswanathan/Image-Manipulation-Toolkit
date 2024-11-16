@@ -1,7 +1,6 @@
 package com.vanarp.model;
 
 import com.vanarp.controller.ImageFileIO;
-
 import java.io.IOException;
 
 /**
@@ -315,6 +314,20 @@ public class Operations implements ImageOperations {
   public ImageRepresentation compressImage(ImageRepresentation image,
       float quality) throws IOException {
     return compression.apply((Image) image, quality);
+  }
+
+  /**
+   * Downscales the given image to the specified width and height.
+   *
+   * @param image     the input {@link ImageRepresentation} to downscale
+   * @param newWidth  the desired width of the downscaled image
+   * @param newHeight the desired height of the downscaled image
+   * @return a new {@link ImageRepresentation} that is downscaled
+   * @throws IOException if an error occurs during the image processing
+   */
+  public ImageRepresentation downscaleImage(ImageRepresentation image, int newWidth, int newHeight)
+      throws IOException {
+    return transformation.downscale(image, newWidth, newHeight);
   }
 
 }

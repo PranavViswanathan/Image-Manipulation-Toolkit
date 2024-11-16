@@ -172,7 +172,7 @@ public interface ImageOperations {
    * @throws IOException if an error occurs during the operation
    */
   ImageRepresentation combineRgb(ImageRepresentation redImage, ImageRepresentation greenImage,
-                                 ImageRepresentation blueImage) throws IOException;
+      ImageRepresentation blueImage) throws IOException;
 
   /**
    * Adjusts the levels of the specified image.
@@ -185,7 +185,7 @@ public interface ImageOperations {
    * @throws IOException if an error occurs during the operation
    */
   ImageRepresentation levelsAdjust(ImageRepresentation image, int b, int m, int w)
-          throws IOException;
+      throws IOException;
 
   /**
    * Applies color correction to the specified image.
@@ -215,7 +215,7 @@ public interface ImageOperations {
    * @throws IOException if an error occurs during the operation
    */
   ImageRepresentation splitImages(ImageRepresentation image1, ImageRepresentation image2,
-                                  int percent) throws IOException;
+      int percent) throws IOException;
 
   /**
    * Compresses the specified image based on the given quality factor.
@@ -226,5 +226,18 @@ public interface ImageOperations {
    * @throws IOException if an error occurs during the operation
    */
   ImageRepresentation compressImage(ImageRepresentation image, float quality)
-          throws IOException;
+      throws IOException;
+
+  /**
+   * Downscales the specified image to the given width and height.
+   *
+   * @param image     the {@link ImageRepresentation} to downscale
+   * @param newWidth  the desired width of the downscaled image
+   * @param newHeight the desired height of the downscaled image
+   * @return a new {@link ImageRepresentation} that is downscaled
+   * @throws IOException if an error occurs during the operation
+   */
+  ImageRepresentation downscaleImage(ImageRepresentation image, int newWidth, int newHeight)
+      throws IOException;
+
 }

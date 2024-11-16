@@ -50,7 +50,7 @@ public class CommandProcessor implements ImageCommandProcessor {
 
   @Override
   public void extractComponent(String imageName, String destName, String componentType)
-          throws IOException {
+      throws IOException {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation result;
     switch (componentType.toLowerCase()) {
@@ -80,7 +80,7 @@ public class CommandProcessor implements ImageCommandProcessor {
 
   @Override
   public void applyFilter(String imageName, String destName, String filterType,
-                          Integer splitPercent) throws IOException {
+      Integer splitPercent) throws IOException {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation result;
     if (splitPercent != null) {
@@ -132,7 +132,7 @@ public class CommandProcessor implements ImageCommandProcessor {
 
   @Override
   public void rgbSplit(String imageName, String redName, String greenName, String blueName)
-          throws IOException {
+      throws IOException {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation[] rgbComponents = operations.rgbSplit(image);
     putImage(redName, rgbComponents[0]);
@@ -142,7 +142,7 @@ public class CommandProcessor implements ImageCommandProcessor {
 
   @Override
   public void rgbCombine(String destName, String redImageName, String greenImageName,
-                         String blueImageName) throws IOException {
+      String blueImageName) throws IOException {
     ImageRepresentation redImage = getImage(redImageName);
     ImageRepresentation greenImage = getImage(greenImageName);
     ImageRepresentation blueImage = getImage(blueImageName);
@@ -152,21 +152,21 @@ public class CommandProcessor implements ImageCommandProcessor {
 
   @Override
   public void levelsAdjust(String imageName, int brightness, int midtone, int whitePoint,
-                           String destName, Integer splitPercent) throws IOException {
+      String destName, Integer splitPercent) throws IOException {
     if (splitPercent != null) {
       processSplitOperation("levels-adjust", imageName, destName, splitPercent, brightness, midtone,
-              whitePoint);
+          whitePoint);
     } else {
       ImageRepresentation image = getImage(imageName);
       ImageRepresentation adjustedImage = operations.levelsAdjust(image, brightness,
-              midtone, whitePoint);
+          midtone, whitePoint);
       putImage(destName, adjustedImage);
     }
   }
 
   @Override
   public void colorCorrectImage(String imageName, String destName, Integer splitPercent)
-          throws IOException {
+      throws IOException {
     if (splitPercent != null) {
       processSplitOperation("color-correct", imageName, destName, splitPercent);
     } else {
@@ -177,7 +177,7 @@ public class CommandProcessor implements ImageCommandProcessor {
   }
 
   public void processSplitOperation(String operation, String imageName, String destName,
-                                    int splitPercent, Integer... params) throws IOException {
+      int splitPercent, Integer... params) throws IOException {
     ImageRepresentation originalImage = getImage(imageName);
     ImageRepresentation transformedImage;
 
@@ -200,17 +200,17 @@ public class CommandProcessor implements ImageCommandProcessor {
       case "levels-adjust":
         if (params.length != 3) {
           throw new IllegalArgumentException(
-                  "Levels adjustment requires brightness, midtone, and white point values");
+              "Levels adjustment requires brightness, midtone, and white point values");
         }
         transformedImage = operations.levelsAdjust(originalImage, params[0], params[1],
-                params[2]);
+            params[2]);
         break;
       default:
         throw new IllegalArgumentException("Unsupported operation: " + operation);
     }
 
     ImageRepresentation splitResult = operations.splitImages(transformedImage, originalImage,
-            splitPercent);
+        splitPercent);
     putImage(destName, splitResult);
   }
 
@@ -223,9 +223,25 @@ public class CommandProcessor implements ImageCommandProcessor {
 
   @Override
   public void compressImage(float percentage, String imageName, String destName)
-          throws IOException {
+      throws IOException {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation compressedImage = operations.compressImage(image, percentage);
     putImage(destName, compressedImage);
+  }
+
+  /**
+   * Downscales the specified image to the given width and height and stores it in the cache.
+   *
+   * @param imageName the name of the image to downscale
+   * @param destName  the name to store the downscaled image
+   * @param newWidth  the desired width of the downscaled image
+   * @param newHeight the desired height of the downscaled image
+   * @throws IOException if an error occurs during downscaling
+   */
+  public void downscaleImage(String imageName, String destName, int newWidth, int newHeight)
+      throws IOException {
+    ImageRepresentation image = getImage(imageName);
+    ImageRepresentation downscaledImage = operations.downscaleImage(image, newWidth, newHeight);
+    putImage(destName, downscaledImage);
   }
 }

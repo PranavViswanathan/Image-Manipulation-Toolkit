@@ -81,6 +81,7 @@ public class CLIView {
     commandMap.put("script", tokens -> handleScript(tokens));
     commandMap.put("histogram", tokens -> handleHistogram(tokens));
     commandMap.put("compress", tokens -> handleCompress(tokens));
+    commandMap.put("downscale", tokens -> handleDownscale(tokens)); // Added downscale command
   }
 
   /**
@@ -290,8 +291,8 @@ public class CLIView {
   /**
    * Handles the combination of RGB components into a single image.
    *
-   * @param tokens the command tokens containing the image name and the names of the red, green, and
-   *               blue images.
+   * @param tokens the command tokens containing the image name and the names of the red, green,
+   *               and blue images.
    */
   private void handleRgbCombine(String[] tokens) {
     if (tokens.length == 5) {
@@ -391,17 +392,43 @@ public class CLIView {
   }
 
   /**
-   * Retrieves the image format based on the file extension.
+   * Handles the downscaling of an image to the specified width and height.
    *
-   * @param filePath the file path of the image.
-   * @return the format of the image as a string.
+   * @param tokens the command tokens containing the image name, destination name, width, and
+   *               height.
    */
-  private String getFormatFromFileName(String filePath) {
-    for (Map.Entry<String, String> entry : EXTENSION_TO_FORMAT.entrySet()) {
-      if (filePath.endsWith(entry.getKey())) {
-        return entry.getValue();
+  private void handleDownscale(String[] tokens) {
+    if (tokens.length == 5) {
+      try {
+        String imageName = tokens[1];
+        String destName = tokens[2];
+        int newWidth = Integer.parseInt(tokens[3]);
+        int newHeight = Integer.parseInt(tokens[4]);
+        commandProcessor.downscaleImage(imageName, destName, newWidth, newHeight);
+        System.out.println("Image downscaled and saved as " + destName);
+      } catch (NumberFormatException e) {
+        System.out.println("Invalid width or height value. They should be integers.");
+      } catch (IOException e) {
+        System.out.println("Failed to downscale image: " + e.getMessage());
       }
+    } else {
+      System.out.println(
+          "Usage: downscale <image-name> <dest-image-name> <new-width> <new-height>");
     }
-    return "PNG";
   }
+
+/**
+ * Retrieves the image format based on the file extension.
+ *
+ * @param filePath the file path of the image.
+ * @return the format of the image as a string.
+ */
+private String getFormatFromFileName(String filePath) {
+  for (Map.Entry<String, String> entry : EXTENSION_TO_FORMAT.entrySet()) {
+    if (filePath.endsWith(entry.getKey())) {
+      return entry.getValue();
+    }
+  }
+  return "PNG";
+}
 }
