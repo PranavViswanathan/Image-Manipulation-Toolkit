@@ -230,21 +230,17 @@ public class Transform extends AbstractImageTransformation {
     if (newWidth <= 0 || newHeight <= 0) {
       throw new IllegalArgumentException("New dimensions must be greater than zero.");
     }
-
     BufferedImage downscaledImage = new BufferedImage(newWidth, newHeight,
         BufferedImage.TYPE_INT_RGB);
 
     for (int y = 0; y < newHeight; y++) {
       for (int x = 0; x < newWidth; x++) {
-        // Calculate the corresponding pixel in the original image
         int origX = (int) Math.round((double) x * original.getWidth() / newWidth);
         int origY = (int) Math.round((double) y * original.getHeight() / newHeight);
 
-        // Ensure we do not go out of bounds
         origX = Math.min(origX, original.getWidth() - 1);
         origY = Math.min(origY, original.getHeight() - 1);
 
-        // Get the pixel color from the original image
         PixelInterface pixel = original.getPixel(origX, origY);
         downscaledImage.setRGB(x, y,
             new Color(pixel.getRed(), pixel.getGreen(), pixel.getBlue()).getRGB());
