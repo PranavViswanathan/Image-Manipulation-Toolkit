@@ -5,7 +5,6 @@ import com.vanarp.controller.CompressedImageIO;
 import com.vanarp.controller.ImageCommandProcessor;
 import com.vanarp.controller.ImageFileIO;
 import com.vanarp.controller.ImageProcessingController;
-import com.vanarp.controller.ImageProcessingGUI;
 import com.vanarp.controller.UncompressedImageIO;
 import com.vanarp.model.Filtering;
 import com.vanarp.model.ImageCompression;
@@ -13,13 +12,11 @@ import com.vanarp.model.ImageCompressionFunctionality;
 import com.vanarp.model.ImageRepresentation;
 import com.vanarp.model.Operations;
 import com.vanarp.model.Transform;
-
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -31,22 +28,21 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 /**
- * The ImageProcessingView class represents the graphical user interface for the image processing application.
- * It allows users to interact with the application by loading, saving, and manipulating images.
+ * The ImageProcessingView class represents the graphical user interface for the image processing
+ * application. It allows users to interact with the application by loading, saving, and
+ * manipulating images.
  */
 public class ImageProcessingView extends JFrame {
 
   private final JLabel imageLabel;
   private final JLabel histogramLabel;
-  private final ImageProcessingController controller;
+  private ImageProcessingController controller;
 
   /**
    * Constructs an ImageProcessingView with the specified controller.
    *
-   * @param controller the controller that handles user actions and application logic
    */
-  public ImageProcessingView(ImageProcessingController controller) {
-    this.controller = controller;
+  public ImageProcessingView() {
     setTitle("Image Processing GUI");
     setSize(1000, 600);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,7 +62,7 @@ public class ImageProcessingView extends JFrame {
     histogramPanel.setBorder(BorderFactory.createTitledBorder("Histogram"));
 
     JSplitPane imageAndHistogramPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, imagePanel,
-            histogramPanel);
+        histogramPanel);
     imageAndHistogramPane.setDividerLocation(600);
 
     JPanel buttonPanel = createButtonPanel();
@@ -120,7 +116,7 @@ public class ImageProcessingView extends JFrame {
     buttonPanel.add(createButton("Extract Luma", e -> controller.extractComponent("luma")), gbc);
     gbc.gridx = 0;
     buttonPanel.add(
-            createButton("Extract Intensity", e -> controller.extractComponent("intensity")), gbc);
+        createButton("Extract Intensity", e -> controller.extractComponent("intensity")), gbc);
     gbc.gridx = 1;
     buttonPanel.add(createButton("Extract Value", e -> controller.extractComponent("value")), gbc);
 
@@ -150,7 +146,7 @@ public class ImageProcessingView extends JFrame {
     gbc.gridx = 1;
     buttonPanel.add(createButton("Compress Image", e -> {
       String input = JOptionPane.showInputDialog(this, "Enter the compression percentage (0-100):",
-              "Compress Image", JOptionPane.PLAIN_MESSAGE);
+          "Compress Image", JOptionPane.PLAIN_MESSAGE);
       if (input != null) {
         try {
           int percentage = Integer.parseInt(input);
@@ -203,10 +199,10 @@ public class ImageProcessingView extends JFrame {
 
   public void promptBeforeExit() {
     int option = JOptionPane.showConfirmDialog(
-            this,
-            "Do you want to save the image before exiting?",
-            "Exit Confirmation",
-            JOptionPane.YES_NO_CANCEL_OPTION);
+        this,
+        "Do you want to save the image before exiting?",
+        "Exit Confirmation",
+        JOptionPane.YES_NO_CANCEL_OPTION);
 
     if (option == JOptionPane.YES_OPTION) {
       controller.saveImage();
@@ -224,10 +220,12 @@ public class ImageProcessingView extends JFrame {
     ImageCompressionFunctionality compress = new ImageCompression();
 
     Operations operations = new Operations(transformation, filtering, compressedIO, uncompressedIO,
-            compress);
+        compress);
     SwingUtilities.invokeLater(() -> {
       ImageCommandProcessor commandProcessor = new CommandProcessor(operations);
-      ImageProcessingGUI gui = new ImageProcessingGUI(commandProcessor);
+      ImageProcessingView gui = new ImageProcessingView();
+      ImageProcessingController controller1 = new ImageProcessingController(commandProcessor,gui);
+
       gui.setVisible(true);
     });
   }

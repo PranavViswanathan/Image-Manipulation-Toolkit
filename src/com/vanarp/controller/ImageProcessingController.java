@@ -1,4 +1,5 @@
 package com.vanarp.controller;
+
 import com.vanarp.model.ImageRepresentation;
 import com.vanarp.viewer.ImageProcessingView;
 import java.io.File;
@@ -10,15 +11,14 @@ import javax.swing.JOptionPane;
 public class ImageProcessingController {
 
   private final ImageCommandProcessor commandProcessor;
-  private final Stack<Object[]> imageHistory;
+  private Stack<Object[]> imageHistory;
   private ImageRepresentation loadedImage;
   private String currentImageName;
   private final ImageProcessingView view;
 
   public ImageProcessingController(ImageCommandProcessor commandProcessor,
-      Stack<Object[]> imageHistory, ImageProcessingView view) {
+      ImageProcessingView view) {
     this.commandProcessor = commandProcessor;
-    this.imageHistory = imageHistory;
     this.view = view;
   }
 

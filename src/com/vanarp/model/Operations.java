@@ -281,7 +281,6 @@ public class Operations implements ImageOperations {
    *
    * @param image the input {@link ImageRepresentation} for which the histogram is to be generated
    * @return a new {@link ImageRepresentation} representing the histogram of the input image
-   * @throws IOException if an error occurs during histogram generation
    */
   public ImageRepresentation getHistogram(ImageRepresentation image) {
     return transformation.getHistogram(image);

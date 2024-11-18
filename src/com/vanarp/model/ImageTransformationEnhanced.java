@@ -28,7 +28,7 @@ public interface ImageTransformationEnhanced extends ImageTransformation {
    * @param image2  the second {@link ImageRepresentation} to split
    * @param percent the percentage at which to split the images (0-100)
    * @return a new {@link ImageRepresentation} that combines parts of both images based on the
-   *        specified percentage
+   * specified percentage
    * @throws IOException if an error occurs during the operation
    */
   ImageRepresentation getSplitView(ImageRepresentation image1, ImageRepresentation image2,
@@ -37,11 +37,12 @@ public interface ImageTransformationEnhanced extends ImageTransformation {
   /**
    * Downscales the specified image to the given width and height.
    *
-   * @param original the {@link ImageRepresentation} to downscale
-   * @param newWidth the desired width of the downscaled image
+   * @param original  the {@link ImageRepresentation} to downscale
+   * @param newWidth  the desired width of the downscaled image
    * @param newHeight the desired height of the downscaled image
    * @return a new {@link ImageRepresentation} that is downscaled
    * @throws IOException if an error occurs during the image processing
    */
-  ImageRepresentation downscale(ImageRepresentation original, int newWidth, int newHeight) throws IOException;
+  ImageRepresentation downscale(ImageRepresentation original, int newWidth, int newHeight)
+      throws IOException;
 }
