@@ -84,7 +84,8 @@ public class CLIView {
     commandMap.put("script", tokens -> handleScript(tokens));
     commandMap.put("histogram", tokens -> handleHistogram(tokens));
     commandMap.put("compress", tokens -> handleCompress(tokens));
-    commandMap.put("downscale", tokens -> handleDownscale(tokens)); // Added downscale command
+    commandMap.put("downscale", tokens -> handleDownscale(tokens));
+    commandMap.put("apply-mask", tokens -> handleApplyMask(tokens));// Added downscale command
   }
 
   /**
