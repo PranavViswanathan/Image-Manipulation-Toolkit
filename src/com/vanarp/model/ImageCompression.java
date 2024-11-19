@@ -59,9 +59,9 @@ public class ImageCompression implements ImageCompressionFunctionality {
     for (int j = 0; j < paddedHeight; j++) {
       for (int i = 0; i < paddedWidth; i++) {
         compressedImage.setPixel(j, i, new Pixel(
-                clamp(redChannel[j][i]),
-                clamp(greenChannel[j][i]),
-                clamp(blueChannel[j][i])
+            clamp(redChannel[j][i]),
+            clamp(greenChannel[j][i]),
+            clamp(blueChannel[j][i])
         ));
       }
     }
@@ -117,9 +117,9 @@ public class ImageCompression implements ImageCompressionFunctionality {
       elementsToZero -= 1;
     }
     int[] allValues = Arrays.stream(data)
-            .flatMapToInt(Arrays::stream)
-            .map(Math::abs)
-            .toArray();
+        .flatMapToInt(Arrays::stream)
+        .map(Math::abs)
+        .toArray();
     Arrays.sort(allValues);
     int threshold = allValues[elementsToZero];
 
@@ -183,7 +183,7 @@ public class ImageCompression implements ImageCompressionFunctionality {
     for (int j = 0; j < newHeight; j++) {
       for (int i = 0; i < newWidth; i++) {
         if (j < originalHeight && i < originalWidth) {
-          paddedImage.setPixel(j, i, image.getPixel(i, j));
+          paddedImage.setPixel(j, i, image.getPixel(j, i));
         } else {
           paddedImage.setPixel(j, i, new Pixel(0, 0, 0));
         }

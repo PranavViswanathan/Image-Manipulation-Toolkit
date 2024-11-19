@@ -62,7 +62,7 @@ public class CLIView {
    * Initializes the command map with available commands and their respective handlers.
    */
   private void initializeCommands() {
-    commandMap.put("load", tokens -> handleLoad(tokens));
+    commandMap.put("load", tokens ->    handleLoad(tokens));
     commandMap.put("save", tokens -> handleSave(tokens));
     commandMap.put("red-component", tokens -> handleComponent(tokens, "red"));
     commandMap.put("green-component", tokens -> handleComponent(tokens, "green"));
