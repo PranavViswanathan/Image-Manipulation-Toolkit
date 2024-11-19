@@ -1,4 +1,4 @@
-package com.vanarp.viewer;
+package com.vanarp;
 
 import com.vanarp.controller.CommandProcessor;
 import com.vanarp.controller.CompressedImageIO;
@@ -11,6 +11,7 @@ import com.vanarp.model.ImageCompression;
 import com.vanarp.model.ImageCompressionFunctionality;
 import com.vanarp.model.Operations;
 import com.vanarp.model.Transform;
+import com.vanarp.viewer.ImageProcessingView;
 import javax.swing.SwingUtilities;
 
 public class main {
@@ -26,7 +27,7 @@ public class main {
         compress);
     SwingUtilities.invokeLater(() -> {
       ImageCommandProcessor commandProcessor = new CommandProcessor(operations);
-      ImageProcessingView view = new ImageProcessingView();
+         ImageProcessingView view = new ImageProcessingView();
       new ImageProcessingController(commandProcessor, view);
     });
   }
