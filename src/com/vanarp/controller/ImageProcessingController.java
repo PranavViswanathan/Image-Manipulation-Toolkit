@@ -19,6 +19,7 @@ public class ImageProcessingController {
   private ImageRepresentation loadedImage;
   private String currentImageName;
 
+
   public ImageProcessingController(ImageCommandProcessor commandProcessor,
       ImageProcessingView view) {
     this.commandProcessor = commandProcessor;
@@ -32,10 +33,10 @@ public class ImageProcessingController {
   private void setupListeners() {
     view.createButtons(e -> {
       switch (e.getActionCommand()) {
-        case "Load Image":
+        case "Load":
           loadImage();
           break;
-        case "Save Image":
+        case "Save":
           saveImage();
           break;
         case "Undo":
@@ -89,10 +90,10 @@ public class ImageProcessingController {
         case "Adjust Levels":
           adjustLevels();
           break;
-        case "Downscale Image":
+        case "Downscale":
           downscaleImage();
           break;
-        case "Compress Image":
+        case "Compress":
           compressImageDialog();
           break;
       }
@@ -243,9 +244,13 @@ public class ImageProcessingController {
       } else {
         destName = currentImageName + "_" + filterType;
       }
+      Integer splitPercent = getSplitPercentage();
+      if (splitPercent == null) {
+        return;
+      }
 
       try {
-        commandProcessor.applyFilter(currentImageName, destName, filterType, null);
+        commandProcessor.applyFilter(currentImageName, destName, filterType, splitPercent);
         loadedImage = commandProcessor.getImage(destName);
         currentImageName = destName;
         view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
@@ -361,9 +366,12 @@ public class ImageProcessingController {
       } else {
         destName = currentImageName + "_color_corrected";
       }
-
+      Integer splitPercent = getSplitPercentage();
+      if (splitPercent == null) {
+        return; // User input was invalid
+      }
       try {
-        commandProcessor.colorCorrectImage(currentImageName, destName, null);
+        commandProcessor.colorCorrectImage(currentImageName, destName, splitPercent);
         loadedImage = commandProcessor.getImage(destName);
         currentImageName = destName;
         view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
@@ -391,7 +399,10 @@ public class ImageProcessingController {
       String inputWhitePoint = JOptionPane.showInputDialog(view,
           "Enter white point adjustment value:(0-255)",
           "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
-
+      Integer splitPercent = getSplitPercentage();
+      if (splitPercent == null) {
+        return; // User input was invalid
+      }
       if (inputBrightness != null && inputMidtone != null && inputWhitePoint != null) {
         try {
           int brightness = Integer.parseInt(inputBrightness);
@@ -401,7 +412,7 @@ public class ImageProcessingController {
           String destName = currentImageName.substring(0, currentImageName.lastIndexOf('.'))
               + "_levels_adjusted" + currentImageName.substring(currentImageName.lastIndexOf('.'));
           commandProcessor.levelsAdjust(currentImageName, brightness, midtone, whitePoint, destName,
-              null);
+              splitPercent);
           loadedImage = commandProcessor.getImage(destName);
           currentImageName = destName;
           view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
@@ -472,6 +483,26 @@ public class ImageProcessingController {
     } else {
       view.showErrorDialog("No image selected.");
     }
+  }
+
+  private Integer getSplitPercentage() {
+    String input = JOptionPane.showInputDialog(view, "Enter the split percentage (0-100):",
+        "Split Percentage Input", JOptionPane.PLAIN_MESSAGE);
+    Integer splitPercent = null;
+
+    if (input != null) {
+      try {
+        splitPercent = Integer.parseInt(input);
+        if (splitPercent < 0 || splitPercent > 100) {
+          view.showErrorDialog("Please enter a valid percentage between 0 and 100.");
+          return null;
+        }
+      } catch (NumberFormatException e) {
+        view.showErrorDialog("Invalid input. Please enter a valid number.");
+        return null;
+      }
+    }
+    return splitPercent;
   }
 
   private void promptBeforeExit() {
