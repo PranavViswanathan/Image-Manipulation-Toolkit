@@ -1,5 +1,8 @@
 package com.vanarp.controller;
 
+import com.vanarp.model.PixelInterface;
+import com.vanarp.model.PixelOperation;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -414,6 +417,52 @@ public class CLIView {
     } else {
       System.out.println(
           "Usage: downscale <image-name> <dest-image-name> <new-width> <new-height>");
+    }
+  }
+
+  /**
+   * Handles the application of a mask to an image.
+   *
+   * @param tokens the command tokens containing the source image name, mask image name,
+   *               destination image name, and the operation type.
+   */
+  private void handleApplyMask(String[] tokens) {
+    if (tokens.length == 5) {
+      try {
+        String sourceImageName = tokens[1];
+        String maskImageName = tokens[2];
+        String destImageName = tokens[3];
+        String operationType = tokens[4];
+
+        // Define the pixel operation based on the operation type
+        PixelOperation operation;
+        switch (operationType.toLowerCase()) {
+          case "grayscale":
+            operation = pixel -> {
+              int grayValue = (pixel.getRed() + pixel.getGreen() + pixel.getBlue()) / 3;
+              return new PixelInterface() {
+                @Override
+                public int getRed() { return grayValue; }
+                @Override
+                public int getGreen() { return grayValue; }
+                @Override
+                public int getBlue() { return grayValue; }
+                @Override
+                public String toString() { return "RGB(" + grayValue + ", " + grayValue + ", " + grayValue + ")"; }
+              };
+            };
+            break;
+          default:
+            System.out.println("Unknown operation type: " + operationType);
+            return;
+        }
+        commandProcessor.applyMaskOperation(sourceImageName, maskImageName, destImageName, operation);
+        System.out.println("Mask applied to " + sourceImageName + " and saved as " + destImageName);
+      } catch (IOException e) {
+        System.out.println("Failed to apply mask: " + e.getMessage());
+      }
+    } else {
+      System.out.println("Usage: applyMask <source-image-name> <mask-image-name> <dest-image-name> <operation-type>");
     }
   }
 

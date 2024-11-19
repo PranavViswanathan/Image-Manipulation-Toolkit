@@ -2,6 +2,8 @@ package com.vanarp.controller;
 
 import com.vanarp.model.ImageOperations;
 import com.vanarp.model.ImageRepresentation;
+import com.vanarp.model.PixelOperation;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -243,5 +245,13 @@ public class CommandProcessor implements ImageCommandProcessor {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation downscaledImage = operations.downscaleImage(image, newWidth, newHeight);
     putImage(destName, downscaledImage);
+  }
+
+
+  public void applyMaskOperation(String sourceImageName, String maskImageName, String destImageName, PixelOperation operation) throws IOException {
+    ImageRepresentation sourceImage = getImage(sourceImageName);
+    ImageRepresentation maskImage = getImage(maskImageName);
+    ImageRepresentation resultImage = operations.applyMaskOperation(sourceImage, maskImage, operation);
+    putImage(destImageName, resultImage);
   }
 }

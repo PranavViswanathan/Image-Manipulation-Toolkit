@@ -45,4 +45,8 @@ public interface ImageTransformationEnhanced extends ImageTransformation {
    */
   ImageRepresentation downscale(ImageRepresentation original, int newWidth, int newHeight)
       throws IOException;
+
+  ImageRepresentation applyMaskOperation(ImageRepresentation image,
+                                         ImageRepresentation mask,
+                                         PixelOperation operation) throws IOException;
 }

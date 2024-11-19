@@ -240,4 +240,8 @@ public interface ImageOperations {
   ImageRepresentation downscaleImage(ImageRepresentation image, int newWidth, int newHeight)
       throws IOException;
 
+   ImageRepresentation applyMaskOperation(ImageRepresentation image,
+                                                ImageRepresentation mask,
+                                                PixelOperation operation) throws IOException;
+
 }

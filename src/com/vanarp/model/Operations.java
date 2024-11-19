@@ -329,4 +329,7 @@ public class Operations implements ImageOperations {
     return transformation.downscale(image, newWidth, newHeight);
   }
 
+  public ImageRepresentation applyMaskOperation(ImageRepresentation image, ImageRepresentation mask, PixelOperation pixel) throws IOException {
+    return transformation.applyMaskOperation(image, mask, pixel);
+  }
 }

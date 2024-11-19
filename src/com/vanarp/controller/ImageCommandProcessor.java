@@ -1,6 +1,8 @@
 package com.vanarp.controller;
 
 import com.vanarp.model.ImageRepresentation;
+import com.vanarp.model.PixelOperation;
+
 import java.io.IOException;
 
 /**
@@ -172,4 +174,6 @@ public interface ImageCommandProcessor {
    */
   void downscaleImage(String imageName, String destName, int newWidth, int newHeight)
       throws IOException;
+
+  void applyMaskOperation(String sourceImageName, String maskImageName, String destImageName, PixelOperation operation) throws IOException;
 }
