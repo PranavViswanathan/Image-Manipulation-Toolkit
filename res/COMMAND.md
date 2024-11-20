@@ -163,6 +163,43 @@ Example:
 color-correct koala koala-corrected
 ```
 
+### Masking Operations
+
+Blur with masking
+```
+blur <image-name> <destination-name> mask <mask-Image-name>
+```
+
+Sharpening with masking
+```
+sharpen <image-name> <destination-name> mask <mask-Image-name>
+```
+
+Spepia with masking
+```
+sepia <image-name> <destination-name> mask <mask-Image-name>
+```
+
+Greyscale with masking
+```
+grayscale <image-name> <destination-name> mask <mask-Image-name>
+```
+
+Red componenet with masking
+```
+red-component <image-name> <destination-name> mask <mask-Image-name>
+```
+
+Blue componenet with masking
+```
+blue-component <image-name> <destination-name> mask <mask-Image-name>
+```
+
+Green componenet with masking
+```
+green-component <image-name> <destination-name> mask <mask-Image-name>
+```
+
 ### System Commands
 
 Execute a script file:
