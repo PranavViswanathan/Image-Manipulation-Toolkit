@@ -410,7 +410,8 @@ public class GUIController {
         String previewName = generateDestinationName(filterType + "_preview");
         try {
           // Generate the preview image using the specified filter
-          commandProcessor.applyFilter(currentImageName, previewName, filterType, splitPercent, null);
+          commandProcessor.applyFilter(currentImageName, previewName, filterType, splitPercent,
+              null);
 
           // Show the preview dialog with the appropriate apply action
           showPreview(previewName, "Preview - " + filterType, sliderDialog, (name) -> {
