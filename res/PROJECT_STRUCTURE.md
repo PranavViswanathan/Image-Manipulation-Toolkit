@@ -15,6 +15,8 @@ The `controller` package manages user inputs, command execution, and interaction
 - **UncompressedImageIO**: Specializes in handling PPM (Portable Pixmap) images, which are uncompressed. This class provides methods to read and write PPM files, offering efficient processing for uncompressed data.
 
 - **ScriptProcessor**: Manages the execution of batch scripts that contain sequences of image manipulation commands. It reads each command in a script file, parses it, and processes it in sequence, enabling automated workflows.
+- **ImageCache**: A performance optimization class that caches frequently used or recently modified images to speed up processing times, especially in script executions or when applying multiple effects consecutively.
+
 
 ### Model Package
 
@@ -28,7 +30,6 @@ The `model` package contains the core logic and data structures that drive image
 
 - **ImageTransformation**: Handles transformations like flipping (horizontal and vertical) and resizing. This class provides the mathematical operations required for transforming images on the pixel level.
 
-- **ImageCache**: A performance optimization class that caches frequently used or recently modified images to speed up processing times, especially in script executions or when applying multiple effects consecutively.
 
 ### Viewer Package
 
