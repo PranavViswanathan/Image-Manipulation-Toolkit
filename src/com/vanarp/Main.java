@@ -33,7 +33,13 @@ public class Main {
     ImageCommandProcessor commandProcessor = createCommandProcessor();
     SwingUtilities.invokeLater(() -> {
       GUIView view = new GUIView();
-      new GUIController(commandProcessor, view);
+      Transform transformation = new Transform();
+      Filtering filtering = new Filtering();
+      ImageCompressionFunctionality compress = new ImageCompression();
+
+      Operations operations = new Operations(transformation, filtering, compress);
+      ImageCommandProcessor controllerInterface = new GUIController(operations, commandProcessor,
+          view);
     });
   }
 
@@ -60,8 +66,7 @@ public class Main {
     Filtering filtering = new Filtering();
     ImageCompressionFunctionality compress = new ImageCompression();
 
-    Operations operations = new Operations(transformation, filtering,
-        compress);
+    Operations operations = new Operations(transformation, filtering, compress);
     return new CommandProcessor(operations);
   }
 }

@@ -1,5 +1,6 @@
 package com.vanarp.controller;
 
+import com.vanarp.model.ImageOperations;
 import com.vanarp.model.ImageRepresentation;
 import com.vanarp.viewer.GUIView;
 import java.awt.BorderLayout;
@@ -16,7 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
-public class GUIController{
+public class GUIController extends CommandProcessor {
 
   private final GUIView view;
   private final ImageCommandProcessor commandProcessor;
@@ -24,8 +25,9 @@ public class GUIController{
   private ImageRepresentation loadedImage;
   private String currentImageName;
 
-  public GUIController(ImageCommandProcessor commandProcessor,
+  public GUIController(ImageOperations operations, ImageCommandProcessor commandProcessor,
       GUIView view) {
+    super(operations);
     this.commandProcessor = commandProcessor;
     this.view = view;
     this.imageHistory = new Stack<>();
