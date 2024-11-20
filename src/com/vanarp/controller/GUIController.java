@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
-public class GUIController {
+public class GUIController implements GUIControllerInterface {
 
   private final GUIView view;
   private final ImageCommandProcessor commandProcessor;
@@ -145,7 +145,8 @@ public class GUIController {
     }
   }
 
-  private void loadImage() {
+  @Override
+  public void loadImage() {
     view.showFileChooser((file) -> {
       currentImageName = file.getName();
       try {
@@ -164,7 +165,8 @@ public class GUIController {
     });
   }
 
-  private void saveImage() {
+  @Override
+  public void saveImage() {
     if (loadedImage != null) {
       view.showSaveFileChooser((file) -> {
         try {
@@ -179,7 +181,8 @@ public class GUIController {
     }
   }
 
-  private void undo() {
+  @Override
+  public void undo() {
     if (!imageHistory.isEmpty()) {
       Object[] previousState = imageHistory.pop();
       loadedImage = (ImageRepresentation) previousState[0];
@@ -192,7 +195,8 @@ public class GUIController {
     }
   }
 
-  private void revertToOriginal() {
+  @Override
+  public void revertToOriginal() {
     if (!imageHistory.isEmpty()) {
       Object[] originalState = imageHistory.firstElement();
       loadedImage = (ImageRepresentation) originalState[0];
@@ -211,7 +215,8 @@ public class GUIController {
     }
   }
 
-  private void extractComponent(String componentType) {
+  @Override
+  public void extractComponent(String componentType) {
     saveImageState();
     if (loadedImage != null) {
       String destName = generateDestinationName(componentType);
@@ -230,7 +235,8 @@ public class GUIController {
     }
   }
 
-  private void applyFilter(String filterType) {
+  @Override
+  public void applyFilter(String filterType) {
     saveImageState();
     if (loadedImage != null) {
       String destName = generateDestinationName(filterType);
@@ -249,7 +255,8 @@ public class GUIController {
     }
   }
 
-  private void flipImage(String direction) {
+  @Override
+  public void flipImage(String direction) {
     saveImageState();
     if (loadedImage != null) {
       String destName = generateDestinationName("flipped");
@@ -268,7 +275,8 @@ public class GUIController {
     }
   }
 
-  private void brightenImage() {
+  @Override
+  public void brightenImage() {
     saveImageState();
     if (loadedImage != null) {
       String input = JOptionPane.showInputDialog(view, "Enter the increment value for brightness:",
@@ -292,7 +300,8 @@ public class GUIController {
     }
   }
 
-  private void compressImage(int percentage) {
+  @Override
+  public void compressImage(int percentage) {
     saveImageState();
     if (loadedImage != null) {
       String destName = currentImageName + "_compressed";
@@ -311,7 +320,8 @@ public class GUIController {
     }
   }
 
-  private void colorCorrectImage() {
+  @Override
+  public void colorCorrectImage() {
     saveImageState();
     if (loadedImage != null) {
       String destName = generateDestinationName("color_corrected");
@@ -330,7 +340,8 @@ public class GUIController {
     }
   }
 
-  private void adjustLevels() {
+  @Override
+  public void adjustLevels() {
     saveImageState();
     if (loadedImage != null) {
       String inputBrightness = JOptionPane.showInputDialog(view,
@@ -362,7 +373,8 @@ public class GUIController {
     }
   }
 
-  private void downscaleImage() {
+  @Override
+  public void downscaleImage() {
     saveImageState();
     if (loadedImage != null) {
       String widthInput = JOptionPane.showInputDialog(view, "Enter the new width:",
@@ -389,7 +401,8 @@ public class GUIController {
     }
   }
 
-  private void generateHistogram() {
+  @Override
+  public void generateHistogram() {
     if (loadedImage != null) {
       String destName = generateDestinationName("histogram");
       try {
