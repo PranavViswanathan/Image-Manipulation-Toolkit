@@ -409,18 +409,18 @@ public class ImageProcessingController {
       createSliderDialog(filterType, (splitPercent, sliderDialog) -> {
         String previewName = generateDestinationName(filterType + "_preview");
         try {
-<<<<<<< Updated upstream
           // Generate the preview image using the specified filter
-          commandProcessor.applyFilter(currentImageName, previewName, filterType, splitPercent);
+          commandProcessor.applyFilter(currentImageName, previewName, filterType, splitPercent, null);
 
           // Show the preview dialog with the appropriate apply action
           showPreview(previewName, "Preview - " + filterType, sliderDialog, (name) -> {
-            applyFilter(filterType); // Apply the filter permanently
+            // Apply the filter permanently
+            commandProcessor.applyFilter(currentImageName, name, filterType, splitPercent, null);
+            loadedImage = commandProcessor.getImage(name);
+            currentImageName = name;
+            view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
+            generateHistogram();
           });
-=======
-          commandProcessor.applyFilter(currentImageName, previewName, filterType, splitPercent, null);
-          showPreview(previewName, "Preview - " + filterType, sliderDialog);
->>>>>>> Stashed changes
         } catch (IOException | IllegalArgumentException e) {
           showError("Failed to generate preview: " + e.getMessage());
         }
