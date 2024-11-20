@@ -216,7 +216,7 @@ public class GUIController {
     if (loadedImage != null) {
       String destName = generateDestinationName(componentType);
       try {
-        commandProcessor.extractComponent(currentImageName, destName, componentType);
+        commandProcessor.extractComponent(currentImageName, destName, componentType, null);
         loadedImage = commandProcessor.getImage(destName);
         currentImageName = destName;
         view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
@@ -235,7 +235,7 @@ public class GUIController {
     if (loadedImage != null) {
       String destName = generateDestinationName(filterType);
       try {
-        commandProcessor.applyFilter(currentImageName, destName, filterType, null);
+        commandProcessor.applyFilter(currentImageName, destName, filterType, null, null);
         loadedImage = commandProcessor.getImage(destName);
         currentImageName = destName;
         view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
@@ -410,11 +410,16 @@ public class GUIController {
         String previewName = generateDestinationName(filterType + "_preview");
         try {
           // Generate the preview image using the specified filter
-          commandProcessor.applyFilter(currentImageName, previewName, filterType, splitPercent);
+          commandProcessor.applyFilter(currentImageName, previewName, filterType, splitPercent, null);
 
           // Show the preview dialog with the appropriate apply action
           showPreview(previewName, "Preview - " + filterType, sliderDialog, (name) -> {
-            applyFilter(filterType); // Apply the filter permanently
+            // Apply the filter permanently
+            commandProcessor.applyFilter(currentImageName, name, filterType, splitPercent, null);
+            loadedImage = commandProcessor.getImage(name);
+            currentImageName = name;
+            view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
+            generateHistogram();
           });
         } catch (IOException | IllegalArgumentException e) {
           showError("Failed to generate preview: " + e.getMessage());

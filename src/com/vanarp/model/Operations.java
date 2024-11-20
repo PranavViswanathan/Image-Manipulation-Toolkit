@@ -11,7 +11,7 @@ import java.io.IOException;
 public class Operations implements ImageOperations {
 
   private final ImageTransformationEnhanced transformation;
-  private final FilteringOperationEnhanced filtering;
+  private final ImageMaskingFiltering filtering;
   private final ImageFileIO compressedIO;
   private final ImageFileIO uncompressedIO;
   private final ImageCompressionFunctionality compression;
@@ -27,7 +27,7 @@ public class Operations implements ImageOperations {
    */
 
   public Operations(ImageTransformationEnhanced transformation,
-      FilteringOperationEnhanced filtering,
+      ImageMaskingFiltering filtering,
       ImageFileIO compressedIO,
       ImageFileIO uncompressedIO, ImageCompressionFunctionality compression) {
     this.compressedIO = compressedIO;
@@ -329,7 +329,38 @@ public class Operations implements ImageOperations {
     return transformation.downscale(image, newWidth, newHeight);
   }
 
-  public ImageRepresentation applyMaskOperation(ImageRepresentation image, ImageRepresentation mask, PixelOperation pixel) throws IOException {
-    return transformation.applyMaskOperation(image, mask, pixel);
+  @Override
+  public ImageRepresentation applySharpenWithMask(ImageRepresentation sourceImageName, ImageRepresentation maskImageName) throws IOException {
+    return filtering.applySharpenWithMask(sourceImageName, maskImageName);
+  }
+
+  @Override
+  public ImageRepresentation applySepiaWithMask(ImageRepresentation sourceImageName, ImageRepresentation maskImageName) throws IOException {
+    return filtering.applySepiaWithMask(sourceImageName, maskImageName);
+  }
+
+  @Override
+  public ImageRepresentation applyGreyscaleWithMask(ImageRepresentation sourceImageName, ImageRepresentation maskImageName) throws IOException {
+    return filtering.applyGreyscaleWithMask(sourceImageName, maskImageName);
+  }
+
+  @Override
+  public ImageRepresentation applyBlurWithMask(ImageRepresentation sourceImageName, ImageRepresentation maskImageName) throws IOException {
+    return filtering.applyBlurWithMask(sourceImageName, maskImageName);
+  }
+
+  @Override
+  public ImageRepresentation blueComponentWithMask(ImageRepresentation sourceImageName, ImageRepresentation maskImageName) throws IOException {
+    return filtering.blueComponentWithMask(sourceImageName, maskImageName);
+  }
+
+  @Override
+  public ImageRepresentation redComponentWithMask(ImageRepresentation sourceImageName, ImageRepresentation maskImageName) throws IOException {
+    return filtering.redComponentWithMask(sourceImageName, maskImageName);
+  }
+
+  @Override
+  public ImageRepresentation greenComponentWithMask(ImageRepresentation sourceImageName, ImageRepresentation maskImageName) throws IOException {
+    return filtering.greenComponentWithMask(sourceImageName, maskImageName);
   }
 }

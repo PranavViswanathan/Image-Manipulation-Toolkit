@@ -46,7 +46,7 @@ public interface ImageCommandProcessor {
    * @param componentType the type of component to extract (e.g., "red", "green", "blue")
    * @throws IOException if an error occurs during the extraction operation
    */
-  void extractComponent(String imageName, String destName, String componentType) throws IOException;
+  void extractComponent(String imageName, String destName, String componentType, String maskName) throws IOException;
 
   /**
    * Applies a filter to the specified image and stores the result in the cache.
@@ -57,8 +57,7 @@ public interface ImageCommandProcessor {
    * @param splitPercent optional parameter for split view (0-100)
    * @throws IOException if an error occurs during the filter application
    */
-  void applyFilter(String imageName, String destName, String filterType, Integer splitPercent)
-      throws IOException;
+  public void applyFilter(String imageName, String destName, String filterType, Integer splitPercent, String maskImageName) throws IOException;
 
   /**
    * Flips the specified image in the given direction and stores the result in the cache.
@@ -174,6 +173,4 @@ public interface ImageCommandProcessor {
    */
   void downscaleImage(String imageName, String destName, int newWidth, int newHeight)
       throws IOException;
-
-  void applyMaskOperation(String sourceImageName, String maskImageName, String destImageName, PixelOperation operation) throws IOException;
 }

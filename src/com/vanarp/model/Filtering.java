@@ -310,4 +310,83 @@ public class Filtering extends AbstractFilteringOperations {
   private boolean isMeaningfulPeak(int value) {
     return value > 0;
   }
+
+  @Override
+  public ImageRepresentation applyBlurWithMask(ImageRepresentation sourceImage, ImageRepresentation maskImage) throws IOException {
+    Transform transform = new Transform();
+    ImageRepresentation bluredImage = transform.blur(sourceImage);
+    return blendWithMask(sourceImage, bluredImage, maskImage);
+  }
+
+  public ImageRepresentation blueComponentWithMask(ImageRepresentation sourceImage, ImageRepresentation maskImage) throws IOException {
+    Filtering filter = new Filtering();
+    ImageRepresentation blue = filter.blueComponent(sourceImage);
+    return blendWithMask(sourceImage, blue, maskImage);
+  }
+
+  public ImageRepresentation redComponentWithMask(ImageRepresentation sourceImage, ImageRepresentation maskImage) throws IOException {
+    Filtering filter = new Filtering();
+    ImageRepresentation red = filter.blueComponent(sourceImage);
+    return blendWithMask(sourceImage, red, maskImage);
+  }
+
+  public ImageRepresentation greenComponentWithMask(ImageRepresentation sourceImage, ImageRepresentation maskImage) throws IOException {
+    Filtering filter = new Filtering();
+    ImageRepresentation green = filter.greenComponent(sourceImage);
+    return blendWithMask(sourceImage, green, maskImage);
+  }
+  @Override
+  public ImageRepresentation applySharpenWithMask(ImageRepresentation sourceImage, ImageRepresentation maskImage) throws IOException {
+    Transform transform = new Transform();
+    ImageRepresentation sharpenedImage = transform.sharpen(sourceImage);
+    return blendWithMask(sourceImage, sharpenedImage, maskImage);
+  }
+
+  @Override
+  public ImageRepresentation applySepiaWithMask(ImageRepresentation sourceImage, ImageRepresentation maskImage) throws IOException {
+    Filtering filtering = new Filtering();
+    ImageRepresentation sepiaImage = filtering.applySepia(sourceImage);
+    return blendWithMask(sourceImage, sepiaImage, maskImage);
+  }
+
+  @Override
+  public ImageRepresentation applyGreyscaleWithMask(ImageRepresentation sourceImage, ImageRepresentation maskImage) throws IOException {
+    ImageRepresentation greyscaleImage = processImage(sourceImage, pixel -> {
+      int grey = (int) (0.2126 * pixel.getRed() + 0.7152 * pixel.getGreen() + 0.0722 * pixel.getBlue());
+      return new Pixel(grey, grey, grey);
+    });
+    return blendWithMask(sourceImage, greyscaleImage, maskImage);
+  }
+
+  /**
+   * Blends two images based on a mask.
+   *
+   * @param originalImage The original image.
+   * @param processedImage The processed image (sharpened, sepia, or greyscale).
+   * @param maskImage The mask image.
+   * @return A new {@link ImageRepresentation} that is the result of blending.
+   * @throws IOException if an error occurs during processing.
+   */
+  private ImageRepresentation blendWithMask(ImageRepresentation originalImage, ImageRepresentation processedImage, ImageRepresentation maskImage) throws IOException {
+    if (originalImage.getWidth() != maskImage.getWidth() || originalImage.getHeight() != maskImage.getHeight()) {
+      throw new IllegalArgumentException("Original image and mask image must have the same dimensions.");
+    }
+
+    ImageRepresentation resultImage = new Image(originalImage.getWidth(), originalImage.getHeight());
+
+    for (int y = 0; y < resultImage.getHeight(); y++) {
+      for (int x = 0; x < resultImage.getWidth(); x++) {
+        PixelInterface originalPixel = originalImage.getPixel(x, y);
+        PixelInterface processedPixel = processedImage.getPixel(x, y);
+        PixelInterface maskPixel = maskImage.getPixel(x, y);
+        int maskValue = maskPixel.getRed();
+        int blendedRed = (originalPixel.getRed() * (255 - maskValue) + processedPixel.getRed() * maskValue) / 255;
+        int blendedGreen = (originalPixel.getGreen() * (255 - maskValue) + processedPixel.getGreen() * maskValue) / 255;
+        int blendedBlue = (originalPixel.getBlue() * (255 - maskValue) + processedPixel.getBlue() * maskValue) / 255;
+
+        resultImage.setPixel(x, y, new Pixel(blendedRed, blendedGreen, blendedBlue));
+      }
+    }
+    return resultImage;
+  }
 }
