@@ -1,4 +1,4 @@
-# Imageinator: Command-Line Image Processing Tool
+f# Imageinator: Command-Line Image Processing Tool
 
 *Imageinator* is a command-line image processing tool that allows users to load, manipulate, and
 save images. It supports various operations such as splitting and combining RGB channels, applying
@@ -426,6 +426,17 @@ to [Project Structure](PROJECT_STRUCTURE.md)
 - **Description**: Generates a split-view version of the image with the specified operation applied
   to one part, while keeping the remaining part unaltered. This allows for side-by-side comparison
   of the effect.
+
+### 6. GUI
+- A GUI was designed to allow for greater ease of access and use. The GUI allows you to preview
+and perform operations on images before saving them.
+
+- the classes `GUIView` and `GUIController` we made.
+
+### 7. Image Masking for Partial Image Manipulation.
+- Image filtering operations (blur, sharpen, greyscale, sepia, component visualizations) now support
+image masking operations which allow you to perform operations on a specific part of the image.
+
 
 ### 1. `ImageCompressor` Class
 
