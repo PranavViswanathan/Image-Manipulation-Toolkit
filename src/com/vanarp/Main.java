@@ -3,7 +3,6 @@ package com.vanarp;
 import com.vanarp.controller.CLIView;
 import com.vanarp.controller.CommandProcessor;
 import com.vanarp.controller.GUIController;
-import com.vanarp.controller.GUIControllerInterface;
 import com.vanarp.controller.ImageCommandProcessor;
 import com.vanarp.model.Filtering;
 import com.vanarp.model.ImageCompression;
@@ -34,7 +33,13 @@ public class Main {
     ImageCommandProcessor commandProcessor = createCommandProcessor();
     SwingUtilities.invokeLater(() -> {
       GUIView view = new GUIView();
-      GUIControllerInterface controllerInterface = new GUIController(commandProcessor, view);
+      Transform transformation = new Transform();
+      Filtering filtering = new Filtering();
+      ImageCompressionFunctionality compress = new ImageCompression();
+
+      Operations operations = new Operations(transformation, filtering, compress);
+      ImageCommandProcessor controllerInterface = new GUIController(operations, commandProcessor,
+          view);
     });
   }
 
@@ -61,8 +66,7 @@ public class Main {
     Filtering filtering = new Filtering();
     ImageCompressionFunctionality compress = new ImageCompression();
 
-    Operations operations = new Operations(transformation, filtering,
-        compress);
+    Operations operations = new Operations(transformation, filtering, compress);
     return new CommandProcessor(operations);
   }
 }

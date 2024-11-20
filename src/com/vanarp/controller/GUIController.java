@@ -1,5 +1,6 @@
 package com.vanarp.controller;
 
+import com.vanarp.model.ImageOperations;
 import com.vanarp.model.ImageRepresentation;
 import com.vanarp.viewer.GUIView;
 import java.awt.BorderLayout;
@@ -16,7 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
-public class GUIController implements GUIControllerInterface {
+public class GUIController extends CommandProcessor {
 
   private final GUIView view;
   private final ImageCommandProcessor commandProcessor;
@@ -24,8 +25,9 @@ public class GUIController implements GUIControllerInterface {
   private ImageRepresentation loadedImage;
   private String currentImageName;
 
-  public GUIController(ImageCommandProcessor commandProcessor,
+  public GUIController(ImageOperations operations, ImageCommandProcessor commandProcessor,
       GUIView view) {
+    super(operations);
     this.commandProcessor = commandProcessor;
     this.view = view;
     this.imageHistory = new Stack<>();
@@ -145,8 +147,7 @@ public class GUIController implements GUIControllerInterface {
     }
   }
 
-  @Override
-  public void loadImage() {
+  private void loadImage() {
     view.showFileChooser((file) -> {
       currentImageName = file.getName();
       try {
@@ -165,8 +166,7 @@ public class GUIController implements GUIControllerInterface {
     });
   }
 
-  @Override
-  public void saveImage() {
+  private void saveImage() {
     if (loadedImage != null) {
       view.showSaveFileChooser((file) -> {
         try {
@@ -181,8 +181,7 @@ public class GUIController implements GUIControllerInterface {
     }
   }
 
-  @Override
-  public void undo() {
+  private void undo() {
     if (!imageHistory.isEmpty()) {
       Object[] previousState = imageHistory.pop();
       loadedImage = (ImageRepresentation) previousState[0];
@@ -195,8 +194,7 @@ public class GUIController implements GUIControllerInterface {
     }
   }
 
-  @Override
-  public void revertToOriginal() {
+  private void revertToOriginal() {
     if (!imageHistory.isEmpty()) {
       Object[] originalState = imageHistory.firstElement();
       loadedImage = (ImageRepresentation) originalState[0];
@@ -215,8 +213,7 @@ public class GUIController implements GUIControllerInterface {
     }
   }
 
-  @Override
-  public void extractComponent(String componentType) {
+  private void extractComponent(String componentType) {
     saveImageState();
     if (loadedImage != null) {
       String destName = generateDestinationName(componentType);
@@ -235,8 +232,7 @@ public class GUIController implements GUIControllerInterface {
     }
   }
 
-  @Override
-  public void applyFilter(String filterType) {
+  private void applyFilter(String filterType) {
     saveImageState();
     if (loadedImage != null) {
       String destName = generateDestinationName(filterType);
@@ -255,8 +251,7 @@ public class GUIController implements GUIControllerInterface {
     }
   }
 
-  @Override
-  public void flipImage(String direction) {
+  private void flipImage(String direction) {
     saveImageState();
     if (loadedImage != null) {
       String destName = generateDestinationName("flipped");
@@ -275,8 +270,7 @@ public class GUIController implements GUIControllerInterface {
     }
   }
 
-  @Override
-  public void brightenImage() {
+  private void brightenImage() {
     saveImageState();
     if (loadedImage != null) {
       String input = JOptionPane.showInputDialog(view, "Enter the increment value for brightness:",
@@ -300,8 +294,7 @@ public class GUIController implements GUIControllerInterface {
     }
   }
 
-  @Override
-  public void compressImage(int percentage) {
+  private void compressImage(int percentage) {
     saveImageState();
     if (loadedImage != null) {
       String destName = currentImageName + "_compressed";
@@ -320,8 +313,7 @@ public class GUIController implements GUIControllerInterface {
     }
   }
 
-  @Override
-  public void colorCorrectImage() {
+  private void colorCorrectImage() {
     saveImageState();
     if (loadedImage != null) {
       String destName = generateDestinationName("color_corrected");
@@ -340,8 +332,7 @@ public class GUIController implements GUIControllerInterface {
     }
   }
 
-  @Override
-  public void adjustLevels() {
+  private void adjustLevels() {
     saveImageState();
     if (loadedImage != null) {
       String inputBrightness = JOptionPane.showInputDialog(view,
@@ -373,8 +364,7 @@ public class GUIController implements GUIControllerInterface {
     }
   }
 
-  @Override
-  public void downscaleImage() {
+  private void downscaleImage() {
     saveImageState();
     if (loadedImage != null) {
       String widthInput = JOptionPane.showInputDialog(view, "Enter the new width:",
@@ -401,8 +391,7 @@ public class GUIController implements GUIControllerInterface {
     }
   }
 
-  @Override
-  public void generateHistogram() {
+  private void generateHistogram() {
     if (loadedImage != null) {
       String destName = generateDestinationName("histogram");
       try {

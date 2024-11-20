@@ -3,8 +3,13 @@ package com.vanarp.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import com.vanarp.model.Filtering;
+import com.vanarp.model.ImageCompression;
+import com.vanarp.model.ImageCompressionFunctionality;
 import com.vanarp.model.ImageRepresentation;
+import com.vanarp.model.Operations;
 import com.vanarp.model.PixelInterface;
+import com.vanarp.model.Transform;
 import com.vanarp.viewer.GUIView;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -192,7 +197,13 @@ public class GUIControllerTest {
   public void setUp() {
     view = new TestView();
     commandProcessor = new TestCommandProcessor();
-    GUIController controller = new GUIController(commandProcessor, view);
+    Transform transformation = new Transform();
+    Filtering filtering = new Filtering();
+    ImageCompressionFunctionality compress = new ImageCompression();
+
+    Operations operations = new Operations(transformation, filtering,
+        compress);
+    GUIController controller = new GUIController(operations, commandProcessor, view);
   }
 
   @Test

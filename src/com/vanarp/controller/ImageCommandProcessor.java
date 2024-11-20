@@ -57,7 +57,7 @@ public interface ImageCommandProcessor {
    * @param splitPercent optional parameter for split view (0-100)
    * @throws IOException if an error occurs during the filter application
    */
-  public void applyFilter(String imageName, String destName, String filterType, Integer splitPercent, String maskImageName) throws IOException;
+  void applyFilter(String imageName, String destName, String filterType, Integer splitPercent, String maskImageName) throws IOException;
 
   /**
    * Flips the specified image in the given direction and stores the result in the cache.
