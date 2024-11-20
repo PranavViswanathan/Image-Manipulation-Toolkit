@@ -1,5 +1,6 @@
 package com.vanarp.controller;
 
+import com.vanarp.model.Image;
 import com.vanarp.model.ImageOperations;
 import com.vanarp.model.ImageRepresentation;
 import java.io.IOException;
@@ -14,6 +15,8 @@ public class CommandProcessor implements ImageCommandProcessor {
 
   final Map<String, ImageRepresentation> imageCache;
   private final ImageOperations operations;
+  private CompressedImageIO compressedImageIO;
+  private UncompressedImageIO uncompressedImageIO;
 
   /**
    * Constructs a CommandProcessor with the specified ImageOperations.
@@ -23,18 +26,35 @@ public class CommandProcessor implements ImageCommandProcessor {
   public CommandProcessor(ImageOperations operations) {
     this.operations = operations;
     this.imageCache = new HashMap<>();
+    this.compressedImageIO = new CompressedImageIO();
+    this.uncompressedImageIO = new UncompressedImageIO();
   }
 
   @Override
   public void loadImage(String filePath, String imageName) throws IOException {
-    ImageRepresentation image = operations.loadImage(filePath);
-    imageCache.put(imageName, image);
+    if (filePath.endsWith(".jpg") || filePath.endsWith(".png")) {
+      ImageRepresentation img = compressedImageIO.loadImage(filePath);
+      imageCache.put(imageName, img);
+    } else if (filePath.endsWith(".ppm")) {
+      ImageRepresentation img = uncompressedImageIO.loadImage(filePath);
+      imageCache.put(imageName, img);
+    } else {
+      throw new IOException("Unsupported file format");
+    }
   }
 
   @Override
   public void saveImage(String imageName, String filePath, String format) throws IOException {
     ImageRepresentation image = getImage(imageName);
-    operations.saveImage(image, filePath, format);
+    format = format.toLowerCase();
+    if (format.equals("jpg") || format.equals("png")) {
+      compressedImageIO.saveImage(image, filePath, format);
+    } else if (format.equals("ppm")) {
+      uncompressedImageIO.saveImage(image, filePath, format);
+    } else {
+      System.out.println("Format provided: " + format);
+      throw new IOException("Unsupported format");
+    }
   }
 
   public ImageRepresentation getImage(String imageName) {
