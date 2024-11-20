@@ -102,27 +102,32 @@ public class CLIView {
   }
 
   private void handleComponent(String[] tokens, String component) {
-    if (tokens.length >= 3 && tokens.length <= 4) {
-      String imageName = tokens[1];
-      String destImageName = tokens[2];
-      String maskImageName = tokens.length == 4 ? tokens[3] : null;
+    if (tokens.length == 4) { // Expecting exactly 4 tokens
+      String imageName = tokens[1]; // First token (index 1) is the image name
+      String maskImageName = tokens[2]; // Second token (index 2) is the mask image name
+      String destImageName = tokens[3]; // Third token (index 3) is the destination image name
 
       try {
-        if (maskImageName != null) {
-          commandProcessor.extractComponent(imageName, destImageName, component, maskImageName);
-          System.out.println(component.substring(0, 1).toUpperCase() + component.substring(1)
-              + " component applied to the image with mask.");
-        } else {
-          commandProcessor.extractComponent(imageName, destImageName, component, null);
-          System.out.println(component.substring(0, 1).toUpperCase() + component.substring(1)
-              + " component applied to the image.");
-        }
+        commandProcessor.extractComponent(imageName, destImageName, component, maskImageName);
+        System.out.println(component.substring(0, 1).toUpperCase() + component.substring(1)
+            + " component applied to the image with mask.");
+      } catch (IOException e) {
+        handleException("handleComponent", e);
+      }
+    } else if (tokens.length == 3) { // Handle case with no mask image
+      String imageName = tokens[1]; // First token is the image name
+      String destImageName = tokens[2]; // Second token is the destination image name
+
+      try {
+        commandProcessor.extractComponent(imageName, destImageName, component, null);
+        System.out.println(component.substring(0, 1).toUpperCase() + component.substring(1)
+            + " component applied to the image.");
       } catch (IOException e) {
         handleException("handleComponent", e);
       }
     } else {
       handleException("handleComponent", new IllegalArgumentException(
-          "Usage: " + component + "-component <image-name> <dest-image-name> [<mask-image-name>]"));
+          "Usage: " + component + "-component <image-name> <mask-image-name> <dest-image-name>"));
     }
   }
 

@@ -81,7 +81,7 @@ public class Filtering extends AbstractFilteringOperations {
   public ImageRepresentation lumaComponent(ImageRepresentation image) throws IOException {
     return processImage(image, pixel -> {
       int luma = (int) (0.2126 * pixel.getRed() + 0.7152 * pixel.getGreen()
-              + 0.0722 * pixel.getBlue());
+          + 0.0722 * pixel.getBlue());
       return new Pixel(luma, luma, luma);
     });
   }
@@ -133,8 +133,8 @@ public class Filtering extends AbstractFilteringOperations {
    *                                  channel is not grayscale
    */
   public ImageRepresentation rgbCombine(ImageRepresentation redImage,
-                                        ImageRepresentation greenImage,
-                                        ImageRepresentation blueImage) throws IOException {
+      ImageRepresentation greenImage,
+      ImageRepresentation blueImage) throws IOException {
     if (redImage == null || greenImage == null || blueImage == null) {
       throw new IOException("One or more input images are null.");
     }
@@ -143,9 +143,9 @@ public class Filtering extends AbstractFilteringOperations {
     validateGrayscale(blueImage);
 
     if (redImage.getWidth() != greenImage.getWidth()
-            || redImage.getHeight() != greenImage.getHeight()
-            || redImage.getWidth() != blueImage.getWidth()
-            || redImage.getHeight() != blueImage.getHeight()) {
+        || redImage.getHeight() != greenImage.getHeight()
+        || redImage.getWidth() != blueImage.getWidth()
+        || redImage.getHeight() != blueImage.getHeight()) {
       throw new IllegalArgumentException("All images must have the same dimensions.");
     }
 
@@ -159,13 +159,13 @@ public class Filtering extends AbstractFilteringOperations {
 
         if (redPixel == null || greenPixel == null || bluePixel == null) {
           throw new IllegalArgumentException(
-                  "One of the pixels is null at coordinates (" + x + ", " + y + ").");
+              "One of the pixels is null at coordinates (" + x + ", " + y + ").");
         }
 
         result.setPixel(x, y, new Pixel(
-                redPixel.getRed(),
-                greenPixel.getGreen(),
-                bluePixel.getBlue()
+            redPixel.getRed(),
+            greenPixel.getGreen(),
+            bluePixel.getBlue()
         ));
       }
     }
@@ -207,14 +207,14 @@ public class Filtering extends AbstractFilteringOperations {
    * @throws IOException if an error occurs during image processing
    */
   public ImageRepresentation levelsAdjust(ImageRepresentation image, int shadow, int mid,
-                                          int highlight) throws IOException {
+      int highlight) throws IOException {
     if (shadow < 0 || shadow > 255 || mid < 0 || mid > 255 || highlight < 0 || highlight > 255) {
       throw new IllegalArgumentException(
-              "Shadow, mid, and highlight values must be between 0 and 255.");
+          "Shadow, mid, and highlight values must be between 0 and 255.");
     }
     if (shadow >= mid || mid >= highlight) {
       throw new IllegalArgumentException(
-              "Values must be in ascending order: shadow < mid < highlight.");
+          "Values must be in ascending order: shadow < mid < highlight.");
     }
     this.b = shadow;
     this.m = mid;
@@ -230,26 +230,26 @@ public class Filtering extends AbstractFilteringOperations {
 
   private void calculateQuadraticCoefficients() {
     double[][] matrix = {
-            {b * b, b, 1},
-            {m * m, m, 1},
-            {w * w, w, 1}
+        {b * b, b, 1},
+        {m * m, m, 1},
+        {w * w, w, 1}
     };
     double[] values = {0, 128, 255};
     double det = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
-            - matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
-            + matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+        - matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
+        + matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
 
     a = ((values[0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]))
-            - (matrix[0][1] * (values[1] * matrix[2][2] - matrix[1][2] * values[2]))
-            + (matrix[0][2] * (values[1] * matrix[2][1] - matrix[1][1] * values[2]))) / det;
+        - (matrix[0][1] * (values[1] * matrix[2][2] - matrix[1][2] * values[2]))
+        + (matrix[0][2] * (values[1] * matrix[2][1] - matrix[1][1] * values[2]))) / det;
 
     b2 = ((matrix[0][0] * (values[1] * matrix[2][2] - matrix[1][2] * values[2]))
-            - (values[0] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0]))
-            + (matrix[0][2] * (matrix[1][0] * values[2] - values[1] * matrix[2][0]))) / det;
+        - (values[0] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0]))
+        + (matrix[0][2] * (matrix[1][0] * values[2] - values[1] * matrix[2][0]))) / det;
 
     c = ((matrix[0][0] * (matrix[1][1] * values[2] - values[1] * matrix[2][1]))
-            - (matrix[0][1] * (matrix[1][0] * values[2] - values[1] * matrix[2][0]))
-            + (values[0] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]))) / det;
+        - (matrix[0][1] * (matrix[1][0] * values[2] - values[1] * matrix[2][0]))
+        + (values[0] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]))) / det;
   }
 
   private int adjustChannel(int value) {
@@ -313,28 +313,28 @@ public class Filtering extends AbstractFilteringOperations {
 
   @Override
   public ImageRepresentation applyBlurWithMask(ImageRepresentation sourceImage,
-                                               ImageRepresentation maskImage) throws IOException {
+      ImageRepresentation maskImage) throws IOException {
     Transform transform = new Transform();
     ImageRepresentation bluredImage = transform.blur(sourceImage);
     return blendWithMask(sourceImage, bluredImage, maskImage);
   }
 
   public ImageRepresentation blueComponentWithMask(ImageRepresentation sourceImage,
-                                                   ImageRepresentation maskImage) throws IOException {
+      ImageRepresentation maskImage) throws IOException {
     Filtering filter = new Filtering();
     ImageRepresentation blue = filter.blueComponent(sourceImage);
     return blendWithMask(sourceImage, blue, maskImage);
   }
 
   public ImageRepresentation redComponentWithMask(ImageRepresentation sourceImage,
-                                                  ImageRepresentation maskImage) throws IOException {
+      ImageRepresentation maskImage) throws IOException {
     Filtering filter = new Filtering();
     ImageRepresentation red = filter.blueComponent(sourceImage);
     return blendWithMask(sourceImage, red, maskImage);
   }
 
   public ImageRepresentation greenComponentWithMask(ImageRepresentation sourceImage,
-                                                    ImageRepresentation maskImage) throws IOException {
+      ImageRepresentation maskImage) throws IOException {
     Filtering filter = new Filtering();
     ImageRepresentation green = filter.greenComponent(sourceImage);
     return blendWithMask(sourceImage, green, maskImage);
@@ -342,7 +342,7 @@ public class Filtering extends AbstractFilteringOperations {
 
   @Override
   public ImageRepresentation applySharpenWithMask(ImageRepresentation sourceImage,
-                                                  ImageRepresentation maskImage) throws IOException {
+      ImageRepresentation maskImage) throws IOException {
     Transform transform = new Transform();
     ImageRepresentation sharpenedImage = transform.sharpen(sourceImage);
     return blendWithMask(sourceImage, sharpenedImage, maskImage);
@@ -350,7 +350,7 @@ public class Filtering extends AbstractFilteringOperations {
 
   @Override
   public ImageRepresentation applySepiaWithMask(ImageRepresentation sourceImage,
-                                                ImageRepresentation maskImage) throws IOException {
+      ImageRepresentation maskImage) throws IOException {
     Filtering filtering = new Filtering();
     ImageRepresentation sepiaImage = filtering.applySepia(sourceImage);
     return blendWithMask(sourceImage, sepiaImage, maskImage);
@@ -358,13 +358,37 @@ public class Filtering extends AbstractFilteringOperations {
 
   @Override
   public ImageRepresentation applyGreyscaleWithMask(ImageRepresentation sourceImage,
-                                                    ImageRepresentation maskImage) throws IOException {
+      ImageRepresentation maskImage) throws IOException {
     ImageRepresentation greyscaleImage = processImage(sourceImage, pixel -> {
       int grey = (int) (0.2126 * pixel.getRed() + 0.7152 * pixel.getGreen()
-              + 0.0722 * pixel.getBlue());
+          + 0.0722 * pixel.getBlue());
       return new Pixel(grey, grey, grey);
     });
     return blendWithMask(sourceImage, greyscaleImage, maskImage);
+  }
+
+  @Override
+  public ImageRepresentation valueComponentWithMask(ImageRepresentation sourceImage,
+      ImageRepresentation maskImage) throws IOException {
+    Filtering filter = new Filtering();
+    ImageRepresentation green = filter.valueComponent(sourceImage);
+    return blendWithMask(sourceImage, green, maskImage);
+  }
+
+  @Override
+  public ImageRepresentation lumaComponentWithMask(ImageRepresentation sourceImage,
+      ImageRepresentation maskImage) throws IOException {
+    Filtering filter = new Filtering();
+    ImageRepresentation green = filter.lumaComponent(sourceImage);
+    return blendWithMask(sourceImage, green, maskImage);
+  }
+
+  @Override
+  public ImageRepresentation intensityComponentWithMask(ImageRepresentation sourceImage,
+      ImageRepresentation maskImage) throws IOException {
+    Filtering filter = new Filtering();
+    ImageRepresentation green = filter.intensityComponent(sourceImage);
+    return blendWithMask(sourceImage, green, maskImage);
   }
 
   /**
@@ -377,16 +401,16 @@ public class Filtering extends AbstractFilteringOperations {
    * @throws IOException if an error occurs during processing.
    */
   private ImageRepresentation blendWithMask(ImageRepresentation originalImage,
-                                            ImageRepresentation processedImage,
-                                            ImageRepresentation maskImage) throws IOException {
+      ImageRepresentation processedImage,
+      ImageRepresentation maskImage) throws IOException {
     if (originalImage.getWidth() != maskImage.getWidth()
-            || originalImage.getHeight() != maskImage.getHeight()) {
+        || originalImage.getHeight() != maskImage.getHeight()) {
       throw new IllegalArgumentException("Original image and mask image "
-              + "must have the same dimensions.");
+          + "must have the same dimensions.");
     }
 
     ImageRepresentation resultImage = new Image(originalImage.getWidth()
-            , originalImage.getHeight());
+        , originalImage.getHeight());
 
     for (int y = 0; y < resultImage.getHeight(); y++) {
       for (int x = 0; x < resultImage.getWidth(); x++) {
@@ -399,14 +423,14 @@ public class Filtering extends AbstractFilteringOperations {
 
         if (maskValue == 0) {
           blendedPixel = new Pixel(processedPixel.getRed(), processedPixel.getGreen()
-                  , processedPixel.getBlue());
+              , processedPixel.getBlue());
         } else {
           int blendedRed = (originalPixel.getRed() * (255 - maskValue)
-                  + processedPixel.getRed() * maskValue) / 255;
+              + processedPixel.getRed() * maskValue) / 255;
           int blendedGreen = (originalPixel.getGreen() * (255 - maskValue)
-                  + processedPixel.getGreen() * maskValue) / 255;
+              + processedPixel.getGreen() * maskValue) / 255;
           int blendedBlue = (originalPixel.getBlue() * (255 - maskValue)
-                  + processedPixel.getBlue() * maskValue) / 255;
+              + processedPixel.getBlue() * maskValue) / 255;
 
           blendedPixel = new Pixel(blendedRed, blendedGreen, blendedBlue);
         }

@@ -877,8 +877,6 @@ public class OperationsTest {
         "test/com/vanarp/model/TestResources/Source/bird-masked.png");
     ImageRepresentation blueComponentWithMask = operations.blueComponentWithMask(testImage,
         maskImage);
-    compressedImageIO.saveImage(blueComponentWithMask,
-        outputDirectory + "bird-blueComponent-mask.png", "png");
     ImageRepresentation expectedImage = compressedImageIO.loadImage(
         outputDirectory + "bird-blueComponent-mask.png");
     assertEquals(expectedImage, blueComponentWithMask);
@@ -892,8 +890,6 @@ public class OperationsTest {
         "test/com/vanarp/model/TestResources/Source/bird-masked.png");
     ImageRepresentation redComponentWithMask = operations.redComponentWithMask(testImage,
         maskImage);
-    compressedImageIO.saveImage(redComponentWithMask,
-        outputDirectory + "bird-redComponent-mask.png", "png");
     ImageRepresentation expectedImage = compressedImageIO.loadImage(
         outputDirectory + "bird-redComponent-mask.png");
     assertEquals(expectedImage, redComponentWithMask);
@@ -907,11 +903,48 @@ public class OperationsTest {
         "test/com/vanarp/model/TestResources/Source/bird-masked.png");
     ImageRepresentation greenComponentWithMask = operations.greenComponentWithMask(testImage,
         maskImage);
-    compressedImageIO.saveImage(greenComponentWithMask,
-        outputDirectory + "bird-greenComponent-mask.png", "png");
     ImageRepresentation expectedImage = compressedImageIO.loadImage(
         outputDirectory + "bird-greenComponent-mask.png");
     assertEquals(expectedImage, greenComponentWithMask);
   }
 
+  @Test
+  public void testMaskingValueComponent() throws IOException {
+    ImageRepresentation testImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation maskImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png");
+    ImageRepresentation valueComponentWithMask = operations.valueComponentWithMask(testImage,
+        maskImage);
+    ImageRepresentation expectedImage = compressedImageIO.loadImage(
+        outputDirectory + "bird-valueComponent-mask.png");
+    assertEquals(expectedImage, valueComponentWithMask);
+  }
+
+  @Test
+  public void testMaskingLumaComponent() throws IOException {
+    ImageRepresentation testImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation maskImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png");
+    ImageRepresentation lumaComponentWithMask = operations.lumaComponentWithMask(testImage,
+        maskImage);
+    ImageRepresentation expectedImage = compressedImageIO.loadImage(
+        outputDirectory + "bird-lumaComponent-mask.png");
+    assertEquals(expectedImage, lumaComponentWithMask);
+  }
+
+  @Test
+  public void testMaskingIntensityComponent() throws IOException {
+    ImageRepresentation testImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation maskImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png");
+    ImageRepresentation intensityComponentWithMask = operations.intensityComponentWithMask(
+        testImage,
+        maskImage);
+    ImageRepresentation expectedImage = compressedImageIO.loadImage(
+        outputDirectory + "bird-intensityComponent-mask.png");
+    assertEquals(expectedImage, intensityComponentWithMask);
+  }
 }
