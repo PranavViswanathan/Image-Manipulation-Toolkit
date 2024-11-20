@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -40,9 +41,17 @@ public class ImageProcessingView extends JFrame {
   private JButton downscaleButton;
   private JButton compressButton;
 
+  // Changed radio buttons to checkboxes
+  private JCheckBox blurSplitCheckBox;
+  private JCheckBox sharpenSplitCheckBox;
+  private JCheckBox sepiaSplitCheckBox;
+  private JCheckBox greyscaleSplitCheckBox;
+  private JCheckBox colorCorrectSplitCheckBox; // New checkbox
+  private JCheckBox adjustLevelsSplitCheckBox; // New checkbox
+
   public ImageProcessingView() {
     setTitle("Image Processing Application");
-    setSize(800, 600);
+    setSize(1075, 600);
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     setLayout(new BorderLayout());
 
@@ -52,7 +61,7 @@ public class ImageProcessingView extends JFrame {
     imageLabel = new JLabel();
     imageLabel.setHorizontalAlignment(JLabel.CENTER);
     JScrollPane imageScrollPane = new JScrollPane(imageLabel);
-    imageScrollPane.setPreferredSize(new Dimension(100, 50)); // Set preferred size
+    imageScrollPane.setPreferredSize(new Dimension(300, 50)); // Set preferred size
     imagePanel.add(imageScrollPane, BorderLayout.CENTER);
 
     JPanel histogramPanel = new JPanel();
@@ -60,8 +69,8 @@ public class ImageProcessingView extends JFrame {
     histogramLabel = new JLabel();
     histogramLabel.setHorizontalAlignment(JLabel.CENTER);
     JScrollPane histogramScrollPane = new JScrollPane(histogramLabel);
-    histogramScrollPane.setPreferredSize(new Dimension(100, 25)); // Set preferred size
-    histogramPanel.add(histogramScrollPane, BorderLayout.CENTER);
+    histogramScrollPane.setPreferredSize(new Dimension(300, 25)); // Set preferred size
+    histogramPanel.add(histogramScrollPane, BorderLayout.EAST);
 
     // Add panels to the main frame
     JPanel displayPanel = new JPanel();
@@ -72,6 +81,7 @@ public class ImageProcessingView extends JFrame {
 
     // Initialize buttons
     initializeButtons();
+    createCheckBoxes(); // Initialize checkboxes
 
     // Control panel with GridBagLayout
     JPanel controlPanel = new JPanel();
@@ -80,76 +90,47 @@ public class ImageProcessingView extends JFrame {
     gbc.fill = GridBagConstraints.HORIZONTAL;
     gbc.insets = new Insets(5, 5, 5, 5); // Add some padding
 
-    // Define button positions in the GridBagLayout
-    int row = 0;
+    // Button Groups
+    addButtonGroup(controlPanel, gbc, "File Operations",
+        new JButton[]{loadButton, saveButton, undoButton, revertButton});
+    addButtonGroup(controlPanel, gbc, "Color Extraction",
+        new JButton[]{extractRedButton, extractGreenButton, extractBlueButton, extractLumaButton,
+            extractIntensityButton, extractValueButton});
+    addButtonGroup(controlPanel, gbc, "Transformations",
+        new JButton[]{flipHorizontalButton, flipVerticalButton});
+    addButtonGroup(controlPanel, gbc, "Reductions",
+        new JButton[]{downscaleButton, compressButton});
 
-    // Add buttons to the control panel using GridBagConstraints
-    gbc.gridx = 0;
-    gbc.gridy = row;
-    controlPanel.add(loadButton, gbc);
-    gbc.gridx = 1;
-    gbc.gridy = row++;
-    controlPanel.add(saveButton, gbc);
-    gbc.gridx = 0;
-    gbc.gridy = row;
-    controlPanel.add(undoButton, gbc);
-    gbc.gridx = 1;
-    gbc.gridy = row++;
-    controlPanel.add(revertButton, gbc);
-    gbc.gridx = 0;
-    gbc.gridy = row;
-    controlPanel.add(extractRedButton, gbc);
-    gbc.gridx = 1;
-    gbc.gridy = row++;
-    controlPanel.add(extractGreenButton, gbc);
-    gbc.gridx = 0;
-    gbc.gridy = row;
-    controlPanel.add(extractBlueButton, gbc);
-    gbc.gridx = 1;
-    gbc.gridy = row++;
-    controlPanel.add(extractLumaButton, gbc);
-    gbc.gridx = 0;
-    gbc.gridy = row;
-    controlPanel.add(extractIntensityButton, gbc);
-    gbc.gridx = 1;
-    gbc.gridy = row++;
-    controlPanel.add(extractValueButton, gbc);
-    gbc.gridx = 0;
-    gbc.gridy = row;
-    controlPanel.add(blurButton, gbc);
-    gbc.gridx = 1;
-    gbc.gridy = row++;
-    controlPanel.add(sharpenButton, gbc);
-    gbc.gridx = 0;
-    gbc.gridy = row;
-    controlPanel.add(sepiaButton, gbc);
-    gbc.gridx = 1;
-    gbc.gridy = row++;
-    controlPanel.add(greyscaleButton, gbc);
-    gbc.gridx = 0;
-    gbc.gridy = row;
-    controlPanel.add(flipHorizontalButton, gbc);
-    gbc.gridx = 1;
-    gbc.gridy = row++;
-    controlPanel.add(flipVerticalButton, gbc);
-    gbc.gridx = 0;
-    gbc.gridy = row;
-    controlPanel.add(adjustBrightnessButton, gbc);
-    gbc.gridx = 1;
-    gbc.gridy = row++;
-    controlPanel.add(colorCorrectButton, gbc);
-    gbc.gridx = 0;
-    gbc.gridy = row;
-    controlPanel.add(adjustLevelsButton, gbc);
-    gbc.gridx = 1;
-    gbc.gridy = row++;
-    controlPanel.add(downscaleButton, gbc);
-    gbc.gridx = 0;
-    gbc.gridy = row;
-    controlPanel.add(compressButton, gbc);
+    gbc.gridy++; // Move to the next row
+    gbc.gridx = 0; // Reset column index
+    controlPanel.add(adjustBrightnessButton, gbc); // Add Adjust Brightness button
 
-    // Add control panel to the left side
-    add(controlPanel, BorderLayout.WEST);
+    // Add image effects group
+    addImageEffectsGroup(controlPanel, gbc);
+
+    // Add adjustments group (without Adjust Brightness)
+    addAdjustmentsGroup(controlPanel, gbc);
+
+    // Wrap control panel in a JScrollPane
+    JScrollPane scrollPane = new JScrollPane(controlPanel);
+    scrollPane.setPreferredSize(new Dimension(300, 600));
+    add(scrollPane, BorderLayout.WEST);
+
+    // Add action listeners to checkboxes
+    addCheckBoxListeners();
+  }
+
+  private void addCheckBoxListeners() {
+    ActionListener checkBoxListener = e -> {
+      // Handle checkbox visibility or other logic if needed
+    };
+
+    blurSplitCheckBox.addActionListener(checkBoxListener);
+    sharpenSplitCheckBox.addActionListener(checkBoxListener);
+    sepiaSplitCheckBox.addActionListener(checkBoxListener);
+    greyscaleSplitCheckBox.addActionListener(checkBoxListener);
+    colorCorrectSplitCheckBox.addActionListener(checkBoxListener);
+    adjustLevelsSplitCheckBox.addActionListener(checkBoxListener);
   }
 
   private void initializeButtons() {
@@ -177,8 +158,92 @@ public class ImageProcessingView extends JFrame {
   }
 
   private JButton createButton(String text) {
-    JButton button = new JButton(text);
-    return button;
+    return new JButton(text);
+  }
+
+  private void createCheckBoxes() {
+    blurSplitCheckBox = new JCheckBox("Blur Preview");
+    sharpenSplitCheckBox = new JCheckBox("Sharpen Preview");
+    sepiaSplitCheckBox = new JCheckBox("Sepia Preview");
+    greyscaleSplitCheckBox = new JCheckBox("Greyscale Preview");
+    colorCorrectSplitCheckBox = new JCheckBox("Color Correct Preview"); // New checkbox
+    adjustLevelsSplitCheckBox = new JCheckBox("Adjust Levels Preview"); // New checkbox
+  }
+
+  private void addImageEffectsGroup(JPanel panel, GridBagConstraints gbc) {
+    gbc.gridy++; // Move to the next row for the image effects
+    gbc.gridx = 0; // Reset column index
+
+    // Add buttons and checkboxes for image effects
+    panel.add(blurButton, gbc);
+    gbc.gridx++;
+    panel.add(blurSplitCheckBox, gbc);
+
+    gbc.gridx = 0; // Reset column index for next effect
+    gbc.gridy++; // Move to the next row
+    panel.add(sharpenButton, gbc);
+    gbc.gridx++;
+    panel.add(sharpenSplitCheckBox, gbc);
+
+    gbc.gridx = 0; // Reset column index for next effect
+    gbc.gridy++; // Move to the next row
+    panel.add(sepiaButton, gbc);
+    gbc.gridx++;
+    panel.add(sepiaSplitCheckBox, gbc);
+
+    gbc.gridx = 0; // Reset column index for next effect
+    gbc.gridy++; // Move to the next row
+    panel.add(greyscaleButton, gbc);
+    gbc.gridx++;
+    panel.add(greyscaleSplitCheckBox, gbc);
+
+    // Add space after the image effects group
+    gbc.gridy++;
+    gbc.insets = new Insets(10, 5, 5, 5); // Add extra space after the group
+  }
+
+  private void addAdjustmentsGroup(JPanel panel, GridBagConstraints gbc) {
+    gbc.gridy++; // Move to the next row for the adjustments
+    gbc.gridx = 0; // Reset column index
+
+    // Add buttons and checkboxes for adjustments
+    panel.add(colorCorrectButton, gbc);
+    gbc.gridx++;
+    panel.add(colorCorrectSplitCheckBox, gbc); // Add Color Correct checkbox
+
+    // Move to the next row for Adjust Levels
+    gbc.gridx = 0; // Reset column index for Adjust Levels
+    gbc.gridy++; // Increment row for Adjust Levels
+    panel.add(adjustLevelsButton, gbc); // Add Adjust Levels button
+    gbc.gridx++;
+    panel.add(adjustLevelsSplitCheckBox, gbc); // Add Adjust Levels checkbox
+
+    // Add space after the adjustments group
+    gbc.gridy++;
+    gbc.insets = new Insets(10, 5, 5, 5); // Add extra space after the group
+  }
+
+  private void addButtonGroup(JPanel panel, GridBagConstraints gbc, String title,
+      JButton[] buttons) {
+    gbc.gridx = 0;
+    gbc.gridy++;
+
+    // Arrange buttons in two rows for other groups
+    int buttonsPerRow = 2; // Number of buttons per row
+    for (int i = 0; i < buttons.length; i++) {
+      gbc.gridx = i % buttonsPerRow; // Column index (0 or 1)
+      gbc.gridy += (i % buttonsPerRow == 0 && i != 0) ? 1
+          : 0; // Move to the next row after filling the current one
+
+      // Add padding around buttons
+      gbc.insets = new Insets(5, 5, 5, 5); // Add some padding
+      buttons[i].setMinimumSize(new Dimension(100, 30)); // Set minimum size for buttons
+      panel.add(buttons[i], gbc);
+    }
+
+    // Add space after each button group
+    gbc.gridy++;
+    gbc.insets = new Insets(10, 5, 5, 5); // Add extra space after the group
   }
 
   public void createButtons(ActionListener listener) {
@@ -203,6 +268,12 @@ public class ImageProcessingView extends JFrame {
     adjustLevelsButton.addActionListener(listener);
     downscaleButton.addActionListener(listener);
     compressButton.addActionListener(listener);
+    blurSplitCheckBox.addActionListener(listener);
+    sharpenSplitCheckBox.addActionListener(listener);
+    sepiaSplitCheckBox.addActionListener(listener);
+    greyscaleSplitCheckBox.addActionListener(listener);
+    colorCorrectSplitCheckBox.addActionListener(listener); // New checkbox action listener
+    adjustLevelsSplitCheckBox.addActionListener(listener); // New checkbox action listener
   }
 
   public void setImageIcon(ImageIcon icon) {
@@ -215,5 +286,14 @@ public class ImageProcessingView extends JFrame {
 
   public void showErrorDialog(String message) {
     JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+  }
+
+  public void untickCheckBoxes() {
+    blurSplitCheckBox.setSelected(false);
+    sharpenSplitCheckBox.setSelected(false);
+    sepiaSplitCheckBox.setSelected(false);
+    greyscaleSplitCheckBox.setSelected(false);
+    colorCorrectSplitCheckBox.setSelected(false);
+    adjustLevelsSplitCheckBox.setSelected(false);
   }
 }

@@ -2,30 +2,33 @@ package com.vanarp.controller;
 
 import com.vanarp.model.ImageRepresentation;
 import com.vanarp.viewer.ImageProcessingView;
+import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Stack;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JSlider;
 
 public class ImageProcessingController {
 
-  private ImageProcessingView view;
+  private final ImageProcessingView view;
   private final ImageCommandProcessor commandProcessor;
   private final Stack<Object[]> imageHistory;
   private ImageRepresentation loadedImage;
   private String currentImageName;
-
 
   public ImageProcessingController(ImageCommandProcessor commandProcessor,
       ImageProcessingView view) {
     this.commandProcessor = commandProcessor;
     this.view = view;
     this.imageHistory = new Stack<>();
-
     setupListeners();
     view.setVisible(true);
   }
@@ -96,6 +99,24 @@ public class ImageProcessingController {
         case "Compress":
           compressImageDialog();
           break;
+        case "Blur Preview":
+          applyFilterPreview("blur");
+          break;
+        case "Sharpen Preview":
+          applyFilterPreview("sharpen");
+          break;
+        case "Sepia Preview":
+          applyFilterPreview("sepia");
+          break;
+        case "Greyscale Preview":
+          applyFilterPreview("greyscale");
+          break;
+        case "Color Correct Preview":
+          colorCorrectPreview();
+          break;
+        case "Adjust Levels Preview":
+          adjustLevelsPreview();
+          break;
       }
     });
 
@@ -114,14 +135,12 @@ public class ImageProcessingController {
       try {
         int percentage = Integer.parseInt(input);
         if (percentage < 0 || percentage > 100) {
-          view.showErrorDialog("Please enter a valid percentage between 0 and 100.");
+          showError("Please enter a valid percentage between 0 and 100.");
         } else {
           compressImage(percentage);
         }
       } catch (NumberFormatException ex) {
-        view.showErrorDialog("Invalid input. Please enter a valid number.");
-      } catch (IllegalArgumentException ex) {
-        view.showErrorDialog("Invalid argument: " + ex.getMessage());
+        showError("Invalid input. Please enter a valid number.");
       }
     }
   }
@@ -139,12 +158,10 @@ public class ImageProcessingController {
           view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
           generateHistogram();
         } else {
-          view.showErrorDialog("Failed to load image.");
+          showError("Failed to load image.");
         }
-      } catch (IOException e) {
-        view.showErrorDialog("Failed to load image: " + e.getMessage());
-      } catch (IllegalArgumentException e) {
-        view.showErrorDialog("Invalid argument: " + e.getMessage());
+      } catch (IOException | IllegalArgumentException e) {
+        showError("Failed to load image: " + e.getMessage());
       }
     }
   }
@@ -154,19 +171,15 @@ public class ImageProcessingController {
       JFileChooser fileChooser = new JFileChooser();
       if (fileChooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
         File file = fileChooser.getSelectedFile();
-        String format = "png";
         try {
-          commandProcessor.saveImage(currentImageName, file.getAbsolutePath(), format);
+          commandProcessor.saveImage(currentImageName, file.getAbsolutePath(), "png");
           JOptionPane.showMessageDialog(view, "Image saved successfully.");
-        } catch (IOException e) {
-          System.out.println(currentImageName + format);
-          view.showErrorDialog("Failed to save image: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-          view.showErrorDialog("Invalid argument: " + e.getMessage());
+        } catch (IOException | IllegalArgumentException e) {
+          showError("Failed to save image: " + e.getMessage());
         }
       }
     } else {
-      view.showErrorDialog("No image to save.");
+      showError("No image to save.");
     }
   }
 
@@ -179,7 +192,7 @@ public class ImageProcessingController {
       generateHistogram();
       JOptionPane.showMessageDialog(view, "Undo successful.");
     } else {
-      view.showErrorDialog("No actions to undo.");
+      showError("No actions to undo.");
     }
   }
 
@@ -192,7 +205,7 @@ public class ImageProcessingController {
       generateHistogram();
       JOptionPane.showMessageDialog(view, "Reverted to original image.");
     } else {
-      view.showErrorDialog("No original image to revert to.");
+      showError("No original image to revert to.");
     }
   }
 
@@ -205,16 +218,7 @@ public class ImageProcessingController {
   private void extractComponent(String componentType) {
     saveImageState();
     if (loadedImage != null) {
-      String destName;
-      int lastDotIndex = currentImageName.lastIndexOf('.');
-
-      if (lastDotIndex != -1) {
-        destName = currentImageName.substring(0, lastDotIndex) + "_" + componentType
-            + currentImageName.substring(lastDotIndex);
-      } else {
-        destName = currentImageName + "_" + componentType;
-      }
-
+      String destName = generateDestinationName(componentType);
       try {
         commandProcessor.extractComponent(currentImageName, destName, componentType);
         loadedImage = commandProcessor.getImage(destName);
@@ -222,64 +226,37 @@ public class ImageProcessingController {
         view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
         generateHistogram();
         JOptionPane.showMessageDialog(view, componentType + " component extracted successfully.");
-      } catch (IOException e) {
-        view.showErrorDialog("Failed to extract component: " + e.getMessage());
-      } catch (IllegalArgumentException e) {
-        view.showErrorDialog("Invalid argument: " + e.getMessage());
+      } catch (IOException | IllegalArgumentException e) {
+        showError("Failed to extract component: " + e.getMessage());
       }
     } else {
-      view.showErrorDialog("No image selected.");
+      showError("No image selected.");
     }
   }
 
   private void applyFilter(String filterType) {
     saveImageState();
     if (loadedImage != null) {
-      String destName;
-      int lastDotIndex = currentImageName.lastIndexOf('.');
-
-      if (lastDotIndex != -1) {
-        destName = currentImageName.substring(0, lastDotIndex) + "_" + filterType
-            + currentImageName.substring(lastDotIndex);
-      } else {
-        destName = currentImageName + "_" + filterType;
-      }
-      Integer splitPercent = getSplitPercentage();
-      if (splitPercent == null) {
-        return;
-      }
-
+      String destName = generateDestinationName(filterType);
       try {
-        commandProcessor.applyFilter(currentImageName, destName, filterType, splitPercent);
+        commandProcessor.applyFilter(currentImageName, destName, filterType, null);
         loadedImage = commandProcessor.getImage(destName);
         currentImageName = destName;
         view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
         generateHistogram();
         JOptionPane.showMessageDialog(view, filterType + " filter applied successfully.");
-      } catch (IOException e) {
-        view.showErrorDialog("Failed to apply filter: " + e.getMessage());
-      } catch (IllegalArgumentException e) {
-        view.showErrorDialog("Invalid argument: " + e.getMessage());
+      } catch (IOException | IllegalArgumentException e) {
+        showError("Failed to apply filter: " + e.getMessage());
       }
     } else {
-      view.showErrorDialog("No image selected.");
+      showError("No image selected.");
     }
   }
 
   private void flipImage(String direction) {
     saveImageState();
     if (loadedImage != null) {
-      String destName;
-      int lastDotIndex = currentImageName.lastIndexOf('.');
-
-      if (lastDotIndex != -1) {
-        destName =
-            currentImageName.substring(0, lastDotIndex) + "_flipped" + currentImageName.substring(
-                lastDotIndex);
-      } else {
-        destName = currentImageName + "_flipped";
-      }
-
+      String destName = generateDestinationName("flipped");
       try {
         commandProcessor.flipImage(currentImageName, destName, direction);
         loadedImage = commandProcessor.getImage(destName);
@@ -287,13 +264,11 @@ public class ImageProcessingController {
         view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
         generateHistogram();
         JOptionPane.showMessageDialog(view, "Image flipped successfully.");
-      } catch (IOException e) {
-        view.showErrorDialog("Failed to flip image: " + e.getMessage());
-      } catch (IllegalArgumentException e) {
-        view.showErrorDialog("Invalid argument: " + e.getMessage());
+      } catch (IOException | IllegalArgumentException e) {
+        showError("Failed to flip image: " + e.getMessage());
       }
     } else {
-      view.showErrorDialog("No image selected.");
+      showError("No image selected.");
     }
   }
 
@@ -305,31 +280,19 @@ public class ImageProcessingController {
       if (input != null) {
         try {
           int increment = Integer.parseInt(input);
-          String destName;
-          int lastDotIndex = currentImageName.lastIndexOf('.');
-
-          if (lastDotIndex != -1) {
-            destName = currentImageName.substring(0, lastDotIndex) + "_brightened"
-                + currentImageName.substring(lastDotIndex);
-          } else {
-            destName = currentImageName + "_brightened";
-          }
+          String destName = generateDestinationName("brightened");
           commandProcessor.brightenImage(currentImageName, increment, destName);
           loadedImage = commandProcessor.getImage(destName);
           currentImageName = destName;
           view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
           generateHistogram();
           JOptionPane.showMessageDialog(view, "Image brightened successfully.");
-        } catch (NumberFormatException e) {
-          view.showErrorDialog("Invalid input. Please enter a valid number.");
-        } catch (IOException e) {
-          view.showErrorDialog("Failed to brighten image: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-          view.showErrorDialog("Invalid argument: " + e.getMessage());
+        } catch (IOException | IllegalArgumentException e) {
+          showError("Failed to brighten image: " + e.getMessage());
         }
       }
     } else {
-      view.showErrorDialog("No image selected.");
+      showError("No image selected.");
     }
   }
 
@@ -344,46 +307,30 @@ public class ImageProcessingController {
         view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
         generateHistogram();
         JOptionPane.showMessageDialog(view, "Image compressed successfully.");
-      } catch (IOException e) {
-        view.showErrorDialog("Failed to compress image: " + e.getMessage());
-      } catch (IllegalArgumentException e) {
-        view.showErrorDialog("Invalid argument: " + e.getMessage());
+      } catch (IOException | IllegalArgumentException e) {
+        showError("Failed to compress image: " + e.getMessage());
       }
     } else {
-      view.showErrorDialog("No image selected.");
+      showError("No image selected.");
     }
   }
 
   private void colorCorrectImage() {
     saveImageState();
     if (loadedImage != null) {
-      String destName;
-      int lastDotIndex = currentImageName.lastIndexOf('.');
-
-      if (lastDotIndex != -1) {
-        destName = currentImageName.substring(0, lastDotIndex) + "_color_corrected"
-            + currentImageName.substring(lastDotIndex);
-      } else {
-        destName = currentImageName + "_color_corrected";
-      }
-      Integer splitPercent = getSplitPercentage();
-      if (splitPercent == null) {
-        return; // User input was invalid
-      }
+      String destName = generateDestinationName("color_corrected");
       try {
-        commandProcessor.colorCorrectImage(currentImageName, destName, splitPercent);
+        commandProcessor.colorCorrectImage(currentImageName, destName, null);
         loadedImage = commandProcessor.getImage(destName);
         currentImageName = destName;
         view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
         generateHistogram();
         JOptionPane.showMessageDialog(view, "Color correction applied successfully.");
-      } catch (IOException e) {
-        view.showErrorDialog("Failed to apply color correction: " + e.getMessage());
-      } catch (IllegalArgumentException e) {
-        view.showErrorDialog("Invalid argument: " + e.getMessage());
+      } catch (IOException | IllegalArgumentException e) {
+        showError("Failed to apply color correction: " + e.getMessage());
       }
     } else {
-      view.showErrorDialog("No image selected.");
+      showError("No image selected.");
     }
   }
 
@@ -391,43 +338,31 @@ public class ImageProcessingController {
     saveImageState();
     if (loadedImage != null) {
       String inputBrightness = JOptionPane.showInputDialog(view,
-          "Enter brightness adjustment value:(0-255)",
-          "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
+          "Enter brightness adjustment value (0-255):", "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
       String inputMidtone = JOptionPane.showInputDialog(view,
-          "Enter midtone adjustment value:(0-255)",
-          "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
+          "Enter midtone adjustment value (0-255):", "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
       String inputWhitePoint = JOptionPane.showInputDialog(view,
-          "Enter white point adjustment value:(0-255)",
-          "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
-      Integer splitPercent = getSplitPercentage();
-      if (splitPercent == null) {
-        return; // User input was invalid
-      }
+          "Enter white point adjustment value (0-255):", "Adjust Levels",
+          JOptionPane.PLAIN_MESSAGE);
       if (inputBrightness != null && inputMidtone != null && inputWhitePoint != null) {
         try {
           int brightness = Integer.parseInt(inputBrightness);
           int midtone = Integer.parseInt(inputMidtone);
           int whitePoint = Integer.parseInt(inputWhitePoint);
-
-          String destName = currentImageName.substring(0, currentImageName.lastIndexOf('.'))
-              + "_levels_adjusted" + currentImageName.substring(currentImageName.lastIndexOf('.'));
+          String destName = generateDestinationName("levels_adjusted");
           commandProcessor.levelsAdjust(currentImageName, brightness, midtone, whitePoint, destName,
-              splitPercent);
+              null);
           loadedImage = commandProcessor.getImage(destName);
           currentImageName = destName;
           view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
           generateHistogram();
           JOptionPane.showMessageDialog(view, "Levels adjusted successfully.");
-        } catch (NumberFormatException e) {
-          view.showErrorDialog("Invalid input. Please enter valid numbers.");
-        } catch (IOException e) {
-          view.showErrorDialog("Failed to adjust levels: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-          view.showErrorDialog("Invalid argument: " + e.getMessage());
+        } catch (IOException | IllegalArgumentException e) {
+          showError("Failed to adjust levels: " + e.getMessage());
         }
       }
     } else {
-      view.showErrorDialog("No image selected.");
+      showError("No image selected.");
     }
   }
 
@@ -438,85 +373,163 @@ public class ImageProcessingController {
           "Downscale Image", JOptionPane.PLAIN_MESSAGE);
       String heightInput = JOptionPane.showInputDialog(view, "Enter the new height:",
           "Downscale Image", JOptionPane.PLAIN_MESSAGE);
-
       if (widthInput != null && heightInput != null) {
         try {
           int newWidth = Integer.parseInt(widthInput);
           int newHeight = Integer.parseInt(heightInput);
-
-          String destName =
-              currentImageName.substring(0, currentImageName.lastIndexOf('.')) + "_downscaled"
-                  + currentImageName.substring(currentImageName.lastIndexOf('.'));
+          String destName = generateDestinationName("downscaled");
           commandProcessor.downscaleImage(currentImageName, destName, newWidth, newHeight);
-
           loadedImage = commandProcessor.getImage(destName);
           currentImageName = destName;
           view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
           generateHistogram();
           JOptionPane.showMessageDialog(view, "Image downscaled successfully.");
-        } catch (NumberFormatException e) {
-          view.showErrorDialog("Invalid input. Please enter valid numbers.");
-        } catch (IOException e) {
-          view.showErrorDialog("Failed to downscale image: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-          view.showErrorDialog("Invalid argument: " + e.getMessage());
+        } catch (IOException | IllegalArgumentException e) {
+          showError("Failed to downscale image: " + e.getMessage());
         }
       }
     } else {
-      view.showErrorDialog("No image selected.");
+      showError("No image selected.");
     }
   }
 
   private void generateHistogram() {
     if (loadedImage != null) {
-      String destName = currentImageName.substring(0, currentImageName.lastIndexOf('.'))
-          + "_histogram" + currentImageName.substring(currentImageName.lastIndexOf('.'));
+      String destName = generateDestinationName("histogram");
       try {
         commandProcessor.getHistogram(currentImageName, destName);
         ImageRepresentation histogramImage = commandProcessor.getImage(destName);
         view.setHistogramIcon(new ImageIcon(histogramImage.toBufferedImage()));
-      } catch (IOException e) {
-        view.showErrorDialog("Failed to generate histogram: " + e.getMessage());
-      } catch (IllegalArgumentException e) {
-        view.showErrorDialog("Invalid argument: " + e.getMessage());
+      } catch (IOException | IllegalArgumentException e) {
+        showError("Failed to generate histogram: " + e.getMessage());
       }
     } else {
-      view.showErrorDialog("No image selected.");
+      showError("No image selected.");
     }
   }
 
-  private Integer getSplitPercentage() {
-    String input = JOptionPane.showInputDialog(view, "Enter the split percentage (0-100):",
-        "Split Percentage Input", JOptionPane.PLAIN_MESSAGE);
-    Integer splitPercent = null;
-
-    if (input != null) {
-      try {
-        splitPercent = Integer.parseInt(input);
-        if (splitPercent < 0 || splitPercent > 100) {
-          view.showErrorDialog("Please enter a valid percentage between 0 and 100.");
-          return null;
+  private void applyFilterPreview(String filterType) {
+    if (loadedImage != null) {
+      createSliderDialog(filterType, (splitPercent, sliderDialog) -> {
+        String previewName = generateDestinationName(filterType + "_preview");
+        try {
+          commandProcessor.applyFilter(currentImageName, previewName, filterType, splitPercent);
+          showPreview(previewName, "Preview - " + filterType, sliderDialog);
+        } catch (IOException | IllegalArgumentException e) {
+          showError("Failed to generate preview: " + e.getMessage());
         }
-      } catch (NumberFormatException e) {
-        view.showErrorDialog("Invalid input. Please enter a valid number.");
-        return null;
-      }
+      });
+    } else {
+      showError("No image selected.");
     }
-    return splitPercent;
+  }
+
+  private void colorCorrectPreview() {
+    if (loadedImage != null) {
+      createSliderDialog("Color Correct Image", (splitPercent, sliderDialog) -> {
+        String previewName = generateDestinationName("color-correct_preview");
+        try {
+          commandProcessor.colorCorrectImage(currentImageName, previewName, splitPercent);
+          showPreview(previewName, "Preview - Color-Correct", sliderDialog);
+        } catch (IOException | IllegalArgumentException e) {
+          showError("Failed to generate preview: " + e.getMessage());
+        }
+      });
+    } else {
+      showError("No image selected.");
+    }
+  }
+
+  private void adjustLevelsPreview() {
+    if (loadedImage != null) {
+      createSliderDialog("Levels Adjustment", (splitPercent, sliderDialog) -> {
+        String inputBrightness = JOptionPane.showInputDialog(view,
+            "Enter brightness adjustment value (0-255):", "Adjust Levels",
+            JOptionPane.PLAIN_MESSAGE);
+        String inputMidtone = JOptionPane.showInputDialog(view,
+            "Enter midtone adjustment value (0-255):", "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
+        String inputWhitePoint = JOptionPane.showInputDialog(view,
+            "Enter white point adjustment value (0-255):", "Adjust Levels",
+            JOptionPane.PLAIN_MESSAGE);
+        if (inputBrightness != null && inputMidtone != null && inputWhitePoint != null) {
+          try {
+            int brightness = Integer.parseInt(inputBrightness);
+            int midtone = Integer.parseInt(inputMidtone);
+            int whitePoint = Integer.parseInt(inputWhitePoint);
+            String previewName = generateDestinationName("levels_adjusted_preview");
+            commandProcessor.levelsAdjust(currentImageName, brightness, midtone, whitePoint,
+                previewName, splitPercent);
+            showPreview(previewName, "Preview - Levels Adjusted", sliderDialog);
+          } catch (IOException | IllegalArgumentException e) {
+            showError("Invalid input. Please enter valid numbers.");
+          }
+        }
+      });
+    } else {
+      showError("No image selected.");
+    }
+  }
+
+  private void createSliderDialog(String title, SliderAction action) {
+    JDialog sliderDialog = new JDialog(view, "Set Split Percentage for " + title, true);
+    sliderDialog.setSize(400, 200);
+    sliderDialog.setLayout(new BorderLayout());
+    JSlider splitSlider = new JSlider(0, 100, 50);
+    splitSlider.setMajorTickSpacing(10);
+    splitSlider.setPaintTicks(true);
+    splitSlider.setPaintLabels(true);
+    sliderDialog.add(splitSlider, BorderLayout.CENTER);
+    JButton previewButton = new JButton("Preview");
+    previewButton.addActionListener(e -> action.execute(splitSlider.getValue(), sliderDialog));
+    sliderDialog.add(previewButton, BorderLayout.SOUTH);
+    sliderDialog.setLocationRelativeTo(view);
+    sliderDialog.setVisible(true);
+  }
+
+  private void showPreview(String previewName, String title, JDialog sliderDialog) {
+    ImageRepresentation previewImage = commandProcessor.getImage(previewName);
+    JDialog previewDialog = new JDialog(view, title, true);
+    previewDialog.setSize(600, 400);
+    previewDialog.setLayout(new BorderLayout());
+    JLabel previewLabel = new JLabel(new ImageIcon(previewImage.toBufferedImage()));
+    previewDialog.add(previewLabel, BorderLayout.CENTER);
+    JButton closeButton = new JButton("Close");
+    closeButton.addActionListener(ev -> {
+      previewDialog.dispose(); // Close the preview dialog
+      sliderDialog.dispose();  // Close the slider dialog
+    });
+    previewDialog.add(closeButton, BorderLayout.SOUTH);
+    previewDialog.setLocationRelativeTo(view);
+    previewDialog.setVisible(true);
+    view.untickCheckBoxes();
+  }
+
+
+  private String generateDestinationName(String suffix) {
+    int lastDotIndex = currentImageName.lastIndexOf('.');
+    return (lastDotIndex != -1 ? currentImageName.substring(0, lastDotIndex) : currentImageName)
+        + "_" + suffix + (lastDotIndex != -1 ? currentImageName.substring(lastDotIndex) : "");
+  }
+
+  private void showError(String message) {
+    view.showErrorDialog(message);
   }
 
   private void promptBeforeExit() {
-    int option = JOptionPane.showConfirmDialog(
-        view,
-        "Do you want to save the image before exiting?",
-        "Exit Confirmation",
+    int option = JOptionPane.showConfirmDialog(view,
+        "Do you want to save the image before exiting?", "Exit Confirmation",
         JOptionPane.YES_NO_CANCEL_OPTION);
-
     if (option == JOptionPane.YES_OPTION) {
       saveImage();
       System.exit(0);
     } else if (option == JOptionPane.NO_OPTION) {
       System.exit(0);
     }
+  }
+
+  @FunctionalInterface
+  private interface SliderAction {
+
+    void execute(int splitPercent, JDialog sliderDialog);
   }
 }
