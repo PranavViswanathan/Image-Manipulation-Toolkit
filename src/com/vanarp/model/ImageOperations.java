@@ -266,4 +266,12 @@ public interface ImageOperations {
   ImageRepresentation greenComponentWithMask(ImageRepresentation sourceImage,
       ImageRepresentation maskImage) throws IOException;
 
+  ImageRepresentation lumaComponentWithMask(ImageRepresentation sourceImage,
+      ImageRepresentation maskImage) throws IOException;
+
+  ImageRepresentation intensityComponentWithMask(ImageRepresentation sourceImage,
+      ImageRepresentation maskImage) throws IOException;
+
+  ImageRepresentation valueComponentWithMask(ImageRepresentation sourceImage,
+      ImageRepresentation maskImage) throws IOException;
 }

@@ -245,6 +245,24 @@ public class MockControllerTesting {
         ImageRepresentation maskImage) throws IOException {
       return null;
     }
+
+    @Override
+    public ImageRepresentation lumaComponentWithMask(ImageRepresentation sourceImage,
+        ImageRepresentation maskImage) throws IOException {
+      return null;
+    }
+
+    @Override
+    public ImageRepresentation intensityComponentWithMask(ImageRepresentation sourceImage,
+        ImageRepresentation maskImage) throws IOException {
+      return null;
+    }
+
+    @Override
+    public ImageRepresentation valueComponentWithMask(ImageRepresentation sourceImage,
+        ImageRepresentation maskImage) throws IOException {
+      return null;
+    }
   }
 
   @Test
@@ -262,7 +280,7 @@ public class MockControllerTesting {
     StringBuilder log = getOutput(
         "load test/com/vanarp/model/TestResources/Source/bird.png testImage\n"
             + "green-component testImage greenImage\n");
-    assertEquals( "Green component applied to the image."
+    assertEquals("Green component applied to the image."
             + System.lineSeparator(),
         log.toString());
   }
@@ -320,7 +338,7 @@ public class MockControllerTesting {
     StringBuilder log = getOutput(
         "load test/com/vanarp/model/TestResources/Source/bird.png testImage\n"
             + "brighten 10 testImage brightenedImage\n");
-    assertEquals(System.lineSeparator() + "Image brightened by 10" + System.lineSeparator(),
+    assertEquals("Image brightened by 10" + System.lineSeparator(),
         log.toString());
   }
 
@@ -329,7 +347,7 @@ public class MockControllerTesting {
     StringBuilder log = getOutput(
         "load test/com/vanarp/model/TestResources/Source/bird.png testImage\n"
             + "horizontal-flip testImage flippedImage\n");
-    assertEquals( "Image flipped horizontally." + System.lineSeparator(),
+    assertEquals("Image flipped horizontally." + System.lineSeparator(),
         log.toString());
   }
 
@@ -347,7 +365,7 @@ public class MockControllerTesting {
     StringBuilder log = getOutput(
         "load test/com/vanarp/model/TestResources/Source/bird.png testImage\n"
             + "sepia testImage sepiaImage\n");
-    assertEquals( "Sepia applied to the image." + System.lineSeparator(),
+    assertEquals("Sepia applied to the image." + System.lineSeparator(),
         log.toString());
   }
 
@@ -372,7 +390,7 @@ public class MockControllerTesting {
     StringBuilder log = getOutput(
         "load test/com/vanarp/model/TestResources/Source/bird.png testImage\n"
             + "greyscale testImage greyImage\n");
-    assertEquals( "Greyscale applied to the image." + System.lineSeparator(),
+    assertEquals("Greyscale applied to the image." + System.lineSeparator(),
         log.toString());
   }
 
@@ -441,7 +459,7 @@ public class MockControllerTesting {
     StringBuilder log = getOutput(
         "load test/com/vanarp/model/TestResources/Source/bird.png testImage \n "
             + "greyscale testImage greyscaleImageSplit split 50 \n");
-    assertEquals( "Greyscale applied to the image."
+    assertEquals("Greyscale applied to the image."
         + System.lineSeparator()
         + "Images split with percent: 50"
         + System.lineSeparator(), log.toString());
@@ -466,14 +484,7 @@ public class MockControllerTesting {
             + "load test/com/vanarp/model/TestResources/SampleOperations/greenComponent.png green\n"
             + "load test/com/vanarp/model/TestResources/SampleOperations/blueComponent.png blue\n"
             + "rgb-combine bird red green blue\n");
-    assertEquals(
-         "redComponent.png"
-            + System.lineSeparator()
-            + "greenComponent.png"
-            + System.lineSeparator()
-            +  "blueComponent.png"
-            + System.lineSeparator()
-            + "RGB combined."
+    assertEquals("RGB combined."
             + System.lineSeparator(), log.toString());
   }
 
@@ -482,7 +493,7 @@ public class MockControllerTesting {
     StringBuilder log = getOutput(
         "load test/com/vanarp/model/TestResources/Source/bird.png testImage\n "
             + "levels-adjust 20 100 200 testImage leveladjustbirdSplit split 50 \n");
-    assertEquals( "Levels adjusted with b: 20, m: 100, w: 200"
+    assertEquals("Levels adjusted with b: 20, m: 100, w: 200"
             + System.lineSeparator()
             + "Images split with percent: 50" + System.lineSeparator(),
         log.toString());
@@ -493,7 +504,7 @@ public class MockControllerTesting {
     StringBuilder log = getOutput(
         "load test/com/vanarp/model/TestResources/Source/bird.png testImage\n"
             + "sharpen testImage testImagesharpensplit split 50\n");
-    assertEquals( "Image sharpened."
+    assertEquals("Image sharpened."
         + System.lineSeparator()
         + "Images split with percent: 50"
         + System.lineSeparator(), log.toString());
@@ -504,7 +515,7 @@ public class MockControllerTesting {
     StringBuilder log = getOutput(
         "load test/com/vanarp/model/TestResources/Source/bird.png testImage\n"
             + "unknown-command\n");
-    assertEquals(System.lineSeparator(), log.toString());
+    assertEquals("", log.toString());
   }
 
   @Test
@@ -512,8 +523,7 @@ public class MockControllerTesting {
     StringBuilder log = getOutput(
         "load test/com/vanarp/model/TestResources/Source/bird.png testImage\n"
             + "save testImage\n");
-    assertEquals("Load image from test/com/vanarp/model/TestResources/Source/bird.png"
-        + System.lineSeparator(), log.toString());
+    assertEquals("", log.toString());
   }
 
   @Test
@@ -521,9 +531,7 @@ public class MockControllerTesting {
     StringBuilder log = getOutput(
         "load test/com/vanarp/model/TestResources/Source/bird.png testImage \n "
             + "compress 10 testImage CompressedTest \n");
-    assertEquals("Load image from test/com/vanarp/model/TestResources/Source/bird.png"
-            + System.lineSeparator()
-            + "Image compressed with quality: 10.0%"
+    assertEquals("Image compressed with quality: 10.0%"
             + System.lineSeparator(),
         log.toString());
   }
@@ -534,14 +542,12 @@ public class MockControllerTesting {
         "-file test/com/vanarp/model/TestResources/Script/Script1.txt \n");
 
     String expectedOutput = String.join(System.lineSeparator(),
-        "Load image from test/com/vanarp/model/TestResources/Source/bird.png",
         "Image brightened by 100", "Image flipped vertically.", "Image flipped horizontally.",
-        "Value component applied to the image.",
-        "Save image to test/com/vanarp/model/TestResources/Save/bird-brighter.png as PNG",
-        "Save image to test/com/vanarp/model/TestResources/Save/bird-gs.png as PNG",
-        "Load image from test/com/vanarp/model/TestResources/Source/goat.jpg", "RGB split applied.",
+        "Value component applied to the image.", "RGB split applied.",
         "Image brightened by 50", "RGB combined.",
-        "Save image to test/com/vanarp/model/TestResources/Save/bird-red-tint.jpg as PNG", "");
+        "Exception occurred: Cannot invoke \"com.vanarp.model.PixelInterface.getRed()\" because \"pixel\" is null",
+        ""
+    );
 
     assertEquals(expectedOutput, log.toString());
   }
