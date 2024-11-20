@@ -2,11 +2,8 @@ package com.vanarp;
 
 import com.vanarp.controller.CLIView;
 import com.vanarp.controller.CommandProcessor;
-import com.vanarp.controller.CompressedImageIO;
 import com.vanarp.controller.GUIController;
 import com.vanarp.controller.ImageCommandProcessor;
-import com.vanarp.controller.ImageFileIO;
-import com.vanarp.controller.UncompressedImageIO;
 import com.vanarp.model.Filtering;
 import com.vanarp.model.ImageCompression;
 import com.vanarp.model.ImageCompressionFunctionality;
@@ -14,7 +11,6 @@ import com.vanarp.model.Operations;
 import com.vanarp.model.Transform;
 import com.vanarp.viewer.CommandInputHandler;
 import com.vanarp.viewer.GUIView;
-import com.vanarp.viewer.GUIViewInterface;
 import javax.swing.SwingUtilities;
 
 public class Main {
@@ -60,13 +56,11 @@ public class Main {
   }
 
   private static CommandProcessor createCommandProcessor() {
-    ImageFileIO compressedIO = new CompressedImageIO();
-    ImageFileIO uncompressedIO = new UncompressedImageIO();
     Transform transformation = new Transform();
     Filtering filtering = new Filtering();
     ImageCompressionFunctionality compress = new ImageCompression();
 
-    Operations operations = new Operations(transformation, filtering, compressedIO, uncompressedIO,
+    Operations operations = new Operations(transformation, filtering,
         compress);
     return new CommandProcessor(operations);
   }

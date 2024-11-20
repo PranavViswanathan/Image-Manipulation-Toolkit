@@ -37,11 +37,8 @@ public class ControllerTest {
   public void setUp() {
     ImageTransformationEnhanced transform = new Transform();
     ImageMaskingFiltering filter = new Filtering();
-    ImageFileIO compressedIO = new CompressedImageIO();
-    ImageFileIO uncompressedIO = new UncompressedImageIO();
     ImageCompressionFunctionality compression = new ImageCompression();
-    ImageOperations operations = new Operations(transform, filter, compressedIO, uncompressedIO,
-        compression);
+    ImageOperations operations = new Operations(transform, filter, compression);
 
     commandProcessor = new CommandProcessor(operations);
     cliView = new CLIView(commandProcessor);

@@ -12,8 +12,6 @@ public class Operations implements ImageOperations {
 
   private final ImageTransformationEnhanced transformation;
   private final ImageMaskingFiltering filtering;
-  private final ImageFileIO compressedIO;
-  private final ImageFileIO uncompressedIO;
   private final ImageCompressionFunctionality compression;
 
 
@@ -22,16 +20,10 @@ public class Operations implements ImageOperations {
    *
    * @param transformation the transformation operations
    * @param filtering      the filtering operations
-   * @param compressedIO   the IO handler for compressed image formats
-   * @param uncompressedIO the IO handler for uncompressed image formats
    */
 
   public Operations(ImageTransformationEnhanced transformation,
-      ImageMaskingFiltering filtering,
-      ImageFileIO compressedIO,
-      ImageFileIO uncompressedIO, ImageCompressionFunctionality compression) {
-    this.compressedIO = compressedIO;
-    this.uncompressedIO = uncompressedIO;
+      ImageMaskingFiltering filtering, ImageCompressionFunctionality compression) {
     this.transformation = transformation;
     this.filtering = filtering;
     this.compression = compression;

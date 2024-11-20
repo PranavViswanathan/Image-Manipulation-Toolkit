@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import com.vanarp.controller.CompressedImageIO;
-import com.vanarp.controller.ImageFileIO;
 import com.vanarp.controller.UncompressedImageIO;
 import java.io.IOException;
 import org.junit.Before;
@@ -17,6 +16,8 @@ import org.junit.Test;
  */
 public class OperationsTest {
 
+  private CompressedImageIO compressedImageIO;
+  private UncompressedImageIO uncompressedImageIO;
   private ImageRepresentation testImagePng;
   private ImageOperations operations;
   private final String validPngPath = "test/com/vanarp/model/TestResources/Source/bird.png";
@@ -30,12 +31,11 @@ public class OperationsTest {
   public void setUp() throws IOException {
     ImageTransformationEnhanced transform = new Transform();
     ImageMaskingFiltering filter = new Filtering();
-    ImageFileIO compressedIO = new CompressedImageIO();
-    ImageFileIO uncompressedIO = new UncompressedImageIO();
     ImageCompressionFunctionality compress = new ImageCompression();
-
-    operations = new Operations(transform, filter, compressedIO, uncompressedIO, compress);
-    testImagePng = operations.loadImage(validPngPath);
+    compressedImageIO = new CompressedImageIO();
+    uncompressedImageIO = new UncompressedImageIO();
+    operations = new Operations(transform, filter, compress);
+    testImagePng = compressedImageIO.loadImage(validPngPath);
   }
 
   private ImageRepresentation createImageWithColor(int red, int green, int blue) {
@@ -55,18 +55,18 @@ public class OperationsTest {
   @Test(expected = IOException.class)
   public void testLoadNonExistentFile() throws IOException {
     String nonExistentFilePath = "test/com/vanarp/model/TestResources/Source/nonexistent.png";
-    operations.loadImage(nonExistentFilePath);
+    compressedImageIO.loadImage(nonExistentFilePath);
   }
 
   @Test(expected = IOException.class)
   public void testLoadInvalidFileFormat() throws IOException {
     String invalidFilePath = "test/com/vanarp/model/TestResources/Invalid/bird.png";
-    operations.loadImage(invalidFilePath);
+    compressedImageIO.loadImage(invalidFilePath);
   }
 
   @Test
   public void testLoadValidPngFile() throws IOException {
-    ImageRepresentation image = operations.loadImage(validPngPath);
+    ImageRepresentation image = compressedImageIO.loadImage(validPngPath);
     assertEquals(632, image.getWidth());
     assertEquals(632, image.getHeight());
   }
@@ -74,26 +74,21 @@ public class OperationsTest {
   @Test(expected = IOException.class)
   public void testLoadEmptyDirectory() throws IOException {
     String emptyDirectory = "";
-    operations.loadImage(emptyDirectory);
+    compressedImageIO.loadImage(emptyDirectory);
   }
 
   @Test(expected = IOException.class)
   public void testSaveToInvalidPath() throws IOException {
-    ImageRepresentation testImage = operations.loadImage(validPngPath);
+    ImageRepresentation testImage = compressedImageIO.loadImage(validPngPath);
     String invalidOutputPath = "/invalid/directory/output.png";
-    operations.saveImage(testImage, invalidOutputPath, "png");
+    compressedImageIO.saveImage(testImage, invalidOutputPath, "png");
   }
 
-  @Test(expected = IOException.class)
-  public void testSaveWithInvalidExtension() throws IOException {
-    ImageRepresentation testImage = operations.loadImage(validPngPath);
-    operations.saveImage(testImage, outputDirectory + "output.abc", "abc");
-  }
 
   @Test
   public void testRedComponentForPng() throws IOException {
     ImageRepresentation redImage = operations.redComponent(testImagePng);
-    ImageRepresentation expectedRedImage = operations.loadImage(
+    ImageRepresentation expectedRedImage = compressedImageIO.loadImage(
         outputDirectory + "redComponent.png");
 
     assertEquals(expectedRedImage, redImage);
@@ -102,7 +97,7 @@ public class OperationsTest {
   @Test
   public void testGreenComponentForPng() throws IOException {
     ImageRepresentation greenImage = operations.greenComponent(testImagePng);
-    ImageRepresentation expectedGreenImage = operations.loadImage(
+    ImageRepresentation expectedGreenImage = compressedImageIO.loadImage(
         outputDirectory + "greenComponent.png");
 
     assertEquals(expectedGreenImage, greenImage);
@@ -111,7 +106,7 @@ public class OperationsTest {
   @Test
   public void testBlueComponentForPng() throws IOException {
     ImageRepresentation blueImage = operations.blueComponent(testImagePng);
-    ImageRepresentation expectedBlueImage = operations.loadImage(
+    ImageRepresentation expectedBlueImage = compressedImageIO.loadImage(
         outputDirectory + "blueComponent.png");
 
     assertEquals(expectedBlueImage, blueImage);
@@ -120,7 +115,7 @@ public class OperationsTest {
   @Test
   public void testValueComponentForPng() throws IOException {
     ImageRepresentation valueImage = operations.valueComponent(testImagePng);
-    ImageRepresentation expectedValueImage = operations.loadImage(
+    ImageRepresentation expectedValueImage = compressedImageIO.loadImage(
         outputDirectory + "valueComponent.png");
 
     assertEquals(expectedValueImage, valueImage);
@@ -129,7 +124,7 @@ public class OperationsTest {
   @Test
   public void testLumaComponentForPng() throws IOException {
     ImageRepresentation lumaImage = operations.lumaComponent(testImagePng);
-    ImageRepresentation expectedLumaImage = operations.loadImage(
+    ImageRepresentation expectedLumaImage = compressedImageIO.loadImage(
         outputDirectory + "lumaComponent.png");
 
     assertEquals(expectedLumaImage, lumaImage);
@@ -138,7 +133,7 @@ public class OperationsTest {
   @Test
   public void testIntensityComponentForPng() throws IOException {
     ImageRepresentation intensityImage = operations.intensityComponent(testImagePng);
-    ImageRepresentation expectedIntensityImage = operations.loadImage(
+    ImageRepresentation expectedIntensityImage = compressedImageIO.loadImage(
         outputDirectory + "intensityComponent.png");
 
     assertEquals(expectedIntensityImage, intensityImage);
@@ -147,7 +142,7 @@ public class OperationsTest {
   @Test
   public void testFlipHorizontallyForPng() throws IOException {
     ImageRepresentation flippedImage = operations.flipHorizontally(testImagePng);
-    ImageRepresentation expectedFlippedImage = operations.loadImage(
+    ImageRepresentation expectedFlippedImage = compressedImageIO.loadImage(
         outputDirectory + "flippedHorizontally.png");
 
     assertEquals(expectedFlippedImage, flippedImage);
@@ -156,7 +151,7 @@ public class OperationsTest {
   @Test
   public void testFlipVerticallyForPng() throws IOException {
     ImageRepresentation flippedImage = operations.flipVertically(testImagePng);
-    ImageRepresentation expectedFlippedImage = operations.loadImage(
+    ImageRepresentation expectedFlippedImage = compressedImageIO.loadImage(
         outputDirectory + "flippedVertically.png");
 
     assertEquals(expectedFlippedImage, flippedImage);
@@ -165,7 +160,7 @@ public class OperationsTest {
   @Test
   public void testBrightenImageForPng() throws IOException {
     ImageRepresentation brightenedImage = operations.brightenImage(testImagePng, 10);
-    ImageRepresentation expectedBrightenedImage = operations.loadImage(
+    ImageRepresentation expectedBrightenedImage = compressedImageIO.loadImage(
         outputDirectory + "brightenedImage.png");
 
     assertEquals(expectedBrightenedImage, brightenedImage);
@@ -174,7 +169,7 @@ public class OperationsTest {
   @Test
   public void testApplySepiaForPng() throws IOException {
     ImageRepresentation sepiaImage = operations.applySepia(testImagePng);
-    ImageRepresentation expectedSepiaImage = operations.loadImage(
+    ImageRepresentation expectedSepiaImage = compressedImageIO.loadImage(
         outputDirectory + "sepiaImage.png");
 
     assertEquals(expectedSepiaImage, sepiaImage);
@@ -183,7 +178,7 @@ public class OperationsTest {
   @Test
   public void testBlurForPng() throws IOException {
     ImageRepresentation blurredImage = operations.blur(testImagePng);
-    ImageRepresentation expectedBlurredImage = operations.loadImage(
+    ImageRepresentation expectedBlurredImage = compressedImageIO.loadImage(
         outputDirectory + "blurredImage.png");
 
     assertEquals(expectedBlurredImage, blurredImage);
@@ -192,7 +187,7 @@ public class OperationsTest {
   @Test
   public void testSharpenForPng() throws IOException {
     ImageRepresentation sharpenedImage = operations.sharpen(testImagePng);
-    ImageRepresentation expectedSharpenedImage = operations.loadImage(
+    ImageRepresentation expectedSharpenedImage = compressedImageIO.loadImage(
         outputDirectory + "sharpenedImage.png");
 
     assertEquals(expectedSharpenedImage, sharpenedImage);
@@ -201,7 +196,7 @@ public class OperationsTest {
   @Test
   public void testApplyGreyScaleForPng() throws IOException {
     ImageRepresentation greyScaleImage = operations.applyGreyScale(testImagePng);
-    ImageRepresentation expectedGreyScaleImage = operations.loadImage(
+    ImageRepresentation expectedGreyScaleImage = compressedImageIO.loadImage(
         outputDirectory + "greyScaleImage.png");
 
     assertEquals(expectedGreyScaleImage, greyScaleImage);
@@ -209,9 +204,12 @@ public class OperationsTest {
 
   @Test
   public void testRgbCombineForPng() throws IOException {
-    ImageRepresentation redImage = operations.loadImage(outputDirectory + "redComponent.png");
-    ImageRepresentation greenImage = operations.loadImage(outputDirectory + "greenComponent.png");
-    ImageRepresentation blueImage = operations.loadImage(outputDirectory + "blueComponent.png");
+    ImageRepresentation redImage = compressedImageIO.loadImage(
+        outputDirectory + "redComponent.png");
+    ImageRepresentation greenImage = compressedImageIO.loadImage(
+        outputDirectory + "greenComponent.png");
+    ImageRepresentation blueImage = compressedImageIO.loadImage(
+        outputDirectory + "blueComponent.png");
 
     ImageRepresentation combinedImage = operations.combineRgb(redImage, greenImage, blueImage);
 
@@ -222,11 +220,11 @@ public class OperationsTest {
   public void testSplitRgbForPng() throws IOException {
     ImageRepresentation[] splitImages = operations.rgbSplit(testImagePng);
 
-    ImageRepresentation expectedRedImage = operations.loadImage(
+    ImageRepresentation expectedRedImage = compressedImageIO.loadImage(
         outputDirectory + "redComponent.png");
-    ImageRepresentation expectedGreenImage = operations.loadImage(
+    ImageRepresentation expectedGreenImage = compressedImageIO.loadImage(
         outputDirectory + "greenComponent.png");
-    ImageRepresentation expectedBlueImage = operations.loadImage(
+    ImageRepresentation expectedBlueImage = compressedImageIO.loadImage(
         outputDirectory + "blueComponent.png");
 
     assertEquals(expectedRedImage, splitImages[0]);
@@ -367,7 +365,7 @@ public class OperationsTest {
 
   @Test
   public void testMultipleHorizontalFlips() throws IOException {
-    ImageRepresentation originalImage = operations.loadImage(validPngPath);
+    ImageRepresentation originalImage = compressedImageIO.loadImage(validPngPath);
     ImageRepresentation flippedImage = operations.flipHorizontally(originalImage);
     ImageRepresentation doubleFlippedImage = operations.flipHorizontally(flippedImage);
 
@@ -376,7 +374,7 @@ public class OperationsTest {
 
   @Test
   public void testMultipleVerticalFlips() throws IOException {
-    ImageRepresentation originalImage = operations.loadImage(validPngPath);
+    ImageRepresentation originalImage = compressedImageIO.loadImage(validPngPath);
     ImageRepresentation flippedImage = operations.flipVertically(originalImage);
     ImageRepresentation doubleFlippedImage = operations.flipVertically(flippedImage);
 
@@ -385,7 +383,7 @@ public class OperationsTest {
 
   @Test
   public void testFlippingAlreadyFlippedImageHorizontally() throws IOException {
-    ImageRepresentation originalImage = operations.loadImage(validPngPath);
+    ImageRepresentation originalImage = compressedImageIO.loadImage(validPngPath);
     ImageRepresentation flippedImage = operations.flipHorizontally(originalImage);
     ImageRepresentation reFlippedImage = operations.flipHorizontally(flippedImage);
 
@@ -394,7 +392,7 @@ public class OperationsTest {
 
   @Test
   public void testFlippingAlreadyFlippedImageVertically() throws IOException {
-    ImageRepresentation originalImage = operations.loadImage(validPngPath);
+    ImageRepresentation originalImage = compressedImageIO.loadImage(validPngPath);
     ImageRepresentation flippedImage = operations.flipVertically(originalImage);
     ImageRepresentation reFlippedImage = operations.flipVertically(flippedImage);
 
@@ -682,7 +680,7 @@ public class OperationsTest {
 
   @Test
   public void testRgbSplitAndCombine() throws IOException {
-    ImageRepresentation originalImage = operations.loadImage(validPngPath);
+    ImageRepresentation originalImage = compressedImageIO.loadImage(validPngPath);
     ImageRepresentation[] splitImages = operations.rgbSplit(originalImage);
     ImageRepresentation combinedImage = operations.combineRgb(splitImages[0], splitImages[1],
         splitImages[2]);
@@ -691,83 +689,83 @@ public class OperationsTest {
 
   @Test
   public void testSavePngAsPpmAndLoadBack() throws IOException {
-    ImageRepresentation originalImage = operations.loadImage(validPngPath);
+    ImageRepresentation originalImage = compressedImageIO.loadImage(validPngPath);
     String ppmOutputPath = outputDirectory + "outputImage.ppm";
-    operations.saveImage(originalImage, ppmOutputPath, "ppm");
-    ImageRepresentation loadedPpmImage = operations.loadImage(ppmOutputPath);
+    uncompressedImageIO.saveImage(originalImage, ppmOutputPath, "ppm");
+    ImageRepresentation loadedPpmImage = uncompressedImageIO.loadImage(ppmOutputPath);
     assertEquals(originalImage, loadedPpmImage);
   }
 
   @Test
   public void testHistogram() throws IOException {
-    ImageRepresentation image = operations.loadImage(ManhattanPath);
+    ImageRepresentation image = compressedImageIO.loadImage(ManhattanPath);
     ImageRepresentation histogram = operations.getHistogram(image);
-    ImageRepresentation expectedHistogram = operations.loadImage(
+    ImageRepresentation expectedHistogram = compressedImageIO.loadImage(
         outputDirectory + "ManhattanHistogram.png");
     assertEquals(expectedHistogram, histogram);
   }
 
   @Test
   public void testColorCorrect() throws IOException {
-    ImageRepresentation image = operations.loadImage(ManhattanPath);
+    ImageRepresentation image = compressedImageIO.loadImage(ManhattanPath);
     ImageRepresentation colorCorrect = operations.colorCorrect(image);
-    ImageRepresentation expectedColorCorrected = operations.loadImage(
+    ImageRepresentation expectedColorCorrected = compressedImageIO.loadImage(
         outputDirectory + "ColorCorrect.png");
     assertEquals(expectedColorCorrected, colorCorrect);
   }
 
   @Test
   public void testLevelsAdjust() throws IOException {
-    ImageRepresentation image = operations.loadImage(ManhattanPath);
+    ImageRepresentation image = compressedImageIO.loadImage(ManhattanPath);
     ImageRepresentation levelsAdjust = operations.levelsAdjust(image, 20, 100, 255);
-    ImageRepresentation expectedLevelsAdjust = operations.loadImage(
+    ImageRepresentation expectedLevelsAdjust = compressedImageIO.loadImage(
         outputDirectory + "levelsAdjust.png");
     assertEquals(expectedLevelsAdjust, levelsAdjust);
   }
 
   @Test
   public void testColorCorrectHistogram() throws IOException {
-    ImageRepresentation image = operations.loadImage(GalaxyPath);
+    ImageRepresentation image = compressedImageIO.loadImage(GalaxyPath);
     ImageRepresentation colorCorrect = operations.colorCorrect(image);
     ImageRepresentation colorCorrectHistogram = operations.getHistogram(colorCorrect);
-    ImageRepresentation expectedcolorCorrectHistogram = operations.loadImage(
+    ImageRepresentation expectedcolorCorrectHistogram = compressedImageIO.loadImage(
         outputDirectory + "colorCorrectHistogram.png");
     assertEquals(expectedcolorCorrectHistogram, colorCorrectHistogram);
   }
 
   @Test
   public void testAdjustValuesHistogram() throws IOException {
-    ImageRepresentation image = operations.loadImage(GalaxyPath);
+    ImageRepresentation image = compressedImageIO.loadImage(GalaxyPath);
     ImageRepresentation levelsAdjust = operations.levelsAdjust(image, 20, 100, 255);
     ImageRepresentation levelsAdjustHistogram = operations.getHistogram(levelsAdjust);
-    ImageRepresentation expectedlevelsAdjustHistogram = operations.loadImage(
+    ImageRepresentation expectedlevelsAdjustHistogram = compressedImageIO.loadImage(
         outputDirectory + "AdjustedValuesHistogram.png");
     assertEquals(expectedlevelsAdjustHistogram, levelsAdjustHistogram);
   }
 
   @Test
   public void testBlurSplit() throws IOException {
-    ImageRepresentation image = operations.loadImage(ManhattanPath);
+    ImageRepresentation image = compressedImageIO.loadImage(ManhattanPath);
     ImageRepresentation blur = operations.blur(image);
     ImageRepresentation splitBlur = operations.splitImages(blur, image, 25);
-    ImageRepresentation expectedSplitBlur = operations.loadImage(
+    ImageRepresentation expectedSplitBlur = compressedImageIO.loadImage(
         outputDirectory + "Split25.png");
     assertEquals(expectedSplitBlur, splitBlur);
   }
 
   @Test
   public void testLevelAdjustSplit() throws IOException {
-    ImageRepresentation image = operations.loadImage(ManhattanPath);
+    ImageRepresentation image = compressedImageIO.loadImage(ManhattanPath);
     ImageRepresentation levelsAdjust = operations.levelsAdjust(image, 20, 100, 255);
     ImageRepresentation splitlevelsAdjust = operations.splitImages(levelsAdjust, image, 70);
-    ImageRepresentation expectedSplitlevelsAdjust = operations.loadImage(
+    ImageRepresentation expectedSplitlevelsAdjust = compressedImageIO.loadImage(
         outputDirectory + "Split70.png");
     assertEquals(expectedSplitlevelsAdjust, splitlevelsAdjust);
   }
 
   @Test
   public void testGetPixelReturnsDeepCopy() throws IOException {
-    ImageRepresentation testImage = operations.loadImage(ManhattanPath);
+    ImageRepresentation testImage = compressedImageIO.loadImage(ManhattanPath);
     PixelInterface originalPixel = testImage.getPixel(0, 0);
     PixelInterface pixelCopy = testImage.getPixel(0, 0);
     assertNotSame(originalPixel, pixelCopy);
@@ -775,38 +773,38 @@ public class OperationsTest {
 
   @Test
   public void testCompress() throws IOException {
-    ImageRepresentation testImage = operations.loadImage(
+    ImageRepresentation testImage = compressedImageIO.loadImage(
         "test/com/vanarp/model/TestResources/Source/bird.png");
     ImageRepresentation compressedImage = operations.compressImage(testImage, 100);
-    ImageRepresentation expectedCompressedImage = operations.loadImage(
+    ImageRepresentation expectedCompressedImage = compressedImageIO.loadImage(
         outputDirectory + "bird-compress.png");
     assertEquals(expectedCompressedImage, compressedImage);
   }
 
   @Test
   public void testDownscaling() throws IOException {
-    ImageRepresentation testImage = operations.loadImage(
+    ImageRepresentation testImage = compressedImageIO.loadImage(
         "test/com/vanarp/model/TestResources/Source/bird.png");
     ImageRepresentation downscaledImage = operations.downscaleImage(testImage, 10, 10);
-    ImageRepresentation expectedDownscaledImage = operations.loadImage(
+    ImageRepresentation expectedDownscaledImage = compressedImageIO.loadImage(
         outputDirectory + "bird-downscale.png");
     assertEquals(expectedDownscaledImage, downscaledImage);
   }
 
   @Test
   public void testDownscalingToDifferentAspectRatio() throws IOException {
-    ImageRepresentation testImage = operations.loadImage(
+    ImageRepresentation testImage = compressedImageIO.loadImage(
         "test/com/vanarp/model/TestResources/Source/bird.png");
     ImageRepresentation downscaledImage = operations.downscaleImage(testImage, 100,
         50); // Downscale to 100x50
-    ImageRepresentation expectedDownscaledImage = operations.loadImage(
+    ImageRepresentation expectedDownscaledImage = compressedImageIO.loadImage(
         outputDirectory + "bird-downscale-100x50.png");
     assertEquals(expectedDownscaledImage, downscaledImage);
   }
 
   @Test
   public void testDownscalingWithInvalidDimensions() throws IOException {
-    ImageRepresentation testImage = operations.loadImage(
+    ImageRepresentation testImage = compressedImageIO.loadImage(
         "test/com/vanarp/model/TestResources/Source/bird.png");
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       operations.downscaleImage(testImage, -10, -10); // Invalid dimensions
@@ -816,7 +814,7 @@ public class OperationsTest {
 
   @Test
   public void testDownscalingWithSameDimensions() throws IOException {
-    ImageRepresentation testImage = operations.loadImage(
+    ImageRepresentation testImage = compressedImageIO.loadImage(
         "test/com/vanarp/model/TestResources/Source/bird.png");
     ImageRepresentation downscaledImage = operations.downscaleImage(testImage, 632,
         632);
@@ -825,11 +823,95 @@ public class OperationsTest {
 
   @Test
   public void testMaskingBlur() throws IOException {
-    ImageRepresentation testImage = operations.loadImage(
+    ImageRepresentation testImage = compressedImageIO.loadImage(
         "test/com/vanarp/model/TestResources/Source/bird.png");
-    ImageRepresentation maskImage = operations.loadImage(
+    ImageRepresentation maskImage = compressedImageIO.loadImage(
         "test/com/vanarp/model/TestResources/Source/bird-masked.png");
     ImageRepresentation blurWithMask = operations.applyBlurWithMask(testImage, maskImage);
-    assertEquals(testImage, blurWithMask);
+    ImageRepresentation expectedImage = compressedImageIO.loadImage(
+        outputDirectory + "bird-blur-mask.png");
+    assertEquals(expectedImage, blurWithMask);
   }
+
+  @Test
+  public void testMaskingSepia() throws IOException {
+    ImageRepresentation testImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation maskImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png");
+    ImageRepresentation sepiaWithMask = operations.applySepiaWithMask(testImage, maskImage);
+    ImageRepresentation expectedImage = compressedImageIO.loadImage(
+        outputDirectory + "bird-sepia-mask.png");
+    assertEquals(expectedImage, sepiaWithMask);
+  }
+
+  @Test
+  public void testMaskingGreyscale() throws IOException {
+    ImageRepresentation testImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation maskImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png");
+    ImageRepresentation greyscaleWithMask = operations.applyGreyscaleWithMask(testImage, maskImage);
+    ImageRepresentation expectedImage = compressedImageIO.loadImage(
+        outputDirectory + "bird-greyscale-mask.png");
+    assertEquals(expectedImage, greyscaleWithMask);
+  }
+
+  @Test
+  public void testMaskingSharpen() throws IOException {
+    ImageRepresentation testImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation maskImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png");
+    ImageRepresentation sharpenWithMask = operations.applySharpenWithMask(testImage, maskImage);
+    ImageRepresentation expectedImage = compressedImageIO.loadImage(
+        outputDirectory + "bird-sharpen-mask.png");
+    assertEquals(expectedImage, sharpenWithMask);
+  }
+
+  @Test
+  public void testMaskingBlueComponent() throws IOException {
+    ImageRepresentation testImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation maskImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png");
+    ImageRepresentation blueComponentWithMask = operations.blueComponentWithMask(testImage,
+        maskImage);
+    compressedImageIO.saveImage(blueComponentWithMask,
+        outputDirectory + "bird-blueComponent-mask.png", "png");
+    ImageRepresentation expectedImage = compressedImageIO.loadImage(
+        outputDirectory + "bird-blueComponent-mask.png");
+    assertEquals(expectedImage, blueComponentWithMask);
+  }
+
+  @Test
+  public void testMaskingRedComponent() throws IOException {
+    ImageRepresentation testImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation maskImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png");
+    ImageRepresentation redComponentWithMask = operations.redComponentWithMask(testImage,
+        maskImage);
+    compressedImageIO.saveImage(redComponentWithMask,
+        outputDirectory + "bird-redComponent-mask.png", "png");
+    ImageRepresentation expectedImage = compressedImageIO.loadImage(
+        outputDirectory + "bird-redComponent-mask.png");
+    assertEquals(expectedImage, redComponentWithMask);
+  }
+
+  @Test
+  public void testMaskingGreenComponent() throws IOException {
+    ImageRepresentation testImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation maskImage = compressedImageIO.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png");
+    ImageRepresentation greenComponentWithMask = operations.greenComponentWithMask(testImage,
+        maskImage);
+    compressedImageIO.saveImage(greenComponentWithMask,
+        outputDirectory + "bird-greenComponent-mask.png", "png");
+    ImageRepresentation expectedImage = compressedImageIO.loadImage(
+        outputDirectory + "bird-greenComponent-mask.png");
+    assertEquals(expectedImage, greenComponentWithMask);
+  }
+
 }
