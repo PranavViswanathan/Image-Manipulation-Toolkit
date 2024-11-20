@@ -37,45 +37,6 @@ public class Operations implements ImageOperations {
     this.compression = compression;
   }
 
-
-  /**
-   * Loads an image from the specified file path.
-   *
-   * @param filePath the path of the image file to load
-   * @return the loaded {@link Image}
-   * @throws IOException if an error occurs during loading or if the format is unsupported
-   */
-  public ImageRepresentation loadImage(String filePath) throws IOException {
-    if (filePath.endsWith(".jpg") || filePath.endsWith(".png")) {
-      return compressedIO.loadImage(filePath);
-    } else if (filePath.endsWith(".ppm")) {
-      return uncompressedIO.loadImage(filePath);
-    } else {
-      throw new IOException("Unsupported file format");
-    }
-  }
-
-  /**
-   * Saves the specified image to the given file path in the specified format.
-   *
-   * @param image    the {@link Image} to save
-   * @param filePath the path where the image will be saved
-   * @param format   the format to save the image in (e.g., "jpg", "png", "ppm")
-   * @throws IOException if an error occurs during saving or if the format is unsupported
-   */
-  public void saveImage(ImageRepresentation image, String filePath, String format)
-      throws IOException {
-    format = format.toLowerCase();
-    if (format.equals("jpg") || format.equals("png")) {
-      compressedIO.saveImage(image, filePath, format);
-    } else if (format.equals("ppm")) {
-      uncompressedIO.saveImage(image, filePath, format);
-    } else {
-      System.out.println("Format provided: " + format);
-      throw new IOException("Unsupported format");
-    }
-  }
-
   /**
    * Extracts the red component from the given image.
    *

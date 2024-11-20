@@ -17,25 +17,6 @@ import java.io.IOException;
 public interface ImageOperations {
 
   /**
-   * Loads an image from the specified file path.
-   *
-   * @param filePath the path to the image file
-   * @return the loaded {@link Image}
-   * @throws IOException if an error occurs while loading the image
-   */
-  ImageRepresentation loadImage(String filePath) throws IOException;
-
-  /**
-   * Saves the given image to the specified file path in the specified format.
-   *
-   * @param image    the {@link Image} to save
-   * @param filePath the path where the image will be saved
-   * @param format   the format in which to save the image (e.g., jpg, png)
-   * @throws IOException if an error occurs while saving the image
-   */
-  void saveImage(ImageRepresentation image, String filePath, String format) throws IOException;
-
-  /**
    * Extracts the red component from the specified image.
    *
    * @param image the {@link Image} from which to extract the red component
