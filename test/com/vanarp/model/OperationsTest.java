@@ -822,9 +822,14 @@ public class OperationsTest {
         632);
     assertEquals(testImage, downscaledImage);
   }
+
   @Test
-  public void testMasking() throws IOException {
-    ImageRepresentation testImage = operations.loadImage("test/com/vanarp/model/TestResources/Source/bird.png");
-    ImageRepresentation maskImage =operations.loadImage()
+  public void testMaskingBlur() throws IOException {
+    ImageRepresentation testImage = operations.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation maskImage = operations.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png");
+    ImageRepresentation blurWithMask = operations.applyBlurWithMask(testImage, maskImage);
+    assertEquals(testImage, blurWithMask);
   }
 }
