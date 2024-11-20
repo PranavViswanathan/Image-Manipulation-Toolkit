@@ -7,7 +7,7 @@ import java.io.IOException;
  * that manipulate images at the pixel level. It defines a common method to process images by
  * transforming each pixel using a specified pixel transformer.
  */
-public abstract class AbstractFilteringOperations implements FilteringOperationEnhanced {
+public abstract class AbstractFilteringOperations implements ImageMaskingFiltering {
 
   /**
    * Processes the given image by applying a pixel transformation to each pixel. A new image is

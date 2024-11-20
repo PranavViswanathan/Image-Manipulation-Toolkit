@@ -216,7 +216,7 @@ public class ImageProcessingController {
     if (loadedImage != null) {
       String destName = generateDestinationName(componentType);
       try {
-        commandProcessor.extractComponent(currentImageName, destName, componentType);
+        commandProcessor.extractComponent(currentImageName, destName, componentType, null);
         loadedImage = commandProcessor.getImage(destName);
         currentImageName = destName;
         view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
@@ -235,7 +235,7 @@ public class ImageProcessingController {
     if (loadedImage != null) {
       String destName = generateDestinationName(filterType);
       try {
-        commandProcessor.applyFilter(currentImageName, destName, filterType, null);
+        commandProcessor.applyFilter(currentImageName, destName, filterType, null, null);
         loadedImage = commandProcessor.getImage(destName);
         currentImageName = destName;
         view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
@@ -409,6 +409,7 @@ public class ImageProcessingController {
       createSliderDialog(filterType, (splitPercent, sliderDialog) -> {
         String previewName = generateDestinationName(filterType + "_preview");
         try {
+<<<<<<< Updated upstream
           // Generate the preview image using the specified filter
           commandProcessor.applyFilter(currentImageName, previewName, filterType, splitPercent);
 
@@ -416,6 +417,10 @@ public class ImageProcessingController {
           showPreview(previewName, "Preview - " + filterType, sliderDialog, (name) -> {
             applyFilter(filterType); // Apply the filter permanently
           });
+=======
+          commandProcessor.applyFilter(currentImageName, previewName, filterType, splitPercent, null);
+          showPreview(previewName, "Preview - " + filterType, sliderDialog);
+>>>>>>> Stashed changes
         } catch (IOException | IllegalArgumentException e) {
           showError("Failed to generate preview: " + e.getMessage());
         }

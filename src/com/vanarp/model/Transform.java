@@ -249,32 +249,4 @@ public class Transform extends AbstractImageTransformation {
 
     return new Image(downscaledImage);
   }
-
-  public ImageRepresentation applyMaskOperation(ImageRepresentation image,
-                                                ImageRepresentation mask,
-                                                PixelOperation operation) throws IOException {
-    validateImage(image);
-    validateImage(mask);
-
-    if (image.getWidth() != mask.getWidth() || image.getHeight() != mask.getHeight()) {
-      throw new IllegalArgumentException("Image and mask dimensions must match.");
-    }
-
-    ImageRepresentation resultImage = new Image(image.getWidth(), image.getHeight());
-
-    for (int x = 0; x < image.getWidth(); x++) {
-      for (int y = 0; y < image.getHeight(); y++) {
-        PixelInterface maskPixel = mask.getPixel(x, y);
-        PixelInterface originalPixel = image.getPixel(x, y);
-
-        if (maskPixel.getRed() == 255 && maskPixel.getGreen() == 255 && maskPixel.getBlue() == 255) {
-          resultImage.setPixel(x, y, operation.apply(originalPixel));
-        } else {
-          resultImage.setPixel(x, y, originalPixel);
-        }
-      }
-    }
-
-    return resultImage;
-  }
 }

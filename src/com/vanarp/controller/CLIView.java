@@ -86,7 +86,6 @@ public class CLIView {
     commandMap.put("histogram", tokens -> handleHistogram(tokens));
     commandMap.put("compress", tokens -> handleCompress(tokens));
     commandMap.put("downscale", tokens -> handleDownscale(tokens));
-    commandMap.put("apply-mask", tokens -> handleApplyMask(tokens));// Added downscale command
   }
 
   /**
@@ -133,17 +132,29 @@ public class CLIView {
    * @param component the color component to extract (e.g., red, green, blue).
    */
   private void handleComponent(String[] tokens, String component) {
-    if (tokens.length == 3) {
+    if (tokens.length >= 3 && tokens.length <= 4) {
+      String imageName = tokens[1];
+      String destImageName = tokens[2];
+      String maskImageName = tokens.length == 4 ? tokens[3] : null;
+
       try {
-        commandProcessor.extractComponent(tokens[1], tokens[2], component);
-        System.out.println(component.substring(0, 1).toUpperCase()
-            + component.substring(1)
-            + " component applied to the image.");
+
+        if (maskImageName != null) {
+          commandProcessor.extractComponent(imageName, destImageName, component, maskImageName);
+          System.out.println(component.substring(0, 1).toUpperCase()
+                  + component.substring(1)
+                  + " component applied to the image with mask.");
+        } else {
+          commandProcessor.extractComponent(imageName, destImageName, component, null);
+          System.out.println(component.substring(0, 1).toUpperCase()
+                  + component.substring(1)
+                  + " component applied to the image.");
+        }
       } catch (IOException e) {
         System.out.println("Failed to apply " + component + " component: " + e.getMessage());
       }
     } else {
-      System.out.println("Usage: " + component + "-component <image-name> <dest-image-name>");
+      System.out.println("Usage: " + component + "-component <image-name> <dest-image-name> [<mask-image-name>]");
     }
   }
 
@@ -217,21 +228,31 @@ public class CLIView {
    * @param filter the filter to apply (e.g., blur, sharpen).
    */
   private void handleFilter(String[] tokens, String filter) {
-    if (tokens.length == 3 || (tokens.length == 5 && tokens[3].equalsIgnoreCase("split"))) {
+    if (tokens.length == 3 ||
+            (tokens.length == 5 && tokens[3].equalsIgnoreCase("split")) ||
+            (tokens.length == 5 && tokens[3].equalsIgnoreCase("mask"))) {
       try {
         if (tokens.length == 3) {
-          commandProcessor.applyFilter(tokens[1], tokens[2], filter, null);
-        } else {
+          commandProcessor.applyFilter(tokens[1], tokens[2], filter, null, null);
+        } else if (tokens.length == 5 && tokens[3].equalsIgnoreCase("split")) {
           int splitPercent = Integer.parseInt(tokens[4]);
-          commandProcessor.applyFilter(tokens[1], tokens[2], filter, splitPercent);
+          commandProcessor.applyFilter(tokens[1], tokens[2], filter, splitPercent, null);
+        } else if (tokens.length == 5 && tokens[3].equalsIgnoreCase("mask")) {
+          String maskImageName = tokens[4];
+          commandProcessor.applyFilter(tokens[1], tokens[2], filter, null, maskImageName);
+        } else if (tokens.length == 6 && tokens[3].equalsIgnoreCase("mask") && tokens[4].equalsIgnoreCase("split")) {
+          String maskImageName = tokens[4];
+          int splitPercent = Integer.parseInt(tokens[5]);
+          commandProcessor.applyFilter(tokens[1], tokens[2], filter, splitPercent, maskImageName);
         }
         System.out.println("Image " + filter + "ed and saved as " + tokens[2]);
       } catch (IOException e) {
         System.out.println("Failed to " + filter + " image: " + e.getMessage());
+      } catch (NumberFormatException e) {
+        System.out.println("Invalid split percentage. It should be an integer.");
       }
     } else {
-      System.out.println(
-          "Usage: " + filter + " <image-name> <dest-image-name> [split <percentage>]");
+      System.out.println("Usage: " + filter + " <image-name> <dest-image-name> [split <percentage>] [mask <mask-image-name>]");
     }
   }
 
@@ -422,51 +443,7 @@ public class CLIView {
     }
   }
 
-  /**
-   * Handles the application of a mask to an image.
-   *
-   * @param tokens the command tokens containing the source image name, mask image name,
-   *               destination image name, and the operation type.
-   */
-  private void handleApplyMask(String[] tokens) {
-    if (tokens.length == 5) {
-      try {
-        String sourceImageName = tokens[1];
-        String maskImageName = tokens[2];
-        String destImageName = tokens[3];
-        String operationType = tokens[4];
 
-        // Define the pixel operation based on the operation type
-        PixelOperation operation;
-        switch (operationType.toLowerCase()) {
-          case "grayscale":
-            operation = pixel -> {
-              int grayValue = (pixel.getRed() + pixel.getGreen() + pixel.getBlue()) / 3;
-              return new PixelInterface() {
-                @Override
-                public int getRed() { return grayValue; }
-                @Override
-                public int getGreen() { return grayValue; }
-                @Override
-                public int getBlue() { return grayValue; }
-                @Override
-                public String toString() { return "RGB(" + grayValue + ", " + grayValue + ", " + grayValue + ")"; }
-              };
-            };
-            break;
-          default:
-            System.out.println("Unknown operation type: " + operationType);
-            return;
-        }
-        commandProcessor.applyMaskOperation(sourceImageName, maskImageName, destImageName, operation);
-        System.out.println("Mask applied to " + sourceImageName + " and saved as " + destImageName);
-      } catch (IOException e) {
-        System.out.println("Failed to apply mask: " + e.getMessage());
-      }
-    } else {
-      System.out.println("Usage: applyMask <source-image-name> <mask-image-name> <dest-image-name> <operation-type>");
-    }
-  }
 
 /**
  * Retrieves the image format based on the file extension.

@@ -8,6 +8,7 @@ import com.vanarp.controller.UncompressedImageIO;
 import com.vanarp.model.Filtering;
 import com.vanarp.model.ImageCompression;
 import com.vanarp.model.ImageCompressionFunctionality;
+import com.vanarp.model.ImageTransformationEnhanced;
 import com.vanarp.model.Operations;
 import com.vanarp.model.Transform;
 
@@ -59,7 +60,7 @@ public class CommandInputHandler {
   public static void main(String[] args) {
     ImageFileIO compressedIO = new CompressedImageIO();
     ImageFileIO uncompressedIO = new UncompressedImageIO();
-    Transform transformation = new Transform();
+    ImageTransformationEnhanced transformation = new Transform();
     Filtering filtering = new Filtering();
     ImageCompressionFunctionality compress = new ImageCompression();
 

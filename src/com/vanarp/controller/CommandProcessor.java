@@ -2,7 +2,6 @@ package com.vanarp.controller;
 
 import com.vanarp.model.ImageOperations;
 import com.vanarp.model.ImageRepresentation;
-import com.vanarp.model.PixelOperation;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -51,43 +50,91 @@ public class CommandProcessor implements ImageCommandProcessor {
   }
 
   @Override
-  public void extractComponent(String imageName, String destName, String componentType)
-      throws IOException {
+  public void extractComponent(String imageName, String destName, String componentType, String maskName) throws IOException {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation result;
-    switch (componentType.toLowerCase()) {
-      case "red":
-        result = operations.redComponent(image);
-        break;
-      case "green":
-        result = operations.greenComponent(image);
-        break;
-      case "blue":
-        result = operations.blueComponent(image);
-        break;
-      case "value":
-        result = operations.valueComponent(image);
-        break;
-      case "luma":
-        result = operations.lumaComponent(image);
-        break;
-      case "intensity":
-        result = operations.intensityComponent(image);
-        break;
-      default:
-        throw new IllegalArgumentException("Unknown component type: " + componentType);
+
+    // Check if a mask image is provided
+    if (maskName != null && !maskName.isEmpty()) {
+      ImageRepresentation maskImage = getImage(maskName);
+      // Apply component extraction with mask
+      switch (componentType.toLowerCase()) {
+        case "red":
+          result = operations.redComponentWithMask(image, maskImage);
+          break;
+        case "green":
+          result = operations.greenComponentWithMask(image, maskImage);
+          break;
+        case "blue":
+          result = operations.blueComponentWithMask(image, maskImage);
+          break;
+        case "value":
+          result = operations.valueComponent(image); // Assuming value component doesn't use a mask
+          break;
+        case "luma":
+          result = operations.lumaComponent(image); // Assuming luma component doesn't use a mask
+          break;
+        case "intensity":
+          result = operations.intensityComponent(image); // Assuming intensity component doesn't use a mask
+          break;
+        default:
+          throw new IllegalArgumentException("Unknown component type: " + componentType);
+      }
+    } else {
+      // Handle standard operations without a mask
+      switch (componentType.toLowerCase()) {
+        case "red":
+          result = operations.redComponent(image);
+          break;
+        case "green":
+          result = operations.greenComponent(image);
+          break;
+        case "blue":
+          result = operations.blueComponent(image);
+          break;
+        case "value":
+          result = operations.valueComponent(image);
+          break;
+        case "luma":
+          result = operations.lumaComponent(image);
+          break;
+        case "intensity":
+          result = operations.intensityComponent(image);
+          break;
+        default:
+          throw new IllegalArgumentException("Unknown component type: " + componentType);
+      }
     }
+
+    // Save the resulting image
     putImage(destName, result);
   }
 
   @Override
-  public void applyFilter(String imageName, String destName, String filterType,
-      Integer splitPercent) throws IOException {
+  public void applyFilter(String imageName, String destName, String filterType, Integer splitPercent, String maskImageName) throws IOException {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation result;
-    if (splitPercent != null) {
-      processSplitOperation(filterType, imageName, destName, splitPercent);
+
+    if (maskImageName != null && !maskImageName.isEmpty()) {
+      ImageRepresentation maskImage = getImage(maskImageName);
+      switch (filterType.toLowerCase()) {
+        case "blur":
+          result = operations.applyBlurWithMask(image, maskImage);
+          break;
+        case "sharpen":
+          result = operations.applySharpenWithMask(image, maskImage);
+          break;
+        case "sepia":
+          result = operations.applySepiaWithMask(image, maskImage);
+          break;
+        case "greyscale":
+          result = operations.applyGreyscaleWithMask(image, maskImage);
+          break;
+        default:
+          throw new IllegalArgumentException("Unknown filter type: " + filterType);
+      }
     } else {
+      // Handle standard operations
       switch (filterType.toLowerCase()) {
         case "blur":
           result = operations.blur(image);
@@ -104,8 +151,9 @@ public class CommandProcessor implements ImageCommandProcessor {
         default:
           throw new IllegalArgumentException("Unknown filter type: " + filterType);
       }
-      putImage(destName, result);
     }
+
+    putImage(destName, result);
   }
 
   @Override
@@ -245,13 +293,5 @@ public class CommandProcessor implements ImageCommandProcessor {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation downscaledImage = operations.downscaleImage(image, newWidth, newHeight);
     putImage(destName, downscaledImage);
-  }
-
-
-  public void applyMaskOperation(String sourceImageName, String maskImageName, String destImageName, PixelOperation operation) throws IOException {
-    ImageRepresentation sourceImage = getImage(sourceImageName);
-    ImageRepresentation maskImage = getImage(maskImageName);
-    ImageRepresentation resultImage = operations.applyMaskOperation(sourceImage, maskImage, operation);
-    putImage(destImageName, resultImage);
   }
 }
