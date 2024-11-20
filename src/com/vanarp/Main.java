@@ -3,8 +3,9 @@ package com.vanarp;
 import com.vanarp.controller.CLIView;
 import com.vanarp.controller.CommandProcessor;
 import com.vanarp.controller.CompressedImageIO;
+import com.vanarp.controller.GUIController;
+import com.vanarp.controller.ImageCommandProcessor;
 import com.vanarp.controller.ImageFileIO;
-import com.vanarp.controller.ImageProcessingController;
 import com.vanarp.controller.UncompressedImageIO;
 import com.vanarp.model.Filtering;
 import com.vanarp.model.ImageCompression;
@@ -12,7 +13,8 @@ import com.vanarp.model.ImageCompressionFunctionality;
 import com.vanarp.model.Operations;
 import com.vanarp.model.Transform;
 import com.vanarp.viewer.CommandInputHandler;
-import com.vanarp.viewer.ImageProcessingView;
+import com.vanarp.viewer.GUIView;
+import com.vanarp.viewer.GUIViewInterface;
 import javax.swing.SwingUtilities;
 
 public class Main {
@@ -32,16 +34,16 @@ public class Main {
   }
 
   private static void launchGUI() {
-    CommandProcessor commandProcessor = createCommandProcessor();
+    ImageCommandProcessor commandProcessor = createCommandProcessor();
     SwingUtilities.invokeLater(() -> {
-      ImageProcessingView view = new ImageProcessingView();
-      new ImageProcessingController(commandProcessor, view);
+      GUIView view = new GUIView();
+      new GUIController(commandProcessor, view);
     });
   }
 
   private static void executeScriptFile(String scriptFilePath) {
     try {
-      CommandProcessor commandProcessor = createCommandProcessor();
+      ImageCommandProcessor commandProcessor = createCommandProcessor();
       CLIView cliView = new CLIView(commandProcessor);
       cliView.handleScript(new String[]{"-file", scriptFilePath});
     } catch (Exception e) {
@@ -51,7 +53,7 @@ public class Main {
   }
 
   private static void launchTextMode() {
-    CommandProcessor commandProcessor = createCommandProcessor();
+    ImageCommandProcessor commandProcessor = createCommandProcessor();
     CLIView cliView = new CLIView(commandProcessor);
     CommandInputHandler inputHandler = new CommandInputHandler(cliView);
     inputHandler.start();

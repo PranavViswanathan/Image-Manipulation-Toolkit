@@ -7,7 +7,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -18,7 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-public class ImageProcessingView extends JFrame {
+public class GUIView extends JFrame implements GUIViewInterface {
 
   private final JLabel imageLabel;
   private final JLabel histogramLabel;
@@ -52,7 +51,7 @@ public class ImageProcessingView extends JFrame {
   private JCheckBox colorCorrectSplitCheckBox; // New checkbox
   private JCheckBox adjustLevelsSplitCheckBox; // New checkbox
 
-  public ImageProcessingView() {
+  public GUIView() {
     setTitle("Image Processing Application");
     setSize(1075, 600);
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -365,12 +364,6 @@ public class ImageProcessingView extends JFrame {
     greyscaleSplitCheckBox.setSelected(false);
     colorCorrectSplitCheckBox.setSelected(false);
     adjustLevelsSplitCheckBox.setSelected(false);
-  }
-
-  @FunctionalInterface
-  public interface FileChooserCallback {
-
-    void onFileChosen(File file);
   }
 
   public void showMessage(String message) {

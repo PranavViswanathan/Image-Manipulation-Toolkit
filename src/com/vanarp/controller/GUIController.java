@@ -1,7 +1,7 @@
 package com.vanarp.controller;
 
 import com.vanarp.model.ImageRepresentation;
-import com.vanarp.viewer.ImageProcessingView;
+import com.vanarp.viewer.GUIView;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
@@ -16,16 +16,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
-public class ImageProcessingController {
+public class GUIController {
 
-  private final ImageProcessingView view;
+  private final GUIView view;
   private final ImageCommandProcessor commandProcessor;
   private final Stack<Object[]> imageHistory;
   private ImageRepresentation loadedImage;
   private String currentImageName;
 
-  public ImageProcessingController(ImageCommandProcessor commandProcessor,
-      ImageProcessingView view) {
+  public GUIController(ImageCommandProcessor commandProcessor,
+      GUIView view) {
     this.commandProcessor = commandProcessor;
     this.view = view;
     this.imageHistory = new Stack<>();
@@ -568,11 +568,13 @@ public class ImageProcessingController {
 
   @FunctionalInterface
   private interface SliderAction {
+
     void execute(int splitPercent, JDialog sliderDialog);
   }
 
   @FunctionalInterface
   private interface ApplyAction {
+
     void apply(String previewName) throws IOException;
   }
 }
