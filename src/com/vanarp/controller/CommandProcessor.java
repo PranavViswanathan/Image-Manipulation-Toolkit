@@ -1,6 +1,4 @@
 package com.vanarp.controller;
-
-import com.vanarp.model.Image;
 import com.vanarp.model.ImageOperations;
 import com.vanarp.model.ImageRepresentation;
 import java.io.IOException;

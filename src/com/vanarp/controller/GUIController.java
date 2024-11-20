@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
-public class GUIController {
+public class GUIController{
 
   private final GUIView view;
   private final ImageCommandProcessor commandProcessor;
