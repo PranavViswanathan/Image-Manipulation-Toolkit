@@ -201,67 +201,83 @@ public class MockControllerTesting {
     @Override
     public ImageRepresentation downscaleImage(ImageRepresentation image, int newWidth,
         int newHeight) throws IOException {
-      return null;
+      log.append("Image downscaled to width: ").append(newWidth).append(", height: ")
+          .append(newHeight)
+          .append(System.lineSeparator());
+      return image;
     }
 
     @Override
     public ImageRepresentation applySharpenWithMask(ImageRepresentation sourceImageName,
         ImageRepresentation maskImageName) throws IOException {
-      return null;
+      log.append("Sharpen applied with mask to the image.").append(System.lineSeparator());
+      return sourceImageName;
     }
 
     @Override
     public ImageRepresentation applySepiaWithMask(ImageRepresentation sourceImageName,
         ImageRepresentation maskImageName) throws IOException {
-      return null;
+      log.append("Sepia applied with mask to the image.").append(System.lineSeparator());
+      return sourceImageName;
     }
 
     @Override
     public ImageRepresentation applyGreyscaleWithMask(ImageRepresentation sourceImageName,
         ImageRepresentation maskImageName) throws IOException {
-      return null;
+      log.append("Greyscale applied with mask to the image.").append(System.lineSeparator());
+      return sourceImageName;
     }
 
     @Override
     public ImageRepresentation applyBlurWithMask(ImageRepresentation sourceImageName,
         ImageRepresentation maskImageName) throws IOException {
-      return null;
+      log.append("Blur applied with mask to the image.").append(System.lineSeparator());
+      return sourceImageName;
     }
 
     @Override
     public ImageRepresentation blueComponentWithMask(ImageRepresentation sourceImage,
         ImageRepresentation maskImage) throws IOException {
-      return null;
+      log.append("Blue component applied with mask to the image.").append(System.lineSeparator());
+      return sourceImage;
     }
 
     @Override
     public ImageRepresentation redComponentWithMask(ImageRepresentation sourceImage,
         ImageRepresentation maskImage) throws IOException {
-      return null;
+      log.append("Red component applied with mask to the image.").append(System.lineSeparator());
+      // Implement red component logic with mask here and return the modified image
+      return sourceImage;
     }
 
     @Override
     public ImageRepresentation greenComponentWithMask(ImageRepresentation sourceImage,
         ImageRepresentation maskImage) throws IOException {
-      return null;
+      log.append("Green component applied with mask to the image.").append(System.lineSeparator());
+      // Implement green component logic with mask here and return the modified image
+      return sourceImage;
     }
 
     @Override
     public ImageRepresentation lumaComponentWithMask(ImageRepresentation sourceImage,
         ImageRepresentation maskImage) throws IOException {
-      return null;
+      log.append("Luma component applied with mask to the image.").append(System.lineSeparator());
+      return sourceImage;
     }
 
     @Override
     public ImageRepresentation intensityComponentWithMask(ImageRepresentation sourceImage,
         ImageRepresentation maskImage) throws IOException {
-      return null;
+      log.append("Intensity component applied with mask to the image.")
+          .append(System.lineSeparator());
+      return sourceImage;
     }
 
     @Override
     public ImageRepresentation valueComponentWithMask(ImageRepresentation sourceImage,
         ImageRepresentation maskImage) throws IOException {
-      return null;
+      log.append("Value component applied with mask to the image.").append(System.lineSeparator());
+      return sourceImage;
     }
   }
 
@@ -485,7 +501,7 @@ public class MockControllerTesting {
             + "load test/com/vanarp/model/TestResources/SampleOperations/blueComponent.png blue\n"
             + "rgb-combine bird red green blue\n");
     assertEquals("RGB combined."
-            + System.lineSeparator(), log.toString());
+        + System.lineSeparator(), log.toString());
   }
 
   @Test
@@ -552,6 +568,114 @@ public class MockControllerTesting {
     assertEquals(expectedOutput, log.toString());
   }
 
+  @Test
+  public void testApplySharpenWithMaskMock() {
+    StringBuilder log = getOutput(
+        "load test/com/vanarp/model/TestResources/Source/bird.png sourceImage\n"
+            + "load test/com/vanarp/model/TestResources/Source/bird-masked.png maskImage\n"
+            + "sharpen sourceImage maskImage sharpenedImage\n");
+    assertEquals("Sharpen applied with mask to the image." + System.lineSeparator(),
+        log.toString());
+  }
+
+  @Test
+  public void testApplySepiaWithMaskMock() {
+    StringBuilder log = getOutput(
+        "load test/com/vanarp/model/TestResources/Source/bird.png sourceImage\n"
+            + "load test/com/vanarp/model/TestResources/Source/bird-masked.png maskImage\n"
+            + "sepia sourceImage maskImage sepiaImage\n");
+    assertEquals("Sepia applied with mask to the image." + System.lineSeparator(),
+        log.toString());
+  }
+
+  @Test
+  public void testApplyGreyscaleWithMaskMock() {
+    StringBuilder log = getOutput(
+        "load test/com/vanarp/model/TestResources/Source/bird.png sourceImage\n"
+            + "load test/com/vanarp/model/TestResources/Source/bird-masked.png maskImage\n"
+            + "greyscale sourceImage maskImage greyscaleImage\n");
+    assertEquals("Greyscale applied with mask to the image." + System.lineSeparator(),
+        log.toString());
+  }
+
+  @Test
+  public void testApplyBlurWithMaskMock() {
+    StringBuilder log = getOutput(
+        "load test/com/vanarp/model/TestResources/Source/bird.png sourceImage\n"
+            + "load test/com/vanarp/model/TestResources/Source/bird-masked.png maskImage\n"
+            + "blur sourceImage maskImage blurredImage\n");
+    assertEquals("Blur applied with mask to the image." + System.lineSeparator(),
+        log.toString());
+  }
+
+  @Test
+  public void testBlueComponentWithMaskMock() {
+    StringBuilder log = getOutput(
+        "load test/com/vanarp/model/TestResources/Source/bird.png sourceImage\n"
+            + "load test/com/vanarp/model/TestResources/Source/bird-masked.png maskImage\n"
+            + "blue-component sourceImage maskImage blueImage\n");
+    assertEquals("Blue component applied with mask to the image." + System.lineSeparator(),
+        log.toString());
+  }
+
+  @Test
+  public void testRedComponentWithMaskMock() {
+    StringBuilder log = getOutput(
+        "load test/com/vanarp/model/TestResources/Source/bird.png sourceImage\n"
+            + "load test/com/vanarp/model/TestResources/Source/bird-masked.png maskImage\n"
+            + "red-component sourceImage maskImage redImage\n");
+    assertEquals("Red component applied with mask to the image." + System.lineSeparator(),
+        log.toString());
+  }
+
+  @Test
+  public void testGreenComponentWithMaskMock() {
+    StringBuilder log = getOutput(
+        "load test/com/vanarp/model/TestResources/Source/bird.png sourceImage\n"
+            + "load test/com/vanarp/model/TestResources/Source/bird-masked.png maskImage\n"
+            + "green-component sourceImage maskImage greenImage\n");
+    assertEquals("Green component applied with mask to the image." + System.lineSeparator(),
+        log.toString());
+  }
+
+  @Test
+  public void testLumaComponentWithMaskMock() {
+    StringBuilder log = getOutput(
+        "load test/com/vanarp/model/TestResources/Source/bird.png sourceImage\n"
+            + "load test/com/vanarp/model/TestResources/Source/bird-masked.png maskImage\n"
+            + "luma-component sourceImage maskImage lumaImage\n");
+    assertEquals("Luma component applied with mask to the image." + System.lineSeparator(),
+        log.toString());
+  }
+
+  @Test
+  public void testIntensityComponentWithMaskMock() {
+    StringBuilder log = getOutput(
+        "load test/com/vanarp/model/TestResources/Source/bird.png sourceImage\n"
+            + "load test/com/vanarp/model/TestResources/Source/bird-masked.png maskImage\n"
+            + "intensity-component sourceImage maskImage intensityImage\n");
+    assertEquals("Intensity component applied with mask to the image." + System.lineSeparator(),
+        log.toString());
+  }
+
+  @Test
+  public void testValueComponentWithMaskMock() {
+    StringBuilder log = getOutput(
+        "load test/com/vanarp/model/TestResources/Source/bird.png sourceImage\n"
+            + "load test/com/vanarp/model/TestResources/Source/bird-masked.png maskImage\n"
+            + "value-component sourceImage maskImage valueImage\n");
+    assertEquals("Value component applied with mask to the image." + System.lineSeparator(),
+        log.toString());
+  }
+
+  @Test
+  public void testDownscaleImageMock() {
+    StringBuilder log = getOutput(
+        "load test/com/vanarp/model/TestResources/Source/bird.png sourceImage\n"
+            + "downscale sourceImage downscaledImage 100 100 \n");
+    assertEquals("Image downscaled to width: 100, height: 100" + System.lineSeparator(),
+        log.toString());
+  }
 
   private StringBuilder getOutput(String s) {
     StringBuilder log = new StringBuilder();

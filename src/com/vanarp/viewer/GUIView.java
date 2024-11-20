@@ -43,13 +43,12 @@ public class GUIView extends JFrame implements GUIViewInterface {
   private JButton downscaleButton;
   private JButton compressButton;
 
-  // Changed radio buttons to checkboxes
   private JCheckBox blurSplitCheckBox;
   private JCheckBox sharpenSplitCheckBox;
   private JCheckBox sepiaSplitCheckBox;
   private JCheckBox greyscaleSplitCheckBox;
-  private JCheckBox colorCorrectSplitCheckBox; // New checkbox
-  private JCheckBox adjustLevelsSplitCheckBox; // New checkbox
+  private JCheckBox colorCorrectSplitCheckBox;
+  private JCheckBox adjustLevelsSplitCheckBox;
 
   public GUIView() {
     setTitle("Image Processing Application");
@@ -57,13 +56,12 @@ public class GUIView extends JFrame implements GUIViewInterface {
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     setLayout(new BorderLayout());
 
-    // Create panels for image and histogram
     JPanel imagePanel = new JPanel();
     imagePanel.setLayout(new BorderLayout());
     imageLabel = new JLabel();
     imageLabel.setHorizontalAlignment(JLabel.CENTER);
     JScrollPane imageScrollPane = new JScrollPane(imageLabel);
-    imageScrollPane.setPreferredSize(new Dimension(300, 50)); // Set preferred size
+    imageScrollPane.setPreferredSize(new Dimension(300, 50));
     imagePanel.add(imageScrollPane, BorderLayout.CENTER);
 
     JPanel histogramPanel = new JPanel();
@@ -71,28 +69,24 @@ public class GUIView extends JFrame implements GUIViewInterface {
     histogramLabel = new JLabel();
     histogramLabel.setHorizontalAlignment(JLabel.CENTER);
     JScrollPane histogramScrollPane = new JScrollPane(histogramLabel);
-    histogramScrollPane.setPreferredSize(new Dimension(300, 25)); // Set preferred size
+    histogramScrollPane.setPreferredSize(new Dimension(300, 25));
     histogramPanel.add(histogramScrollPane, BorderLayout.EAST);
 
-    // Add panels to the main frame
     JPanel displayPanel = new JPanel();
     displayPanel.setLayout(new BorderLayout());
     displayPanel.add(imagePanel, BorderLayout.CENTER);
     displayPanel.add(histogramPanel, BorderLayout.EAST);
     add(displayPanel, BorderLayout.CENTER);
 
-    // Initialize buttons
     initializeButtons();
-    createCheckBoxes(); // Initialize checkboxes
+    createCheckBoxes();
 
-    // Control panel with GridBagLayout
     JPanel controlPanel = new JPanel();
     controlPanel.setLayout(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.fill = GridBagConstraints.HORIZONTAL;
-    gbc.insets = new Insets(5, 5, 5, 5); // Add some padding
+    gbc.insets = new Insets(5, 5, 5, 5);
 
-    // Button Groups
     addButtonGroup(controlPanel, gbc, "File Operations",
         new JButton[]{loadButton, saveButton, undoButton, revertButton});
     addButtonGroup(controlPanel, gbc, "Color Extraction",
@@ -103,22 +97,17 @@ public class GUIView extends JFrame implements GUIViewInterface {
     addButtonGroup(controlPanel, gbc, "Reductions",
         new JButton[]{downscaleButton, compressButton});
 
-    gbc.gridy++; // Move to the next row
-    gbc.gridx = 0; // Reset column index
-    controlPanel.add(adjustBrightnessButton, gbc); // Add Adjust Brightness button
+    gbc.gridy++;
+    gbc.gridx = 0;
+    controlPanel.add(adjustBrightnessButton, gbc);
 
-    // Add image effects group
     addImageEffectsGroup(controlPanel, gbc);
-
-    // Add adjustments group (without Adjust Brightness)
     addAdjustmentsGroup(controlPanel, gbc);
 
-    // Wrap control panel in a JScrollPane
     JScrollPane scrollPane = new JScrollPane(controlPanel);
-    scrollPane.setPreferredSize(new Dimension(300, 600));
+    scrollPane.setPreferredSize(new Dimension(320, 600));
     add(scrollPane, BorderLayout.WEST);
 
-    // Add action listeners to checkboxes
     addCheckBoxListeners();
   }
 
@@ -138,7 +127,6 @@ public class GUIView extends JFrame implements GUIViewInterface {
 
   private void addCheckBoxListeners() {
     ActionListener checkBoxListener = e -> {
-      // Handle checkbox visibility or other logic if needed
     };
 
     blurSplitCheckBox.addActionListener(checkBoxListener);
@@ -182,57 +170,53 @@ public class GUIView extends JFrame implements GUIViewInterface {
     sharpenSplitCheckBox = new JCheckBox("Sharpen Preview");
     sepiaSplitCheckBox = new JCheckBox("Sepia Preview");
     greyscaleSplitCheckBox = new JCheckBox("Greyscale Preview");
-    colorCorrectSplitCheckBox = new JCheckBox("Color Correct Preview"); // New checkbox
-    adjustLevelsSplitCheckBox = new JCheckBox("Adjust Levels Preview"); // New checkbox
+    colorCorrectSplitCheckBox = new JCheckBox("Color Correct Preview");
+    adjustLevelsSplitCheckBox = new JCheckBox("Adjust Levels Preview");
   }
 
   private void addImageEffectsGroup(JPanel panel, GridBagConstraints gbc) {
-    gbc.gridy++; // Move to the next row for the image effects
-    gbc.gridx = 0; // Reset column index
+    gbc.gridy++;
+    gbc.gridx = 0;
 
-    // Add buttons and checkboxes for image effects
     panel.add(blurButton, gbc);
     gbc.gridx++;
     panel.add(blurSplitCheckBox, gbc);
 
-    gbc.gridx = 0; // Reset column index for next effect
-    gbc.gridy++; // Move to the next row
+    gbc.gridx = 0;
+    gbc.gridy++;
     panel.add(sharpenButton, gbc);
     gbc.gridx++;
     panel.add(sharpenSplitCheckBox, gbc);
 
-    gbc.gridx = 0; // Reset column index for next effect
-    gbc.gridy++; // Move to the next row
+    gbc.gridx = 0;
+    gbc.gridy++;
     panel.add(sepiaButton, gbc);
     gbc.gridx++;
     panel.add(sepiaSplitCheckBox, gbc);
 
-    gbc.gridx = 0; // Reset column index for next effect
-    gbc.gridy++; // Move to the next row
+    gbc.gridx = 0;
+    gbc.gridy++;
     panel.add(greyscaleButton, gbc);
     gbc.gridx++;
     panel.add(greyscaleSplitCheckBox, gbc);
 
-    // Add space after the image effects group
     gbc.gridy++;
-    gbc.insets = new Insets(10, 5, 5, 5); // Add extra space after the group
+    gbc.insets = new Insets(10, 5, 5, 5);
   }
 
   private void addAdjustmentsGroup(JPanel panel, GridBagConstraints gbc) {
-    gbc.gridy++; // Move to the next row for the adjustments
-    gbc.gridx = 0; // Reset column index
+    gbc.gridy++;
+    gbc.gridx = 0;
 
-    // Add buttons and checkboxes for adjustments
     panel.add(colorCorrectButton, gbc);
     gbc.gridx++;
-    panel.add(colorCorrectSplitCheckBox, gbc); // Add Color Correct checkbox
+    panel.add(colorCorrectSplitCheckBox, gbc);
 
-    // Move to the next row for Adjust Levels
-    gbc.gridx = 0; // Reset column index for Adjust Levels
-    gbc.gridy++; // Increment row for Adjust Levels
-    panel.add(adjustLevelsButton, gbc); // Add Adjust Levels button
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(adjustLevelsButton, gbc);
     gbc.gridx++;
-    panel.add(adjustLevelsSplitCheckBox, gbc); // Add Adjust Levels checkbox
+    panel.add(adjustLevelsSplitCheckBox, gbc);
 
     gbc.gridy++;
     gbc.insets = new Insets(10, 5, 5, 5);
@@ -243,22 +227,18 @@ public class GUIView extends JFrame implements GUIViewInterface {
     gbc.gridx = 0;
     gbc.gridy++;
 
-    // Arrange buttons in two rows for other groups
-    int buttonsPerRow = 2; // Number of buttons per row
+    int buttonsPerRow = 2;
     for (int i = 0; i < buttons.length; i++) {
-      gbc.gridx = i % buttonsPerRow; // Column index (0 or 1)
-      gbc.gridy += (i % buttonsPerRow == 0 && i != 0) ? 1
-          : 0; // Move to the next row after filling the current one
+      gbc.gridx = i % buttonsPerRow;
+      gbc.gridy += (i % buttonsPerRow == 0 && i != 0) ? 1 : 0;
 
-      // Add padding around buttons
-      gbc.insets = new Insets(5, 5, 5, 5); // Add some padding
-      buttons[i].setMinimumSize(new Dimension(100, 30)); // Set minimum size for buttons
+      gbc.insets = new Insets(5, 5, 5, 5);
+      buttons[i].setMinimumSize(new Dimension(100, 30));
       panel.add(buttons[i], gbc);
     }
 
-    // Add space after each button group
     gbc.gridy++;
-    gbc.insets = new Insets(10, 5, 5, 5); // Add extra space after the group
+    gbc.insets = new Insets(10, 5, 5, 5);
   }
 
   public void createButtons(ActionListener listener) {
@@ -273,7 +253,6 @@ public class GUIView extends JFrame implements GUIViewInterface {
     extractIntensityButton.addActionListener(listener);
     extractValueButton.addActionListener(listener);
 
-    // Custom action listener for the blur button
     blurButton.addActionListener(e -> {
       if (blurSplitCheckBox.isSelected()) {
         listener.actionPerformed(
@@ -283,7 +262,6 @@ public class GUIView extends JFrame implements GUIViewInterface {
       }
     });
 
-    // Custom action listener for the sharpen button
     sharpenButton.addActionListener(e -> {
       if (sharpenSplitCheckBox.isSelected()) {
         listener.actionPerformed(
@@ -294,7 +272,6 @@ public class GUIView extends JFrame implements GUIViewInterface {
       }
     });
 
-    // Custom action listener for the sepia button
     sepiaButton.addActionListener(e -> {
       if (sepiaSplitCheckBox.isSelected()) {
         listener.actionPerformed(
@@ -305,7 +282,6 @@ public class GUIView extends JFrame implements GUIViewInterface {
       }
     });
 
-    // Custom action listener for the greyscale button
     greyscaleButton.addActionListener(e -> {
       if (greyscaleSplitCheckBox.isSelected()) {
         listener.actionPerformed(
@@ -316,9 +292,8 @@ public class GUIView extends JFrame implements GUIViewInterface {
       }
     });
 
-    // Custom action listener for the color correct button
     colorCorrectButton.addActionListener(e -> {
-      if (colorCorrectSplitCheckBox.isSelected()) {
+     if (colorCorrectSplitCheckBox.isSelected()) {
         listener.actionPerformed(new ActionEvent(colorCorrectButton, ActionEvent.ACTION_PERFORMED,
             "Color Correct Preview"));
       } else {
@@ -327,7 +302,6 @@ public class GUIView extends JFrame implements GUIViewInterface {
       }
     });
 
-    // Custom action listener for the adjust levels button
     adjustLevelsButton.addActionListener(e -> {
       if (adjustLevelsSplitCheckBox.isSelected()) {
         listener.actionPerformed(new ActionEvent(adjustLevelsButton, ActionEvent.ACTION_PERFORMED,

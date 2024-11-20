@@ -415,11 +415,7 @@ public class GUIController {
           // Show the preview dialog with the appropriate apply action
           showPreview(previewName, "Preview - " + filterType, sliderDialog, (name) -> {
             // Apply the filter permanently
-            commandProcessor.applyFilter(currentImageName, name, filterType, splitPercent, null);
-            loadedImage = commandProcessor.getImage(name);
-            currentImageName = name;
-            view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
-            generateHistogram();
+            applyFilter(filterType); // Call applyFilter directly here
           });
         } catch (IOException | IllegalArgumentException e) {
           showError("Failed to generate preview: " + e.getMessage());
@@ -515,11 +511,11 @@ public class GUIController {
     JLabel previewLabel = new JLabel(new ImageIcon(previewImage.toBufferedImage()));
     previewDialog.add(previewLabel, BorderLayout.CENTER);
 
-    // Create a panel for the buttons with GridLayout
-    JPanel buttonPanel = new JPanel(new GridLayout(1, 2)); // 1 row, 2 columns
+    JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
 
     JButton closeButton = new JButton("Close");
     JButton applyButton = new JButton("Apply");
+    JButton goBackButton = new JButton("Change Value");
 
     closeButton.addActionListener(ev -> {
       previewDialog.dispose();
@@ -527,19 +523,24 @@ public class GUIController {
     });
 
     applyButton.addActionListener(ev -> {
-      // Call the apply action with the preview name
       try {
+        System.out.println(previewName);
         applyAction.apply(previewName);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
       previewDialog.dispose();
-      sliderDialog.dispose(); // Optionally close the slider dialog too
+      sliderDialog.dispose();
     });
 
-    // Add buttons to the button panel
-    buttonPanel.add(closeButton);
+    goBackButton.addActionListener(ev -> {
+      previewDialog.dispose();
+      sliderDialog.setVisible(true);
+    });
+
+    buttonPanel.add(goBackButton);
     buttonPanel.add(applyButton);
+    buttonPanel.add(closeButton);
 
     // Add the button panel to the SOUTH of the preview dialog
     previewDialog.add(buttonPanel, BorderLayout.SOUTH);
