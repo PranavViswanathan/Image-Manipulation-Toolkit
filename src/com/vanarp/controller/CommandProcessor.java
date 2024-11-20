@@ -67,20 +67,19 @@ public class CommandProcessor implements ImageCommandProcessor {
           result = operations.blueComponentWithMask(image, maskImage);
           break;
         case "value":
-          result = operations.valueComponent(image); // Assuming value component doesn't use a mask
+          result = operations.valueComponent(image);
           break;
         case "luma":
-          result = operations.lumaComponent(image); // Assuming luma component doesn't use a mask
+          result = operations.lumaComponent(image);
           break;
         case "intensity":
           result = operations.intensityComponent(
-              image); // Assuming intensity component doesn't use a mask
+              image);
           break;
         default:
           throw new IllegalArgumentException("Unknown component type: " + componentType);
       }
     } else {
-      // Handle standard operations without a mask
       switch (componentType.toLowerCase()) {
         case "red":
           result = operations.redComponent(image);
@@ -105,20 +104,18 @@ public class CommandProcessor implements ImageCommandProcessor {
       }
     }
 
-    // Save the resulting image
     putImage(destName, result);
   }
+
   @Override
   public void applyFilter(String imageName, String destName, String filterType,
       Integer splitPercent, String maskImageName) throws IOException {
 
-    // If splitPercent is provided, handle the split operation
     if (splitPercent != null) {
       processSplitOperation(filterType, imageName, destName, splitPercent);
-      return; // Exit early after processing the split operation
+      return;
     }
 
-    // If no splitPercent, proceed with normal filter application
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation result;
 
@@ -141,7 +138,6 @@ public class CommandProcessor implements ImageCommandProcessor {
           throw new IllegalArgumentException("Unknown filter type: " + filterType);
       }
     } else {
-      // Handle standard operations
       switch (filterType.toLowerCase()) {
         case "blur":
           result = operations.blur(image);

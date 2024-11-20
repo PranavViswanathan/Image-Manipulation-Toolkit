@@ -241,34 +241,48 @@ public interface ImageOperations {
       throws IOException;
 
   /**
-   * Applies a sharpen effect to the source image using a mask and saves the result to the destination image.
+   * Applies a sharpen effect to the source image using a mask and saves the result to the
+   * destination image.
    *
    * @param sourceImageName The name of the source image.
    * @param maskImageName   The name of the mask image.
    * @throws IOException If an error occurs during processing.
    */
-  ImageRepresentation applySharpenWithMask(ImageRepresentation sourceImageName, ImageRepresentation maskImageName) throws IOException;
+  ImageRepresentation applySharpenWithMask(ImageRepresentation sourceImageName,
+      ImageRepresentation maskImageName) throws IOException;
 
   /**
-   * Applies a sepia effect to the source image using a mask and saves the result to the destination image.
+   * Applies a sepia effect to the source image using a mask and saves the result to the destination
+   * image.
    *
    * @param sourceImageName The name of the source image.
    * @param maskImageName   The name of the mask image.
    * @throws IOException If an error occurs during processing.
    */
-  ImageRepresentation applySepiaWithMask(ImageRepresentation sourceImageName, ImageRepresentation maskImageName) throws IOException;
+  ImageRepresentation applySepiaWithMask(ImageRepresentation sourceImageName,
+      ImageRepresentation maskImageName) throws IOException;
 
   /**
-   * Applies a grayscale effect to the source image using a mask and saves the result to the destination image.
+   * Applies a grayscale effect to the source image using a mask and saves the result to the
+   * destination image.
    *
    * @param sourceImageName The name of the source image.
    * @param maskImageName   The name of the mask image.
    * @throws IOException If an error occurs during processing.
    */
-  ImageRepresentation applyGreyscaleWithMask(ImageRepresentation sourceImageName, ImageRepresentation maskImageName) throws IOException;
-  ImageRepresentation applyBlurWithMask(ImageRepresentation sourceImageName, ImageRepresentation maskImageName) throws IOException;
-  ImageRepresentation blueComponentWithMask(ImageRepresentation sourceImage, ImageRepresentation maskImage) throws IOException;
-  ImageRepresentation redComponentWithMask(ImageRepresentation sourceImage, ImageRepresentation maskImage) throws IOException;
-  ImageRepresentation greenComponentWithMask(ImageRepresentation sourceImage, ImageRepresentation maskImage) throws IOException;
+  ImageRepresentation applyGreyscaleWithMask(ImageRepresentation sourceImageName,
+      ImageRepresentation maskImageName) throws IOException;
+
+  ImageRepresentation applyBlurWithMask(ImageRepresentation sourceImageName,
+      ImageRepresentation maskImageName) throws IOException;
+
+  ImageRepresentation blueComponentWithMask(ImageRepresentation sourceImage,
+      ImageRepresentation maskImage) throws IOException;
+
+  ImageRepresentation redComponentWithMask(ImageRepresentation sourceImage,
+      ImageRepresentation maskImage) throws IOException;
+
+  ImageRepresentation greenComponentWithMask(ImageRepresentation sourceImage,
+      ImageRepresentation maskImage) throws IOException;
 
 }

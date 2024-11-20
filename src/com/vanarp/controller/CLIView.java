@@ -280,7 +280,7 @@ public class CLIView {
       try {
         commandProcessor.getHistogram(tokens[1], tokens[2]);
         System.out.println("Histogram created from " + tokens[1] + " and saved as " + tokens[2]);
-      } catch (IOException e) {
+      } catch (IOException | IllegalArgumentException e) {
         handleException("handleHistogram", e);
       }
     } else {
