@@ -1,10 +1,10 @@
-## Image Processing Application GUI 
+# Image Processing Application GUI 
 
 ![GUI Screenshot](GUI.png)
 
 **Components:**
 
-* **Menu Bar:**
+ **Menu Bar:**
     * **Main:**
         * **Load:** Loads an image into the application for processing.
         * **Save:** Saves the currently processed image to a file.
@@ -39,12 +39,50 @@
     * **Main Image View:** Displays the currently loaded and processed image. 
 
 * **Histogram View:**
-    * **Channel Histograms:** Displays histograms for the red, green, blue , and luma channels, allowing users to analyze the distribution of pixel values in each channel.
+    * **Channel Histograms:** Displays histograms for the red, green, blue, and luma channels, allowing users to analyze the distribution of pixel values in each channel.
     * **Overall Histogram:** Displays a combined histogram for the entire image, providing a visual representation of pixel intensity distribution.
 
 **User  Interaction:**
 * Users can interact with the GUI through buttons and menus to perform various image processing tasks.
 * The application provides visual feedback through previews and status updates to enhance user experience.
 
-**Conclusion:**
-This GUI is designed to facilitate easy and intuitive image processing, allowing users to manipulate images effectively with a variety of tools and options.
+## **Using the UI:**
+
+
+Below is a sample walkthrough of how a user would interact with the GUI.
+
+1. **Opening the GUI**
+
+- The user can open the GUI by navigating to the folder which contains the JAR file. The JAR file for the project is located in the ```res``` folder.
+- When in the folder, run the JAR file by using the below command
+
+``` java -jar <jarfilename.jar```
+
+This will lead to a popup with the GUI of the application loaded.
+
+2. **Using the GUI**
+- First, we need to load an image.
+  - Click on the load image button on the left-hand pane. This will open a window where you can choose which image you wish to load.
+  - After selecting the image you will see the image that you loaded on the center pane along with its histogram on the right pane
+ 
+- Performing operations on the image
+   - Choose an option from the left pane, say sharpen for instance.
+   - You will receive a popup indicating that the operation has been completed.
+   - The image in the middle pane will now be updated with the new, sharpened image.
+ 
+- Previewing Operations on the image
+     - Say you want to preview what sepia would look like on the image.
+     - click on the ```Sepia Preview``` button.
+     - now click on the sepia button, a popup with a slider will appear, select the amount of preview you would like to see.
+     - after clicking ok, you will be able to view a split view between the original and the operated image.
+     - You can either apply or cancel the operation, in this case, lets assume we wish to apply the change.
+     - The sepia filter will be applied to the whole image.
+ 
+- Undoing an operation
+     - Say you wish to undo an operation that you performed, such as the sepia application.
+     - Click on the undo button, which will allow you to revert to the previous image state.
+ 
+- Exiting the application
+     - Click on the close button, you will be prompted to save the image if you wish to.
+     - If you wish to save the image, it will ask you where to save the image.
+     - If not, the application will close.
