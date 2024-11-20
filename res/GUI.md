@@ -42,10 +42,6 @@
     * **Channel Histograms:** Displays histograms for the red, green, blue , and luma channels, allowing users to analyze the distribution of pixel values in each channel.
     * **Overall Histogram:** Displays a combined histogram for the entire image, providing a visual representation of pixel intensity distribution.
 
-* **Status Bar:**
-    * **Current Status:** Displays the current status of the application, such as "Image Loaded" or "Processing Complete."
-    * **Error Messages:** Displays any error messages related to image loading or processing.
-
 **User  Interaction:**
 * Users can interact with the GUI through buttons and menus to perform various image processing tasks.
 * The application provides visual feedback through previews and status updates to enhance user experience.
