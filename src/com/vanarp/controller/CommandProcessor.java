@@ -2,7 +2,6 @@ package com.vanarp.controller;
 
 import com.vanarp.model.ImageOperations;
 import com.vanarp.model.ImageRepresentation;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,14 +49,13 @@ public class CommandProcessor implements ImageCommandProcessor {
   }
 
   @Override
-  public void extractComponent(String imageName, String destName, String componentType, String maskName) throws IOException {
+  public void extractComponent(String imageName, String destName, String componentType,
+      String maskName) throws IOException {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation result;
 
-    // Check if a mask image is provided
     if (maskName != null && !maskName.isEmpty()) {
       ImageRepresentation maskImage = getImage(maskName);
-      // Apply component extraction with mask
       switch (componentType.toLowerCase()) {
         case "red":
           result = operations.redComponentWithMask(image, maskImage);
@@ -75,7 +73,8 @@ public class CommandProcessor implements ImageCommandProcessor {
           result = operations.lumaComponent(image); // Assuming luma component doesn't use a mask
           break;
         case "intensity":
-          result = operations.intensityComponent(image); // Assuming intensity component doesn't use a mask
+          result = operations.intensityComponent(
+              image); // Assuming intensity component doesn't use a mask
           break;
         default:
           throw new IllegalArgumentException("Unknown component type: " + componentType);
@@ -111,7 +110,8 @@ public class CommandProcessor implements ImageCommandProcessor {
   }
 
   @Override
-  public void applyFilter(String imageName, String destName, String filterType, Integer splitPercent, String maskImageName) throws IOException {
+  public void applyFilter(String imageName, String destName, String filterType,
+      Integer splitPercent, String maskImageName) throws IOException {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation result;
 

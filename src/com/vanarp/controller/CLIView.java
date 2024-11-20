@@ -1,8 +1,5 @@
 package com.vanarp.controller;
 
-import com.vanarp.model.PixelInterface;
-import com.vanarp.model.PixelOperation;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +60,7 @@ public class CLIView {
    * Initializes the command map with available commands and their respective handlers.
    */
   private void initializeCommands() {
-    commandMap.put("load", tokens ->    handleLoad(tokens));
+    commandMap.put("load", tokens -> handleLoad(tokens));
     commandMap.put("save", tokens -> handleSave(tokens));
     commandMap.put("red-component", tokens -> handleComponent(tokens, "red"));
     commandMap.put("green-component", tokens -> handleComponent(tokens, "green"));
@@ -82,7 +79,7 @@ public class CLIView {
     commandMap.put("luma-component", tokens -> handleComponent(tokens, "luma"));
     commandMap.put("intensity-component", tokens -> handleComponent(tokens, "intensity"));
     commandMap.put("rgb-combine", tokens -> handleRgbCombine(tokens));
-    commandMap.put("script", tokens -> handleScript(tokens));
+    commandMap.put("-file", tokens -> handleScript(tokens));
     commandMap.put("histogram", tokens -> handleHistogram(tokens));
     commandMap.put("compress", tokens -> handleCompress(tokens));
     commandMap.put("downscale", tokens -> handleDownscale(tokens));
@@ -142,19 +139,20 @@ public class CLIView {
         if (maskImageName != null) {
           commandProcessor.extractComponent(imageName, destImageName, component, maskImageName);
           System.out.println(component.substring(0, 1).toUpperCase()
-                  + component.substring(1)
-                  + " component applied to the image with mask.");
+              + component.substring(1)
+              + " component applied to the image with mask.");
         } else {
           commandProcessor.extractComponent(imageName, destImageName, component, null);
           System.out.println(component.substring(0, 1).toUpperCase()
-                  + component.substring(1)
-                  + " component applied to the image.");
+              + component.substring(1)
+              + " component applied to the image.");
         }
       } catch (IOException e) {
         System.out.println("Failed to apply " + component + " component: " + e.getMessage());
       }
     } else {
-      System.out.println("Usage: " + component + "-component <image-name> <dest-image-name> [<mask-image-name>]");
+      System.out.println(
+          "Usage: " + component + "-component <image-name> <dest-image-name> [<mask-image-name>]");
     }
   }
 
@@ -229,8 +227,8 @@ public class CLIView {
    */
   private void handleFilter(String[] tokens, String filter) {
     if (tokens.length == 3 ||
-            (tokens.length == 5 && tokens[3].equalsIgnoreCase("split")) ||
-            (tokens.length == 5 && tokens[3].equalsIgnoreCase("mask"))) {
+        (tokens.length == 5 && tokens[3].equalsIgnoreCase("split")) ||
+        (tokens.length == 5 && tokens[3].equalsIgnoreCase("mask"))) {
       try {
         if (tokens.length == 3) {
           commandProcessor.applyFilter(tokens[1], tokens[2], filter, null, null);
@@ -240,7 +238,8 @@ public class CLIView {
         } else if (tokens.length == 5 && tokens[3].equalsIgnoreCase("mask")) {
           String maskImageName = tokens[4];
           commandProcessor.applyFilter(tokens[1], tokens[2], filter, null, maskImageName);
-        } else if (tokens.length == 6 && tokens[3].equalsIgnoreCase("mask") && tokens[4].equalsIgnoreCase("split")) {
+        } else if (tokens.length == 6 && tokens[3].equalsIgnoreCase("mask")
+            && tokens[4].equalsIgnoreCase("split")) {
           String maskImageName = tokens[4];
           int splitPercent = Integer.parseInt(tokens[5]);
           commandProcessor.applyFilter(tokens[1], tokens[2], filter, splitPercent, maskImageName);
@@ -252,7 +251,8 @@ public class CLIView {
         System.out.println("Invalid split percentage. It should be an integer.");
       }
     } else {
-      System.out.println("Usage: " + filter + " <image-name> <dest-image-name> [split <percentage>] [mask <mask-image-name>]");
+      System.out.println("Usage: " + filter
+          + " <image-name> <dest-image-name> [split <percentage>] [mask <mask-image-name>]");
     }
   }
 
@@ -317,8 +317,8 @@ public class CLIView {
   /**
    * Handles the combination of RGB components into a single image.
    *
-   * @param tokens the command tokens containing the image name and the names of the red, green,
-   *               and blue images.
+   * @param tokens the command tokens containing the image name and the names of the red, green, and
+   *               blue images.
    */
   private void handleRgbCombine(String[] tokens) {
     if (tokens.length == 5) {
@@ -344,7 +344,7 @@ public class CLIView {
    *
    * @param tokens the command tokens containing the script file path.
    */
-  private void handleScript(String[] tokens) {
+  public void handleScript(String[] tokens) {
     if (tokens.length == 2) {
       try {
         ScriptProcessor scriptProcessor = new ScriptProcessor(this);
@@ -354,7 +354,7 @@ public class CLIView {
         System.out.println("Failed to execute script: " + e.getMessage());
       }
     } else {
-      System.out.println("Usage: script <script-file-path>");
+      System.out.println("Usage: -file <script-file-path>");
     }
   }
 
@@ -444,19 +444,18 @@ public class CLIView {
   }
 
 
-
-/**
- * Retrieves the image format based on the file extension.
- *
- * @param filePath the file path of the image.
- * @return the format of the image as a string.
- */
-private String getFormatFromFileName(String filePath) {
-  for (Map.Entry<String, String> entry : EXTENSION_TO_FORMAT.entrySet()) {
-    if (filePath.endsWith(entry.getKey())) {
-      return entry.getValue();
+  /**
+   * Retrieves the image format based on the file extension.
+   *
+   * @param filePath the file path of the image.
+   * @return the format of the image as a string.
+   */
+  private String getFormatFromFileName(String filePath) {
+    for (Map.Entry<String, String> entry : EXTENSION_TO_FORMAT.entrySet()) {
+      if (filePath.endsWith(entry.getKey())) {
+        return entry.getValue();
+      }
     }
+    return "PNG";
   }
-  return "PNG";
-}
 }
