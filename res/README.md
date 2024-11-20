@@ -1,4 +1,4 @@
-f# Imageinator: Command-Line Image Processing Tool
+# Imageinator: Command-Line Image Processing Tool
 
 *Imageinator* is a command-line image processing tool that allows users to load, manipulate, and
 save images. It supports various operations such as splitting and combining RGB channels, applying
