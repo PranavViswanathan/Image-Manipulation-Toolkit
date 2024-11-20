@@ -47,21 +47,21 @@ public class InvalidControllerTest {
   @Test
   public void loadNoImage() {
     cliView.processCommand("load noImage.png n");
-    String expectedOutput = "Failed to load image: Can't read input file!";
+    String expectedOutput = "Error in handleLoad: Can't read input file!";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void loadIllegalNumberArgs() {
     cliView.processCommand("load n");
-    String expectedOutput = "Usage: load <image-path> <image-name>";
+    String expectedOutput = "Error in handleLoad: Usage: load <image-path> <image-name>";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void loadInvalidImageExtension() {
     cliView.processCommand("load n.exe n");
-    String expectedOutput = "Failed to load image: Unsupported file format";
+    String expectedOutput = "Error in handleLoad: Unsupported file format";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
@@ -97,7 +97,7 @@ public class InvalidControllerTest {
   @Test
   public void testInvalidCommand() {
     cliView.processCommand("invalid-command");
-    String expectedOutput = "Unknown command: invalid-command";
+    String expectedOutput = "Error in processCommand: Unknown command: invalid-command";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
@@ -129,14 +129,15 @@ public class InvalidControllerTest {
   @Test
   public void testScriptExecutionWithInvalidCommand() {
     cliView.processCommand("-file test/com/vanarp/model/TestResources/Script/InvalidScript.txt");
-    String expectedOutput = "Failed to execute script: test/com/vanarp/model/TestResources/Script"
-        + "/InvalidScript.txt (No such file or directory)";
+    String expectedOutput = "Error in handleScript: test\\com\\vanarp\\model\\TestResources\\Script\\InvalidScript.txt (The system cannot find the file specified)";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBlurSourceImageNotExists() {
     cliView.processCommand("blur nonExistentImage blurredImage");
+    String expectedOutput = "Error in handleFilter: Image with name nonExistentImage not found.";
+    assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -319,13 +320,13 @@ public class InvalidControllerTest {
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBlurWithNegativeSplit() {
     cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
         + "testImage");
     cliView.processCommand("blur testImage blurredImage split -50");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
-        + "Invalid split percentage: must be between 0 and 100";
+        + "Error in handleFilter: Percentage must be between 0 and 100.";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 

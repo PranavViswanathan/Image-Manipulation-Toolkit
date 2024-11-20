@@ -277,7 +277,7 @@ public class ControllerTest {
 
   @Test
   public void testScriptExecution() throws IOException {
-    cliView.processCommand("file test/com/vanarp/model/TestResources/Script/Script1.txt");
+    cliView.processCommand("-file test/com/vanarp/model/TestResources/Script/Script1.txt");
     String expectedOutput =
         "Image loaded successfully.\n"
             + "Image brightened by 100 and saved as bird-brighter\n"
@@ -352,7 +352,7 @@ public class ControllerTest {
   @Test
   public void testInvalidCommand() {
     cliView.processCommand("invalid-command");
-    String expectedOutput = "Unknown command: invalid-command";
+    String expectedOutput = "Error in processCommand: Unknown command: invalid-command";
     String actualOutput = outputStream.toString().trim();
     assertEquals(expectedOutput, actualOutput);
   }

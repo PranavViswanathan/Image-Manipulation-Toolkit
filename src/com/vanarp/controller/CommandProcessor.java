@@ -108,10 +108,17 @@ public class CommandProcessor implements ImageCommandProcessor {
     // Save the resulting image
     putImage(destName, result);
   }
-
   @Override
   public void applyFilter(String imageName, String destName, String filterType,
       Integer splitPercent, String maskImageName) throws IOException {
+
+    // If splitPercent is provided, handle the split operation
+    if (splitPercent != null) {
+      processSplitOperation(filterType, imageName, destName, splitPercent);
+      return; // Exit early after processing the split operation
+    }
+
+    // If no splitPercent, proceed with normal filter application
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation result;
 
