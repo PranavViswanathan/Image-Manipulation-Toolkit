@@ -9,11 +9,12 @@ blur and sepia effects, brightening images, and more.
 * [Features](#features)
 * [Requirements](#requirements)
 * [Installation](#installation)
+* [The Graphical User Interface](#the-graphical-user-interface)
 * [Command Reference](#command-reference)
 * [How to Run a Script](#how-to-run-a-script)
 * [Example Workflow](#example-workflow)
 * [Project Structure](#project-structure)
-* [How to use the project](#How-to-use-the-project)
+* [How to use the project - USEME](#How-to-use-the-project)
 * [Testing Resources](#testing-resources)
 * [Changelog](#change-log)
 * [Contributors](#contributors)
@@ -67,6 +68,12 @@ javac -d bin src/com/vanarp/viewer/*.java src/com/vanarp/model/*.java src/com/va
 ```bash
 java com.vanarp.controller.CLIView
 ```
+
+## The Graphical User Interface
+
+![GUI](GUI.png)
+
+To know more about how to use the GUI refer to [GUI User Manuel](GUI.md)
 
 ## Command Reference
 
