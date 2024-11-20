@@ -369,6 +369,7 @@ public class ImageProcessingView extends JFrame {
 
   @FunctionalInterface
   public interface FileChooserCallback {
+
     void onFileChosen(File file);
   }
 

@@ -568,13 +568,11 @@ public class ImageProcessingController {
 
   @FunctionalInterface
   private interface SliderAction {
-
     void execute(int splitPercent, JDialog sliderDialog);
   }
 
   @FunctionalInterface
   private interface ApplyAction {
-
     void apply(String previewName) throws IOException;
   }
 }

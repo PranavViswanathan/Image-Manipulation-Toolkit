@@ -10,7 +10,6 @@ import com.vanarp.model.ImageCompression;
 import com.vanarp.model.ImageCompressionFunctionality;
 import com.vanarp.model.Operations;
 import com.vanarp.model.Transform;
-
 import java.util.Scanner;
 
 /**
@@ -64,7 +63,7 @@ public class CommandInputHandler {
     ImageCompressionFunctionality compress = new ImageCompression();
 
     Operations operations = new Operations(transformation, filtering, compressedIO, uncompressedIO,
-            compress);
+        compress);
     CommandProcessor commandProcessor = new CommandProcessor(operations);
 
     CLIView cliView = new CLIView(commandProcessor);

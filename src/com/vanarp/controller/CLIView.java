@@ -2,7 +2,6 @@ package com.vanarp.controller;
 
 import com.vanarp.model.PixelInterface;
 import com.vanarp.model.PixelOperation;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +62,7 @@ public class CLIView {
    * Initializes the command map with available commands and their respective handlers.
    */
   private void initializeCommands() {
-    commandMap.put("load", tokens ->    handleLoad(tokens));
+    commandMap.put("load", tokens -> handleLoad(tokens));
     commandMap.put("save", tokens -> handleSave(tokens));
     commandMap.put("red-component", tokens -> handleComponent(tokens, "red"));
     commandMap.put("green-component", tokens -> handleComponent(tokens, "green"));
@@ -82,7 +81,7 @@ public class CLIView {
     commandMap.put("luma-component", tokens -> handleComponent(tokens, "luma"));
     commandMap.put("intensity-component", tokens -> handleComponent(tokens, "intensity"));
     commandMap.put("rgb-combine", tokens -> handleRgbCombine(tokens));
-    commandMap.put("script", tokens -> handleScript(tokens));
+    commandMap.put("-file", tokens -> handleScript(tokens));
     commandMap.put("histogram", tokens -> handleHistogram(tokens));
     commandMap.put("compress", tokens -> handleCompress(tokens));
     commandMap.put("downscale", tokens -> handleDownscale(tokens));
@@ -296,8 +295,8 @@ public class CLIView {
   /**
    * Handles the combination of RGB components into a single image.
    *
-   * @param tokens the command tokens containing the image name and the names of the red, green,
-   *               and blue images.
+   * @param tokens the command tokens containing the image name and the names of the red, green, and
+   *               blue images.
    */
   private void handleRgbCombine(String[] tokens) {
     if (tokens.length == 5) {
@@ -323,7 +322,7 @@ public class CLIView {
    *
    * @param tokens the command tokens containing the script file path.
    */
-  private void handleScript(String[] tokens) {
+  public void handleScript(String[] tokens) {
     if (tokens.length == 2) {
       try {
         ScriptProcessor scriptProcessor = new ScriptProcessor(this);
@@ -333,7 +332,7 @@ public class CLIView {
         System.out.println("Failed to execute script: " + e.getMessage());
       }
     } else {
-      System.out.println("Usage: script <script-file-path>");
+      System.out.println("Usage: -file <script-file-path>");
     }
   }
 
@@ -425,8 +424,8 @@ public class CLIView {
   /**
    * Handles the application of a mask to an image.
    *
-   * @param tokens the command tokens containing the source image name, mask image name,
-   *               destination image name, and the operation type.
+   * @param tokens the command tokens containing the source image name, mask image name, destination
+   *               image name, and the operation type.
    */
   private void handleApplyMask(String[] tokens) {
     if (tokens.length == 5) {
@@ -444,13 +443,24 @@ public class CLIView {
               int grayValue = (pixel.getRed() + pixel.getGreen() + pixel.getBlue()) / 3;
               return new PixelInterface() {
                 @Override
-                public int getRed() { return grayValue; }
+                public int getRed() {
+                  return grayValue;
+                }
+
                 @Override
-                public int getGreen() { return grayValue; }
+                public int getGreen() {
+                  return grayValue;
+                }
+
                 @Override
-                public int getBlue() { return grayValue; }
+                public int getBlue() {
+                  return grayValue;
+                }
+
                 @Override
-                public String toString() { return "RGB(" + grayValue + ", " + grayValue + ", " + grayValue + ")"; }
+                public String toString() {
+                  return "RGB(" + grayValue + ", " + grayValue + ", " + grayValue + ")";
+                }
               };
             };
             break;
@@ -458,28 +468,30 @@ public class CLIView {
             System.out.println("Unknown operation type: " + operationType);
             return;
         }
-        commandProcessor.applyMaskOperation(sourceImageName, maskImageName, destImageName, operation);
+        commandProcessor.applyMaskOperation(sourceImageName, maskImageName, destImageName,
+            operation);
         System.out.println("Mask applied to " + sourceImageName + " and saved as " + destImageName);
       } catch (IOException e) {
         System.out.println("Failed to apply mask: " + e.getMessage());
       }
     } else {
-      System.out.println("Usage: applyMask <source-image-name> <mask-image-name> <dest-image-name> <operation-type>");
+      System.out.println(
+          "Usage: applyMask <source-image-name> <mask-image-name> <dest-image-name> <operation-type>");
     }
   }
 
-/**
- * Retrieves the image format based on the file extension.
- *
- * @param filePath the file path of the image.
- * @return the format of the image as a string.
- */
-private String getFormatFromFileName(String filePath) {
-  for (Map.Entry<String, String> entry : EXTENSION_TO_FORMAT.entrySet()) {
-    if (filePath.endsWith(entry.getKey())) {
-      return entry.getValue();
+  /**
+   * Retrieves the image format based on the file extension.
+   *
+   * @param filePath the file path of the image.
+   * @return the format of the image as a string.
+   */
+  private String getFormatFromFileName(String filePath) {
+    for (Map.Entry<String, String> entry : EXTENSION_TO_FORMAT.entrySet()) {
+      if (filePath.endsWith(entry.getKey())) {
+        return entry.getValue();
+      }
     }
+    return "PNG";
   }
-  return "PNG";
-}
 }

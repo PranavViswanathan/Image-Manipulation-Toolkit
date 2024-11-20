@@ -70,13 +70,16 @@ public class Image implements ImageRepresentation {
    * @return the pixel at the specified coordinates
    * @throws IllegalArgumentException if the specified coordinates are out of bounds
    */
+
   @Override
   public PixelInterface getPixel(int x, int y) {
-    if (x >= 0 && x < width && y >= 0 && y < height) {
+    if (x >= 0 && x < width && y >= 0 && y <= height) {
       PixelInterface originalPixel = pixels[y][x];
       return new Pixel(originalPixel.getRed(), originalPixel.getGreen(), originalPixel.getBlue());
     } else {
-      throw new IllegalArgumentException("Pixel coordinates out of bounds");
+      System.out.println("Requested pixel coordinates: (" + x + ", " + y + ")");
+      System.out.println("Image dimensions: width=" + width + ", height=" + height);
+      throw new IllegalArgumentException("Pixel coordinates out of bounds: (" + x + ", " + y + ")");
     }
   }
 
