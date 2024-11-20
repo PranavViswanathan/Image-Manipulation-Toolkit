@@ -2,6 +2,7 @@ package com.vanarp.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import com.vanarp.controller.CompressedImageIO;
@@ -780,5 +781,50 @@ public class OperationsTest {
     ImageRepresentation expectedCompressedImage = operations.loadImage(
         outputDirectory + "bird-compress.png");
     assertEquals(expectedCompressedImage, compressedImage);
+  }
+
+  @Test
+  public void testDownscaling() throws IOException {
+    ImageRepresentation testImage = operations.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation downscaledImage = operations.downscaleImage(testImage, 10, 10);
+    ImageRepresentation expectedDownscaledImage = operations.loadImage(
+        outputDirectory + "bird-downscale.png");
+    assertEquals(expectedDownscaledImage, downscaledImage);
+  }
+
+  @Test
+  public void testDownscalingToDifferentAspectRatio() throws IOException {
+    ImageRepresentation testImage = operations.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation downscaledImage = operations.downscaleImage(testImage, 100,
+        50); // Downscale to 100x50
+    ImageRepresentation expectedDownscaledImage = operations.loadImage(
+        outputDirectory + "bird-downscale-100x50.png");
+    assertEquals(expectedDownscaledImage, downscaledImage);
+  }
+
+  @Test
+  public void testDownscalingWithInvalidDimensions() throws IOException {
+    ImageRepresentation testImage = operations.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      operations.downscaleImage(testImage, -10, -10); // Invalid dimensions
+    });
+    assertEquals("New dimensions must be greater than zero.", exception.getMessage());
+  }
+
+  @Test
+  public void testDownscalingWithSameDimensions() throws IOException {
+    ImageRepresentation testImage = operations.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation downscaledImage = operations.downscaleImage(testImage, 632,
+        632);
+    assertEquals(testImage, downscaledImage);
+  }
+  @Test
+  public void testMasking() throws IOException {
+    ImageRepresentation testImage = operations.loadImage("test/com/vanarp/model/TestResources/Source/bird.png");
+    ImageRepresentation maskImage =operations.loadImage()
   }
 }
