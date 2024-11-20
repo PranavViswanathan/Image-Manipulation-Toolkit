@@ -339,7 +339,6 @@ public class Filtering extends AbstractFilteringOperations {
     ImageRepresentation green = filter.greenComponent(sourceImage);
     return blendWithMask(sourceImage, green, maskImage);
   }
-
   @Override
   public ImageRepresentation applySharpenWithMask(ImageRepresentation sourceImage,
       ImageRepresentation maskImage) throws IOException {
@@ -376,33 +375,38 @@ public class Filtering extends AbstractFilteringOperations {
    * @return A new {@link ImageRepresentation} that is the result of blending.
    * @throws IOException if an error occurs during processing.
    */
-  private ImageRepresentation blendWithMask(ImageRepresentation originalImage,
-      ImageRepresentation processedImage, ImageRepresentation maskImage) throws IOException {
-    if (originalImage.getWidth() != maskImage.getWidth()
-        || originalImage.getHeight() != maskImage.getHeight()) {
-      throw new IllegalArgumentException(
-          "Original image and mask image must have the same dimensions.");
+  private ImageRepresentation blendWithMask(ImageRepresentation originalImage, ImageRepresentation processedImage, ImageRepresentation maskImage) throws IOException {
+    if (originalImage.getWidth() != maskImage.getWidth() || originalImage.getHeight() != maskImage.getHeight()) {
+      throw new IllegalArgumentException("Original image and mask image must have the same dimensions.");
     }
 
-    ImageRepresentation resultImage = new Image(originalImage.getWidth(),
-        originalImage.getHeight());
+    ImageRepresentation resultImage = new Image(originalImage.getWidth(), originalImage.getHeight());
 
     for (int y = 0; y < resultImage.getHeight(); y++) {
       for (int x = 0; x < resultImage.getWidth(); x++) {
         PixelInterface originalPixel = originalImage.getPixel(x, y);
         PixelInterface processedPixel = processedImage.getPixel(x, y);
         PixelInterface maskPixel = maskImage.getPixel(x, y);
-        int maskValue = maskPixel.getRed();
-        int blendedRed =
-            (originalPixel.getRed() * (255 - maskValue) + processedPixel.getRed() * maskValue)
-                / 255;
-        int blendedGreen =
-            (originalPixel.getGreen() * (255 - maskValue) + processedPixel.getGreen() * maskValue)
-                / 255;
-        int blendedBlue =
-            (originalPixel.getBlue() * (255 - maskValue) + processedPixel.getBlue() * maskValue)
-                / 255;
-        resultImage.setPixel(x, y, new Pixel(blendedRed, blendedGreen, blendedBlue));
+
+        // Assuming the mask is grayscale, use the red channel for the mask value
+        int maskValue = maskPixel.getRed(); // Ensure this is a grayscale mask
+
+        Pixel blendedPixel;
+
+        if (maskValue == 0) {
+          // If the mask is black, show the processed image pixel
+          blendedPixel = new Pixel(processedPixel.getRed(), processedPixel.getGreen(), processedPixel.getBlue());
+        } else {
+          // Blend based on the mask value
+          int blendedRed = (originalPixel.getRed() * (255 - maskValue) + processedPixel.getRed() * maskValue) / 255;
+          int blendedGreen = (originalPixel.getGreen() * (255 - maskValue) + processedPixel.getGreen() * maskValue) / 255;
+          int blendedBlue = (originalPixel.getBlue() * (255 - maskValue) + processedPixel.getBlue() * maskValue) / 255;
+
+          blendedPixel = new Pixel(blendedRed, blendedGreen, blendedBlue);
+        }
+
+        // Set the blended pixel in the result image
+        resultImage.setPixel(x, y, blendedPixel);
       }
     }
     return resultImage;
