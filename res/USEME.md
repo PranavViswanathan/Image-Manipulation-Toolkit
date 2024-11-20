@@ -3,12 +3,30 @@
 This document provides a set of example workflows and use cases to help you get started with the Imageinator image processing tool.
 
 ## Table of Contents
+- [Using the JAR File](#using-the-jar-file)
 - [Basic Image Manipulation](#basic-image-manipulation)
 - [RGB Channel Operations](#rgb-channel-operations)
 - [Image Transformations](#image-transformations)
 - [Applying Effects](#applying-effects)
 - [Advanced Features](#advanced-features)
 - [Batch Processing with Scripts](#batch-processing-with-scripts)
+
+## Using the JAR file
+
+To run a script file use
+```
+java -jar Program.jar -file path-of-script-file
+```
+
+To use the interactive test mode use
+```
+java -jar Program.jar -text 
+```
+
+To use the GUI use
+```
+java -jar Program.jar
+```
 
 ## Basic Image Manipulation
 
