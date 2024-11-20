@@ -140,60 +140,66 @@ public class InvalidControllerTest {
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSharpenSourceImageNotExists() {
     cliView.processCommand("sharpen nonExistentImage sharpenedImage");
+    String expectedOutput = "Error in handleFilter: Image with name nonExistentImage not found.";
+    assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSepiaSourceImageNotExists() {
     cliView.processCommand("sepia nonExistentImage sepiaImage");
+    String expectedOutput = "Error in handleFilter: Image with name nonExistentImage not found.";
+    assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGreyscaleSourceImageNotExists() {
     cliView.processCommand("greyscale nonExistentImage greyImage");
+    String expectedOutput = "Error in handleFilter: Image with name nonExistentImage not found.";
+    assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testHistogramSourceImageNotExists() {
     cliView.processCommand("histogram nonExistentImage");
-    String expectedOutput = "Usage: histogram <image-name> <dest-image-name>";
+    String expectedOutput = "Error in handleHistogram: Usage: histogram <image-name> <dest-image-name>";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testColorCorrectSourceImageNotExists() {
     cliView.processCommand("color-correct nonExistentImage correctedImage");
+    String expectedOutput = "Error in handleColorCorrect: Image with name nonExistentImage not found.";
+    assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testLevelsAdjustSourceImageNotExists() {
     cliView.processCommand("levels-adjust nonExistentImage adjustedImage");
-    String expectedOutput = "Usage: levels-adjust <b> <m> <w> <image-name> <dest-image-name> "
-        + "[split <percentage>]";
+    String expectedOutput = "Error in handleLevelsAdjust: Usage: levels-adjust <b> <m> <w> <image-name> <dest-image-name> [split <percentage>]";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testCompressSourceImageNotExists() {
     cliView.processCommand("compress nonExistentImage compressedImage");
-    String expectedOutput = "Usage: compress <percentage> <image-name> <dest-image-name>";
+    String expectedOutput = "Error in handleCompress: Usage: compress <percentage> <image-name> <dest-image-name>";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testRgbCombineMissingChannels() {
     cliView.processCommand("rgb-combine redChannelImage greenChannelImage");
-    String expectedOutput = "Usage: rgb-combine <image-name> <red-image> <green-image> "
-        + "<blue-image>";
+    String expectedOutput = "Error in handleRgbCombine: Usage: rgb-combine <image-name> <red-image> <green-image> <blue-image>";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testBrightenWithInvalidIncrement() {
     cliView.processCommand("brighten ten imageName brightenedImage");
-    String expectedOutput = "Invalid increment value. It should be an integer.";
+    String expectedOutput = "Error in handleBrighten: Invalid increment value. It should be an integer.";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
@@ -216,8 +222,8 @@ public class InvalidControllerTest {
 
   @Test
   public void testHistogramPeakBoundaries() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("histogram testImage histogramImage");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
         + "Histogram created from testImage and saved as histogramImage";
@@ -226,8 +232,8 @@ public class InvalidControllerTest {
 
   @Test
   public void testColorCorrectWithExtremePeaks() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/goat.jpg "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/goat.jpg " + "testImage");
     cliView.processCommand("color-correct testImage correctedImage");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
         + "Color correction applied and saved as correctedImage";
@@ -242,15 +248,15 @@ public class InvalidControllerTest {
   @Test
   public void testColorCorrectWithInvalidValues() {
     cliView.processCommand("color-correct testImage");
-    String expectedOutput = "Usage: color-correct <image-name> <dest-image-name> "
-        + "[split <percentage>]";
+    String expectedOutput =
+        "Usage: color-correct <image-name> <dest-image-name> " + "[split <percentage>]";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testLevelsAdjustValidInput() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("levels-adjust 20 128 235 testImage adjustedImage");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
         + "Levels adjusted and saved as adjustedImage";
@@ -259,8 +265,8 @@ public class InvalidControllerTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testLevelsAdjustInvalidOrder() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("levels-adjust 128 20 235 testImage adjustedImage");
     String expectedOutput = "Values must be in ascending order: shadow < mid < highlight.";
     assertEquals(expectedOutput, outputStream.toString().trim());
@@ -268,8 +274,8 @@ public class InvalidControllerTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testLevelsAdjustOutOfRange() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("levels-adjust -10 128 300 testImage adjustedImage");
     String expectedOutput = "Shadow, mid, and highlight values must be between 0 and 255.";
     assertEquals(expectedOutput, outputStream.toString().trim());
@@ -278,8 +284,8 @@ public class InvalidControllerTest {
   @Test
   public void testLevelsAdjustInvalidNumberOfArguments() {
     cliView.processCommand("levels-adjust 20 128 testImage adjustedImage");
-    String expectedOutput = "Usage: levels-adjust <b> <m> <w> <image-name> <dest-image-name> "
-        + "[split <percentage>]";
+    String expectedOutput =
+        "Usage: levels-adjust <b> <m> <w> <image-name> <dest-image-name> " + "[split <percentage>]";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
@@ -292,8 +298,8 @@ public class InvalidControllerTest {
 
   @Test
   public void testLevelsAdjustInvalidValueType() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("levels-adjust 20.5 128 235 testImage adjustedImage");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
         + "Invalid level values. They should be integers.";
@@ -302,8 +308,8 @@ public class InvalidControllerTest {
 
   @Test
   public void testLevelsAdjustExtremeCases() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("levels-adjust 0 128 255 testImage adjustedImage");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
         + "Levels adjusted and saved as adjustedImage";
@@ -312,8 +318,8 @@ public class InvalidControllerTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testBlurWithSplitGreaterThan100() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("blur testImage blurredImage split 150");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
         + "Invalid split percentage: must be between 0 and 100";
@@ -322,8 +328,8 @@ public class InvalidControllerTest {
 
   @Test
   public void testBlurWithNegativeSplit() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("blur testImage blurredImage split -50");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
         + "Error in handleFilter: Percentage must be between 0 and 100.";
@@ -332,19 +338,19 @@ public class InvalidControllerTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testBlurWithNonNumericSplit() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("blur testImage blurredImage split abc");
 
-    String expectedOutput = "Image loaded successfully." + System.lineSeparator()
-        + "For input string: \"abc\"";
+    String expectedOutput =
+        "Image loaded successfully." + System.lineSeparator() + "For input string: \"abc\"";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testCompressWithZeroPercentage() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("compress 0 testImage compressedImage");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
         + "Image compressed and saved as compressedImage";
@@ -353,8 +359,8 @@ public class InvalidControllerTest {
 
   @Test
   public void testCompressWithNegativePercentage() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("compress -10 testImage compressedImage");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
         + "Compression percentage must be between 0 and 100.";
@@ -363,8 +369,8 @@ public class InvalidControllerTest {
 
   @Test
   public void testCompressWithGreaterThan100Percentage() {
-    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png "
-        + "testImage");
+    cliView.processCommand(
+        "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("compress 150 testImage compressedImage");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
         + "Compression percentage must be between 0 and 100.";
