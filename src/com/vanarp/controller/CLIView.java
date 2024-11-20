@@ -227,22 +227,18 @@ public class CLIView {
    */
   private void handleFilter(String[] tokens, String filter) {
     if (tokens.length == 3 ||
-        (tokens.length == 5 && tokens[3].equalsIgnoreCase("split")) ||
-        (tokens.length == 5 && tokens[3].equalsIgnoreCase("mask"))) {
+        (tokens.length == 4) ||
+        (tokens.length == 5 && tokens[3].equalsIgnoreCase("split"))) {
       try {
         if (tokens.length == 3) {
           commandProcessor.applyFilter(tokens[1], tokens[2], filter, null, null);
+        } else if (tokens.length == 4) {
+          String maskImageName = tokens[2]; // mask image is now at index 2
+          String destImageName = tokens[3]; // destination image is at index 3
+          commandProcessor.applyFilter(tokens[1], destImageName, filter, null, maskImageName);
         } else if (tokens.length == 5 && tokens[3].equalsIgnoreCase("split")) {
           int splitPercent = Integer.parseInt(tokens[4]);
           commandProcessor.applyFilter(tokens[1], tokens[2], filter, splitPercent, null);
-        } else if (tokens.length == 5 && tokens[3].equalsIgnoreCase("mask")) {
-          String maskImageName = tokens[4];
-          commandProcessor.applyFilter(tokens[1], tokens[2], filter, null, maskImageName);
-        } else if (tokens.length == 6 && tokens[3].equalsIgnoreCase("mask")
-            && tokens[4].equalsIgnoreCase("split")) {
-          String maskImageName = tokens[4];
-          int splitPercent = Integer.parseInt(tokens[5]);
-          commandProcessor.applyFilter(tokens[1], tokens[2], filter, splitPercent, maskImageName);
         }
         System.out.println("Image " + filter + "ed and saved as " + tokens[2]);
       } catch (IOException e) {
@@ -252,7 +248,7 @@ public class CLIView {
       }
     } else {
       System.out.println("Usage: " + filter
-          + " <image-name> <dest-image-name> [split <percentage>] [mask <mask-image-name>]");
+          + " <source-image> <mask-image> <dest-image> [split <percentage>]");
     }
   }
 
