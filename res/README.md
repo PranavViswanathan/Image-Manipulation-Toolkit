@@ -9,11 +9,12 @@ blur and sepia effects, brightening images, and more.
 * [Features](#features)
 * [Requirements](#requirements)
 * [Installation](#installation)
+* [The Graphical User Interface](#the-graphical-user-interface)
 * [Command Reference](#command-reference)
 * [How to Run a Script](#how-to-run-a-script)
 * [Example Workflow](#example-workflow)
 * [Project Structure](#project-structure)
-* [How to use the project](#How-to-use-the-project)
+* [How to use the project - USEME](#How-to-use-the-project)
 * [Testing Resources](#testing-resources)
 * [Changelog](#change-log)
 * [Contributors](#contributors)
@@ -67,6 +68,12 @@ javac -d bin src/com/vanarp/viewer/*.java src/com/vanarp/model/*.java src/com/va
 ```bash
 java com.vanarp.controller.CLIView
 ```
+
+## The Graphical User Interface
+
+![GUI](GUI.png)
+
+To know more about how to use the GUI refer to [GUI User Manuel](GUI.md)
 
 ## Command Reference
 
@@ -426,6 +433,17 @@ to [Project Structure](PROJECT_STRUCTURE.md)
 - **Description**: Generates a split-view version of the image with the specified operation applied
   to one part, while keeping the remaining part unaltered. This allows for side-by-side comparison
   of the effect.
+
+### 6. GUI
+- A GUI was designed to allow for greater ease of access and use. The GUI allows you to preview
+and perform operations on images before saving them.
+
+- the classes `GUIView` and `GUIController` we made.
+
+### 7. Image Masking for Partial Image Manipulation.
+- Image filtering operations (blur, sharpen, greyscale, sepia, component visualizations) now support
+image masking operations which allow you to perform operations on a specific part of the image.
+
 
 ### 1. `ImageCompressor` Class
 
