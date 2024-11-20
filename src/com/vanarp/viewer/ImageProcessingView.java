@@ -5,10 +5,13 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -120,6 +123,20 @@ public class ImageProcessingView extends JFrame {
     addCheckBoxListeners();
   }
 
+  public void showFileChooser(FileChooserCallback callback) {
+    JFileChooser fileChooser = new JFileChooser();
+    if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+      callback.onFileChosen(fileChooser.getSelectedFile());
+    }
+  }
+
+  public void showSaveFileChooser(FileChooserCallback callback) {
+    JFileChooser fileChooser = new JFileChooser();
+    if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+      callback.onFileChosen(fileChooser.getSelectedFile());
+    }
+  }
+
   private void addCheckBoxListeners() {
     ActionListener checkBoxListener = e -> {
       // Handle checkbox visibility or other logic if needed
@@ -218,9 +235,8 @@ public class ImageProcessingView extends JFrame {
     gbc.gridx++;
     panel.add(adjustLevelsSplitCheckBox, gbc); // Add Adjust Levels checkbox
 
-    // Add space after the adjustments group
     gbc.gridy++;
-    gbc.insets = new Insets(10, 5, 5, 5); // Add extra space after the group
+    gbc.insets = new Insets(10, 5, 5, 5);
   }
 
   private void addButtonGroup(JPanel panel, GridBagConstraints gbc, String title,
@@ -257,23 +273,77 @@ public class ImageProcessingView extends JFrame {
     extractLumaButton.addActionListener(listener);
     extractIntensityButton.addActionListener(listener);
     extractValueButton.addActionListener(listener);
-    blurButton.addActionListener(listener);
-    sharpenButton.addActionListener(listener);
-    sepiaButton.addActionListener(listener);
-    greyscaleButton.addActionListener(listener);
+
+    // Custom action listener for the blur button
+    blurButton.addActionListener(e -> {
+      if (blurSplitCheckBox.isSelected()) {
+        listener.actionPerformed(
+            new ActionEvent(blurButton, ActionEvent.ACTION_PERFORMED, "Blur Preview"));
+      } else {
+        listener.actionPerformed(new ActionEvent(blurButton, ActionEvent.ACTION_PERFORMED, "Blur"));
+      }
+    });
+
+    // Custom action listener for the sharpen button
+    sharpenButton.addActionListener(e -> {
+      if (sharpenSplitCheckBox.isSelected()) {
+        listener.actionPerformed(
+            new ActionEvent(sharpenButton, ActionEvent.ACTION_PERFORMED, "Sharpen Preview"));
+      } else {
+        listener.actionPerformed(
+            new ActionEvent(sharpenButton, ActionEvent.ACTION_PERFORMED, "Sharpen"));
+      }
+    });
+
+    // Custom action listener for the sepia button
+    sepiaButton.addActionListener(e -> {
+      if (sepiaSplitCheckBox.isSelected()) {
+        listener.actionPerformed(
+            new ActionEvent(sepiaButton, ActionEvent.ACTION_PERFORMED, "Sepia Preview"));
+      } else {
+        listener.actionPerformed(
+            new ActionEvent(sepiaButton, ActionEvent.ACTION_PERFORMED, "Sepia"));
+      }
+    });
+
+    // Custom action listener for the greyscale button
+    greyscaleButton.addActionListener(e -> {
+      if (greyscaleSplitCheckBox.isSelected()) {
+        listener.actionPerformed(
+            new ActionEvent(greyscaleButton, ActionEvent.ACTION_PERFORMED, "Greyscale Preview"));
+      } else {
+        listener.actionPerformed(
+            new ActionEvent(greyscaleButton, ActionEvent.ACTION_PERFORMED, "Greyscale"));
+      }
+    });
+
+    // Custom action listener for the color correct button
+    colorCorrectButton.addActionListener(e -> {
+      if (colorCorrectSplitCheckBox.isSelected()) {
+        listener.actionPerformed(new ActionEvent(colorCorrectButton, ActionEvent.ACTION_PERFORMED,
+            "Color Correct Preview"));
+      } else {
+        listener.actionPerformed(
+            new ActionEvent(colorCorrectButton, ActionEvent.ACTION_PERFORMED, "Color Correct"));
+      }
+    });
+
+    // Custom action listener for the adjust levels button
+    adjustLevelsButton.addActionListener(e -> {
+      if (adjustLevelsSplitCheckBox.isSelected()) {
+        listener.actionPerformed(new ActionEvent(adjustLevelsButton, ActionEvent.ACTION_PERFORMED,
+            "Adjust Levels Preview"));
+      } else {
+        listener.actionPerformed(
+            new ActionEvent(adjustLevelsButton, ActionEvent.ACTION_PERFORMED, "Adjust Levels"));
+      }
+    });
+
     flipHorizontalButton.addActionListener(listener);
     flipVerticalButton.addActionListener(listener);
     adjustBrightnessButton.addActionListener(listener);
-    colorCorrectButton.addActionListener(listener);
-    adjustLevelsButton.addActionListener(listener);
     downscaleButton.addActionListener(listener);
     compressButton.addActionListener(listener);
-    blurSplitCheckBox.addActionListener(listener);
-    sharpenSplitCheckBox.addActionListener(listener);
-    sepiaSplitCheckBox.addActionListener(listener);
-    greyscaleSplitCheckBox.addActionListener(listener);
-    colorCorrectSplitCheckBox.addActionListener(listener); // New checkbox action listener
-    adjustLevelsSplitCheckBox.addActionListener(listener); // New checkbox action listener
   }
 
   public void setImageIcon(ImageIcon icon) {
@@ -295,5 +365,14 @@ public class ImageProcessingView extends JFrame {
     greyscaleSplitCheckBox.setSelected(false);
     colorCorrectSplitCheckBox.setSelected(false);
     adjustLevelsSplitCheckBox.setSelected(false);
+  }
+
+  @FunctionalInterface
+  public interface FileChooserCallback {
+    void onFileChosen(File file);
+  }
+
+  public void showMessage(String message) {
+    JOptionPane.showMessageDialog(this, message, "Information", JOptionPane.INFORMATION_MESSAGE);
   }
 }

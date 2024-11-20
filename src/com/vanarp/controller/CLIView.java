@@ -58,6 +58,7 @@ public class CLIView {
     }
   }
 
+
   /**
    * Initializes the command map with available commands and their respective handlers.
    */

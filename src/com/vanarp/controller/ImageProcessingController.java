@@ -3,17 +3,17 @@ package com.vanarp.controller;
 import com.vanarp.model.ImageRepresentation;
 import com.vanarp.viewer.ImageProcessingView;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.Stack;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 
 public class ImageProcessingController {
@@ -146,9 +146,7 @@ public class ImageProcessingController {
   }
 
   private void loadImage() {
-    JFileChooser fileChooser = new JFileChooser();
-    if (fileChooser.showOpenDialog(view) == JFileChooser.APPROVE_OPTION) {
-      File file = fileChooser.getSelectedFile();
+    view.showFileChooser((file) -> {
       currentImageName = file.getName();
       try {
         commandProcessor.loadImage(file.getAbsolutePath(), currentImageName);
@@ -163,21 +161,19 @@ public class ImageProcessingController {
       } catch (IOException | IllegalArgumentException e) {
         showError("Failed to load image: " + e.getMessage());
       }
-    }
+    });
   }
 
   private void saveImage() {
     if (loadedImage != null) {
-      JFileChooser fileChooser = new JFileChooser();
-      if (fileChooser.showSaveDialog(view) == JFileChooser.APPROVE_OPTION) {
-        File file = fileChooser.getSelectedFile();
+      view.showSaveFileChooser((file) -> {
         try {
           commandProcessor.saveImage(currentImageName, file.getAbsolutePath(), "png");
-          JOptionPane.showMessageDialog(view, "Image saved successfully.");
+          view.showMessage("Image saved successfully.");
         } catch (IOException | IllegalArgumentException e) {
           showError("Failed to save image: " + e.getMessage());
         }
-      }
+      });
     } else {
       showError("No image to save.");
     }
@@ -413,8 +409,13 @@ public class ImageProcessingController {
       createSliderDialog(filterType, (splitPercent, sliderDialog) -> {
         String previewName = generateDestinationName(filterType + "_preview");
         try {
+          // Generate the preview image using the specified filter
           commandProcessor.applyFilter(currentImageName, previewName, filterType, splitPercent);
-          showPreview(previewName, "Preview - " + filterType, sliderDialog);
+
+          // Show the preview dialog with the appropriate apply action
+          showPreview(previewName, "Preview - " + filterType, sliderDialog, (name) -> {
+            applyFilter(filterType); // Apply the filter permanently
+          });
         } catch (IOException | IllegalArgumentException e) {
           showError("Failed to generate preview: " + e.getMessage());
         }
@@ -430,7 +431,13 @@ public class ImageProcessingController {
         String previewName = generateDestinationName("color-correct_preview");
         try {
           commandProcessor.colorCorrectImage(currentImageName, previewName, splitPercent);
-          showPreview(previewName, "Preview - Color-Correct", sliderDialog);
+          showPreview(previewName, "Preview - Color-Correct", sliderDialog, (name) -> {
+            commandProcessor.colorCorrectImage(currentImageName, name, null);
+            loadedImage = commandProcessor.getImage(name);
+            currentImageName = name;
+            view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
+            generateHistogram();
+          });
         } catch (IOException | IllegalArgumentException e) {
           showError("Failed to generate preview: " + e.getMessage());
         }
@@ -459,7 +466,14 @@ public class ImageProcessingController {
             String previewName = generateDestinationName("levels_adjusted_preview");
             commandProcessor.levelsAdjust(currentImageName, brightness, midtone, whitePoint,
                 previewName, splitPercent);
-            showPreview(previewName, "Preview - Levels Adjusted", sliderDialog);
+            showPreview(previewName, "Preview - Levels Adjusted", sliderDialog, (name) -> {
+              commandProcessor.levelsAdjust(currentImageName, brightness, midtone, whitePoint, name,
+                  null);
+              loadedImage = commandProcessor.getImage(name);
+              currentImageName = name;
+              view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
+              generateHistogram();
+            });
           } catch (IOException | IllegalArgumentException e) {
             showError("Invalid input. Please enter valid numbers.");
           }
@@ -486,24 +500,49 @@ public class ImageProcessingController {
     sliderDialog.setVisible(true);
   }
 
-  private void showPreview(String previewName, String title, JDialog sliderDialog) {
+  private void showPreview(String previewName, String title, JDialog sliderDialog,
+      ApplyAction applyAction) {
     ImageRepresentation previewImage = commandProcessor.getImage(previewName);
     JDialog previewDialog = new JDialog(view, title, true);
     previewDialog.setSize(600, 400);
     previewDialog.setLayout(new BorderLayout());
+
     JLabel previewLabel = new JLabel(new ImageIcon(previewImage.toBufferedImage()));
     previewDialog.add(previewLabel, BorderLayout.CENTER);
+
+    // Create a panel for the buttons with GridLayout
+    JPanel buttonPanel = new JPanel(new GridLayout(1, 2)); // 1 row, 2 columns
+
     JButton closeButton = new JButton("Close");
+    JButton applyButton = new JButton("Apply");
+
     closeButton.addActionListener(ev -> {
-      previewDialog.dispose(); // Close the preview dialog
-      sliderDialog.dispose();  // Close the slider dialog
+      previewDialog.dispose();
+      sliderDialog.dispose();
     });
-    previewDialog.add(closeButton, BorderLayout.SOUTH);
+
+    applyButton.addActionListener(ev -> {
+      // Call the apply action with the preview name
+      try {
+        applyAction.apply(previewName);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      previewDialog.dispose();
+      sliderDialog.dispose(); // Optionally close the slider dialog too
+    });
+
+    // Add buttons to the button panel
+    buttonPanel.add(closeButton);
+    buttonPanel.add(applyButton);
+
+    // Add the button panel to the SOUTH of the preview dialog
+    previewDialog.add(buttonPanel, BorderLayout.SOUTH);
+
     previewDialog.setLocationRelativeTo(view);
     previewDialog.setVisible(true);
     view.untickCheckBoxes();
   }
-
 
   private String generateDestinationName(String suffix) {
     int lastDotIndex = currentImageName.lastIndexOf('.');
@@ -531,5 +570,11 @@ public class ImageProcessingController {
   private interface SliderAction {
 
     void execute(int splitPercent, JDialog sliderDialog);
+  }
+
+  @FunctionalInterface
+  private interface ApplyAction {
+
+    void apply(String previewName) throws IOException;
   }
 }
