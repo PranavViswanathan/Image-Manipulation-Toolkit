@@ -187,21 +187,7 @@ public class ControllerTest {
         "test/com/vanarp/model/TestResources/SampleOperations/sharpenedImage.png");
     ImageRepresentation actualSharpenedImage = commandProcessor.getImage("sharpenedImage");
     assertEquals(expectedSharpenedImage, actualSharpenedImage);
-  }*/
-
-  @Test
-  public void testApplySepia() throws IOException {
-    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
-        "testImage");
-    cliView.processCommand("sepia testImage sepiaImage");
-    assertNotNull("Sepia image should not be null", commandProcessor.getImage("sepiaImage"));
-    ImageRepresentation expectedSepiaImage = loadImage(
-        "test/com/vanarp/model/TestResources/SampleOperations/sepiaImage.png");
-    ImageRepresentation actualSepiaImage = commandProcessor.getImage("sepiaImage");
-    assertEquals(expectedSepiaImage, actualSepiaImage);
   }
-
-  /*
     @Test
     public void testApplyGreyscale() throws IOException {
       commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
@@ -272,6 +258,18 @@ public class ControllerTest {
       assertEquals(expectedCombinedImage, actualCombinedImage);
     }
   */
+  @Test
+  public void testApplySepia() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
+        "testImage");
+    cliView.processCommand("sepia testImage sepiaImage");
+    assertNotNull("Sepia image should not be null", commandProcessor.getImage("sepiaImage"));
+    ImageRepresentation expectedSepiaImage = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/sepiaImage.png");
+    ImageRepresentation actualSepiaImage = commandProcessor.getImage("sepiaImage");
+    assertEquals(expectedSepiaImage, actualSepiaImage);
+  }
+
   @Test
   public void testScriptExecution() throws IOException {
     cliView.processCommand("-file test/com/vanarp/model/TestResources/Script/Script1.txt");
@@ -477,5 +475,156 @@ public class ControllerTest {
         "test/com/vanarp/model/TestResources/SampleOperations/bird-compress.png");
     ImageRepresentation actualSplit = commandProcessor.getImage("compressedImage");
     assertEquals(expectedSplit, actualSplit);
+  }
+
+  @Test
+  public void testDownScale() throws IOException {
+    commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
+    cliView.processCommand("downscale testImage downscaleImage 100 50");
+    ImageRepresentation expectedSplit = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/bird-downscale-100x50.png");
+    commandProcessor.getImage("downscaleImage");
+    ImageRepresentation actualSplit = commandProcessor.getImage("downscaleImage");
+    assertEquals(expectedSplit, actualSplit);
+  }
+
+  @Test
+  public void testMaskingBlur() throws IOException {
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
+    cliView.processCommand("blur testImage maskImage blurredImage");
+    commandProcessor.getImage("blurredImage");
+    ImageRepresentation expectedMask = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/bird-blur-mask.png");
+    ImageRepresentation actualMask = commandProcessor.getImage("blurredImage");
+    assertEquals(expectedMask, actualMask);
+  }
+
+  @Test
+  public void testMaskingSharpen() throws IOException {
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
+    cliView.processCommand("sharpen testImage maskImage sharpenImage");
+    commandProcessor.getImage("sharpenImage");
+    ImageRepresentation expectedMask = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/bird-sharpen-mask.png");
+    ImageRepresentation actualMask = commandProcessor.getImage("sharpenImage");
+    assertEquals(expectedMask, actualMask);
+  }
+
+  @Test
+  public void testMaskingSepia() throws IOException {
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
+    cliView.processCommand("sepia testImage maskImage sepiaImage");
+    commandProcessor.getImage("sepiaImage");
+    ImageRepresentation expectedMask = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/bird-sepia-mask.png");
+    ImageRepresentation actualMask = commandProcessor.getImage("sepiaImage");
+    assertEquals(expectedMask, actualMask);
+  }
+
+  @Test
+  public void testMaskingGreyScale() throws IOException {
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
+    cliView.processCommand("greyscale testImage maskImage greyscale");
+    commandProcessor.getImage("greyscale");
+    ImageRepresentation expectedMask = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/bird-greyscale-mask.png");
+    ImageRepresentation actualMask = commandProcessor.getImage("greyscale");
+    assertEquals(expectedMask, actualMask);
+  }
+
+  @Test
+  public void testMaskingBlueComponent() throws IOException {
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
+    cliView.processCommand("blue-component testImage maskImage blueComponentImage");
+    commandProcessor.getImage("blueComponentImage");
+    ImageRepresentation expectedMask = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/bird-blueComponent-mask.png");
+    ImageRepresentation actualMask = commandProcessor.getImage("blueComponentImage");
+    assertEquals(expectedMask, actualMask);
+  }
+
+  @Test
+  public void testMaskingRedComponent() throws IOException {
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
+    cliView.processCommand("blue-component testImage maskImage redComponentImage");
+    commandProcessor.getImage("redComponentImage");
+    ImageRepresentation expectedMask = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/bird-redComponent-mask.png");
+    ImageRepresentation actualMask = commandProcessor.getImage("redComponentImage");
+    assertEquals(expectedMask, actualMask);
+  }
+
+  @Test
+  public void testMaskingGreenComponent() throws IOException {
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
+    cliView.processCommand("blue-component testImage maskImage greenComponentImage");
+    commandProcessor.getImage("greenComponentImage");
+    ImageRepresentation expectedMask = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/bird-greenComponent-mask.png");
+    ImageRepresentation actualMask = commandProcessor.getImage("greenComponentImage");
+    assertEquals(expectedMask, actualMask);
+  }
+
+  @Test
+  public void testMaskingIntensityComponent() throws IOException {
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
+    cliView.processCommand("blue-component testImage maskImage intensityComponentImage");
+    commandProcessor.getImage("intensityComponentImage");
+    ImageRepresentation expectedMask = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/bird-intensityComponent-mask.png");
+    ImageRepresentation actualMask = commandProcessor.getImage("intensityComponentImage");
+    assertEquals(expectedMask, actualMask);
+  }
+
+  @Test
+  public void testMaskingValueComponent() throws IOException {
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
+    cliView.processCommand("blue-component testImage maskImage valueComponentImage");
+    commandProcessor.getImage("valueComponentImage");
+    ImageRepresentation expectedMask = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/bird-valueComponent-mask.png");
+    ImageRepresentation actualMask = commandProcessor.getImage("valueComponentImage");
+    assertEquals(expectedMask, actualMask);
+  }
+
+  @Test
+  public void testMaskingLumaComponent() throws IOException {
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
+    commandProcessor.loadImage(
+        "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
+    cliView.processCommand("blue-component testImage maskImage lumaComponentImage");
+    commandProcessor.getImage("lumaComponentImage");
+    ImageRepresentation expectedMask = loadImage(
+        "test/com/vanarp/model/TestResources/SampleOperations/bird-lumaComponent-mask.png");
+    ImageRepresentation actualMask = commandProcessor.getImage("lumaComponentImage");
+    assertEquals(expectedMask, actualMask);
   }
 }
