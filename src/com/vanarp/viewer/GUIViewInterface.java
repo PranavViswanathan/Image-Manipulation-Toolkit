@@ -6,8 +6,8 @@ import javax.swing.ImageIcon;
 
 /**
  * The {@code GUIViewInterface} defines the contract for the graphical user interface (GUI)
- * components of the application. It includes methods for interacting with file choosers,
- * displaying messages, and managing GUI elements such as buttons and labels.
+ * components of the application. It includes methods for interacting with file choosers, displaying
+ * messages, and managing GUI elements such as buttons and labels.
  */
 public interface GUIViewInterface {
 
@@ -54,7 +54,8 @@ public interface GUIViewInterface {
   void showMessage(String message);
 
   /**
-   * Creates and initializes buttons in the GUI, associating them with the specified action listener.
+   * Creates and initializes buttons in the GUI, associating them with the specified action
+   * listener.
    *
    * @param listener the {@code ActionListener} to handle button events.
    */

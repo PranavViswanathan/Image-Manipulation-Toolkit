@@ -2,7 +2,6 @@ package com.vanarp.controller;
 
 import com.vanarp.model.ImageOperations;
 import com.vanarp.model.ImageRepresentation;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,31 +82,57 @@ public class CommandProcessor implements ImageCommandProcessor {
 
   @Override
   public void extractComponent(String imageName, String destName, String componentType,
-                               String maskName) throws IOException {
+      String maskName) throws IOException {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation result;
 
     if (maskName != null && !maskName.isEmpty()) {
       ImageRepresentation maskImage = getImage(maskName);
-      result = switch (componentType.toLowerCase()) {
-        case "red" -> operations.redComponentWithMask(image, maskImage);
-        case "green" -> operations.greenComponentWithMask(image, maskImage);
-        case "blue" -> operations.blueComponentWithMask(image, maskImage);
-        case "value" -> operations.valueComponentWithMask(image, maskImage);
-        case "luma" -> operations.lumaComponentWithMask(image, maskImage);
-        case "intensity" -> operations.intensityComponentWithMask(image, maskImage);
-        default -> throw new IllegalArgumentException("Unknown component type: " + componentType);
-      };
+      switch (componentType.toLowerCase()) {
+        case "red":
+          result = operations.redComponentWithMask(image, maskImage);
+          break;
+        case "green":
+          result = operations.greenComponentWithMask(image, maskImage);
+          break;
+        case "blue":
+          result = operations.blueComponentWithMask(image, maskImage);
+          break;
+        case "value":
+          result = operations.valueComponentWithMask(image, maskImage);
+          break;
+        case "luma":
+          result = operations.lumaComponentWithMask(image, maskImage);
+          break;
+        case "intensity":
+          result = operations.intensityComponentWithMask(image, maskImage);
+          break;
+        default:
+          throw new IllegalArgumentException("Unknown component type: " + componentType);
+      }
     } else {
-      result = switch (componentType.toLowerCase()) {
-        case "red" -> operations.redComponent(image);
-        case "green" -> operations.greenComponent(image);
-        case "blue" -> operations.blueComponent(image);
-        case "value" -> operations.valueComponent(image);
-        case "luma" -> operations.lumaComponent(image);
-        case "intensity" -> operations.intensityComponent(image);
-        default -> throw new IllegalArgumentException("Unknown component type: " + componentType);
-      };
+      switch (componentType.toLowerCase()) {
+        case "red":
+          result = operations.redComponent(image);
+          break;
+        case "green":
+          result = operations.greenComponent(image);
+          break;
+        case "blue":
+          result = operations.blueComponent(image);
+          break;
+        case "value":
+          result = operations.valueComponent(image);
+          break;
+        case "luma":
+          result = operations.lumaComponent(image);
+          break;
+        case "intensity":
+          result = operations.intensityComponent(image);
+          break;
+        default:
+          throw new IllegalArgumentException("Unknown component type: " + componentType);
+      }
     }
 
     putImage(destName, result);
@@ -115,7 +140,7 @@ public class CommandProcessor implements ImageCommandProcessor {
 
   @Override
   public void applyFilter(String imageName, String destName, String filterType,
-                          Integer splitPercent, String maskImageName) throws IOException {
+      Integer splitPercent, String maskImageName) throws IOException {
 
     if (splitPercent != null) {
       processSplitOperation(filterType, imageName, destName, splitPercent);
@@ -127,21 +152,39 @@ public class CommandProcessor implements ImageCommandProcessor {
 
     if (maskImageName != null && !maskImageName.isEmpty()) {
       ImageRepresentation maskImage = getImage(maskImageName);
-      result = switch (filterType.toLowerCase()) {
-        case "blur" -> operations.applyBlurWithMask(image, maskImage);
-        case "sharpen" -> operations.applySharpenWithMask(image, maskImage);
-        case "sepia" -> operations.applySepiaWithMask(image, maskImage);
-        case "greyscale" -> operations.applyGreyscaleWithMask(image, maskImage);
-        default -> throw new IllegalArgumentException("Unknown filter type: " + filterType);
-      };
+      switch (filterType.toLowerCase()) {
+        case "blur":
+          result = operations.applyBlurWithMask(image, maskImage);
+          break;
+        case "sharpen":
+          result = operations.applySharpenWithMask(image, maskImage);
+          break;
+        case "sepia":
+          result = operations.applySepiaWithMask(image, maskImage);
+          break;
+        case "greyscale":
+          result = operations.applyGreyscaleWithMask(image, maskImage);
+          break;
+        default:
+          throw new IllegalArgumentException("Unknown filter type: " + filterType);
+      }
     } else {
-      result = switch (filterType.toLowerCase()) {
-        case "blur" -> operations.blur(image);
-        case "sharpen" -> operations.sharpen(image);
-        case "sepia" -> operations.applySepia(image);
-        case "greyscale" -> operations.applyGreyScale(image);
-        default -> throw new IllegalArgumentException("Unknown filter type: " + filterType);
-      };
+      switch (filterType.toLowerCase()) {
+        case "blur":
+          result = operations.blur(image);
+          break;
+        case "sharpen":
+          result = operations.sharpen(image);
+          break;
+        case "sepia":
+          result = operations.applySepia(image);
+          break;
+        case "greyscale":
+          result = operations.applyGreyScale(image);
+          break;
+        default:
+          throw new IllegalArgumentException("Unknown filter type: " + filterType);
+      }
     }
 
     putImage(destName, result);
@@ -158,11 +201,19 @@ public class CommandProcessor implements ImageCommandProcessor {
   @Override
   public void flipImage(String imageName, String destName, String direction) throws IOException {
     ImageRepresentation image = getImage(imageName);
-    ImageRepresentation result = switch (direction.toLowerCase()) {
-      case "horizontal" -> operations.flipHorizontally(image);
-      case "vertical" -> operations.flipVertically(image);
-      default -> throw new IllegalArgumentException("Unknown flip direction: " + direction);
-    };
+    ImageRepresentation result;
+
+    switch (direction.toLowerCase()) {
+      case "horizontal":
+        result = operations.flipHorizontally(image);
+        break;
+      case "vertical":
+        result = operations.flipVertically(image);
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown flip direction: " + direction);
+    }
+
     putImage(destName, result);
   }
 
@@ -192,7 +243,7 @@ public class CommandProcessor implements ImageCommandProcessor {
    */
   @Override
   public void rgbSplit(String imageName, String redName, String greenName, String blueName)
-          throws IOException {
+      throws IOException {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation[] rgbComponents = operations.rgbSplit(image);
     putImage(redName, rgbComponents[0]);
@@ -211,7 +262,7 @@ public class CommandProcessor implements ImageCommandProcessor {
    */
   @Override
   public void rgbCombine(String destName, String redImageName, String greenImageName,
-                         String blueImageName) throws IOException {
+      String blueImageName) throws IOException {
     ImageRepresentation redImage = getImage(redImageName);
     ImageRepresentation greenImage = getImage(greenImageName);
     ImageRepresentation blueImage = getImage(blueImageName);
@@ -232,14 +283,14 @@ public class CommandProcessor implements ImageCommandProcessor {
    */
   @Override
   public void levelsAdjust(String imageName, int brightness, int midtone, int whitePoint,
-                           String destName, Integer splitPercent) throws IOException {
+      String destName, Integer splitPercent) throws IOException {
     if (splitPercent != null) {
       processSplitOperation("levels-adjust", imageName, destName, splitPercent, brightness, midtone,
-              whitePoint);
+          whitePoint);
     } else {
       ImageRepresentation image = getImage(imageName);
       ImageRepresentation adjustedImage = operations.levelsAdjust(image, brightness,
-              midtone, whitePoint);
+          midtone, whitePoint);
       putImage(destName, adjustedImage);
     }
   }
@@ -254,7 +305,7 @@ public class CommandProcessor implements ImageCommandProcessor {
    */
   @Override
   public void colorCorrectImage(String imageName, String destName, Integer splitPercent)
-          throws IOException {
+      throws IOException {
     if (splitPercent != null) {
       processSplitOperation("color-correct", imageName, destName, splitPercent);
     } else {
@@ -275,27 +326,39 @@ public class CommandProcessor implements ImageCommandProcessor {
    * @throws IOException if an error occurs during processing
    */
   public void processSplitOperation(String operation, String imageName, String destName,
-                                    int splitPercent, Integer... params) throws IOException {
+      int splitPercent, Integer... params) throws IOException {
     ImageRepresentation originalImage = getImage(imageName);
-    ImageRepresentation transformedImage = switch (operation.toLowerCase()) {
-      case "blur" -> operations.blur(originalImage);
-      case "sharpen" -> operations.sharpen(originalImage);
-      case "sepia" -> operations.applySepia(originalImage);
-      case "greyscale" -> operations.applyGreyScale(originalImage);
-      case "color-correct" -> operations.colorCorrect(originalImage);
-      case "levels-adjust" -> {
+    ImageRepresentation transformedImage;
+
+    switch (operation.toLowerCase()) {
+      case "blur":
+        transformedImage = operations.blur(originalImage);
+        break;
+      case "sharpen":
+        transformedImage = operations.sharpen(originalImage);
+        break;
+      case "sepia":
+        transformedImage = operations.applySepia(originalImage);
+        break;
+      case "greyscale":
+        transformedImage = operations.applyGreyScale(originalImage);
+        break;
+      case "color-correct":
+        transformedImage = operations.colorCorrect(originalImage);
+        break;
+      case "levels-adjust":
         if (params.length != 3) {
           throw new IllegalArgumentException(
-                  "Levels adjustment requires brightness, midtone, and white point values");
+              "Levels adjustment requires brightness, midtone, and white point values");
         }
-        yield operations.levelsAdjust(originalImage, params[0], params[1],
-                params[2]);
-      }
-      default -> throw new IllegalArgumentException("Unsupported operation: " + operation);
-    };
+        transformedImage = operations.levelsAdjust(originalImage, params[0], params[1], params[2]);
+        break;
+      default:
+        throw new IllegalArgumentException("Unsupported operation: " + operation);
+    }
 
     ImageRepresentation splitResult = operations.splitImages(transformedImage, originalImage,
-            splitPercent);
+        splitPercent);
     putImage(destName, splitResult);
   }
 
@@ -323,7 +386,7 @@ public class CommandProcessor implements ImageCommandProcessor {
    */
   @Override
   public void compressImage(float percentage, String imageName, String destName)
-          throws IOException {
+      throws IOException {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation compressedImage = operations.compressImage(image, percentage);
     putImage(destName, compressedImage);
@@ -339,7 +402,7 @@ public class CommandProcessor implements ImageCommandProcessor {
    * @throws IOException if an error occurs during downscaling
    */
   public void downscaleImage(String imageName, String destName, int newWidth, int newHeight)
-          throws IOException {
+      throws IOException {
     ImageRepresentation image = getImage(imageName);
     ImageRepresentation downscaledImage = operations.downscaleImage(image, newWidth, newHeight);
     putImage(destName, downscaledImage);

@@ -38,7 +38,7 @@ public class ImageCompression implements ImageCompressionFunctionality {
 
     for (int j = 0; j < paddedHeight; j++) {
       for (int i = 0; i < paddedWidth; i++) {
-        if (j < originalHeight && i < originalWidth) { // Updated condition
+        if (j < originalHeight && i < originalWidth) {
           Pixel pixel = (Pixel) paddedImage.getPixel(j, i);
           redChannel[j][i] = pixel.getRed();
           greenChannel[j][i] = pixel.getGreen();

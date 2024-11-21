@@ -105,29 +105,24 @@ public class Image implements ImageRepresentation {
 
   @Override
   public BufferedImage toBufferedImage() {
-    // Create a new BufferedImage with the same dimensions as this image
     BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-    // Loop through each pixel and set its RGB value in the BufferedImage
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         PixelInterface pixel = pixels[y][x];
         if (pixel != null) {
-          // Get the RGB values from the pixel
           int red = pixel.getRed();
           int green = pixel.getGreen();
           int blue = pixel.getBlue();
 
-          // Combine the RGB values into a single integer
-          int rgb = (red << 16) | (green << 8) | blue; // Shift bits to create an RGB value
+          int rgb = (red << 16) | (green << 8) | blue;
 
-          // Set the pixel in the BufferedImage
           bufferedImage.setRGB(x, y, rgb);
         }
       }
     }
 
-    return bufferedImage; // Return the constructed BufferedImage
+    return bufferedImage;
   }
 
   /**

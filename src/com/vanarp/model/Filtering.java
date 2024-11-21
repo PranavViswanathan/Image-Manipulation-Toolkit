@@ -412,8 +412,8 @@ public class Filtering extends AbstractFilteringOperations {
           + "must have the same dimensions.");
     }
 
-    ImageRepresentation resultImage = new Image(originalImage.getWidth()
-        , originalImage.getHeight());
+    ImageRepresentation resultImage = new Image(originalImage.getWidth(),
+        originalImage.getHeight());
 
     for (int y = 0; y < resultImage.getHeight(); y++) {
       for (int x = 0; x < resultImage.getWidth(); x++) {
@@ -425,8 +425,8 @@ public class Filtering extends AbstractFilteringOperations {
         Pixel blendedPixel;
 
         if (maskValue == 0) {
-          blendedPixel = new Pixel(processedPixel.getRed(), processedPixel.getGreen()
-              , processedPixel.getBlue());
+          blendedPixel = new Pixel(processedPixel.getRed(), processedPixel.getGreen(),
+              processedPixel.getBlue());
         } else {
           int blendedRed = (originalPixel.getRed() * (255 - maskValue)
               + processedPixel.getRed() * maskValue) / 255;

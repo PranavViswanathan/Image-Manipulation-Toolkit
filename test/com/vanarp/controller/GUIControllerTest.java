@@ -17,11 +17,19 @@ import javax.swing.ImageIcon;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test class for the GUIController. This class contains unit tests for the methods of the
+ * GUIController and validates the functionality of the ImageCommandProcessor and GUIView.
+ */
 public class GUIControllerTest {
 
   private GUIView view;
   private ImageCommandProcessor commandProcessor;
 
+  /**
+   * A test implementation of the GUIView class. This class captures the image set in the view for
+   * validation in tests.
+   */
   private static class TestView extends GUIView {
 
     private BufferedImage image;
@@ -36,7 +44,11 @@ public class GUIControllerTest {
     }
   }
 
-  private static class mockTestCommandProcessor implements ImageCommandProcessor {
+  /**
+   * A mock implementation of the ImageCommandProcessor interface. This class simulates the behavior
+   * of the command processor for testing purposes.
+   */
+  private static class MockTestCommandProcessor implements ImageCommandProcessor {
 
     private String loadedImagePath;
     private String savedImagePath;
@@ -87,6 +99,16 @@ public class GUIControllerTest {
 
         @Override
         public void setPixel(int x, int y, PixelInterface pixel) {
+          if (x >= 0 && x < pixels.length && y >= 0 && y < pixels[0].length) {
+            pixels[x][y] = pixel;
+          } else {
+            System.out.println("Attempted to set pixel out of bounds: "
+                + (x)
+                + (", ")
+                + (y)
+                + (")")
+                + (System.lineSeparator()));
+          }
         }
 
         @Override
@@ -172,6 +194,7 @@ public class GUIControllerTest {
     @Override
     public void processSplitOperation(String operation, String imageName, String destName,
         int splitPercent, Integer... params) throws IOException {
+      System.out.println("Processing split: " + operation);
     }
 
     @Override
@@ -198,7 +221,7 @@ public class GUIControllerTest {
   @Before
   public void setUp() {
     view = new TestView();
-    commandProcessor = new mockTestCommandProcessor();
+    commandProcessor = new MockTestCommandProcessor();
     Transform transformation = new Transform();
     Filtering filtering = new Filtering();
     ImageCompressionFunctionality compress = new ImageCompression();
@@ -215,8 +238,8 @@ public class GUIControllerTest {
 
     commandProcessor.loadImage(testFilePath, testImageName);
 
-    assertEquals(testFilePath, ((mockTestCommandProcessor) commandProcessor).loadedImagePath);
-    assertEquals(testImageName, ((mockTestCommandProcessor) commandProcessor).currentImageName);
+    assertEquals(testFilePath, ((MockTestCommandProcessor) commandProcessor).loadedImagePath);
+    assertEquals(testImageName, ((MockTestCommandProcessor) commandProcessor).currentImageName);
   }
 
   @Test
@@ -226,7 +249,7 @@ public class GUIControllerTest {
 
     commandProcessor.saveImage(testImageName, testFilePath, "png");
 
-    assertEquals(testFilePath, ((mockTestCommandProcessor) commandProcessor).savedImagePath);
+    assertEquals(testFilePath, ((MockTestCommandProcessor) commandProcessor).savedImagePath);
   }
 
   @Test
@@ -236,9 +259,9 @@ public class GUIControllerTest {
 
     commandProcessor.extractComponent(testImageName, destName, "red", null);
 
-    assertEquals("red", ((mockTestCommandProcessor) commandProcessor).extractedComponentType);
+    assertEquals("red", ((MockTestCommandProcessor) commandProcessor).extractedComponentType);
     assertEquals(destName,
-        ((mockTestCommandProcessor) commandProcessor).extractedComponentDestName);
+        ((MockTestCommandProcessor) commandProcessor).extractedComponentDestName);
   }
 
   @Test
@@ -249,8 +272,8 @@ public class GUIControllerTest {
 
     commandProcessor.applyFilter(testImageName, destName, filterType, null, null);
 
-    assertEquals(filterType, ((mockTestCommandProcessor) commandProcessor).appliedFilterType);
-    assertEquals(destName, ((mockTestCommandProcessor) commandProcessor).appliedFilterDestName);
+    assertEquals(filterType, ((MockTestCommandProcessor) commandProcessor).appliedFilterType);
+    assertEquals(destName, ((MockTestCommandProcessor) commandProcessor).appliedFilterDestName);
   }
 
   @Test
@@ -260,8 +283,8 @@ public class GUIControllerTest {
 
     commandProcessor.flipImage(testImageName, destName, "horizontal");
 
-    assertEquals("horizontal", ((mockTestCommandProcessor) commandProcessor).flippedDirection);
-    assertEquals(destName, ((mockTestCommandProcessor) commandProcessor).flippedImageDestName);
+    assertEquals("horizontal", ((MockTestCommandProcessor) commandProcessor).flippedDirection);
+    assertEquals(destName, ((MockTestCommandProcessor) commandProcessor).flippedImageDestName);
   }
 
   @Test
@@ -272,8 +295,8 @@ public class GUIControllerTest {
 
     commandProcessor.brightenImage(testImageName, increment, destName);
 
-    assertEquals(increment, ((mockTestCommandProcessor) commandProcessor).brightenedIncrement);
-    assertEquals(destName, ((mockTestCommandProcessor) commandProcessor).brightenedImageDestName);
+    assertEquals(increment, ((MockTestCommandProcessor) commandProcessor).brightenedIncrement);
+    assertEquals(destName, ((MockTestCommandProcessor) commandProcessor).brightenedImageDestName);
   }
 
   @Test
@@ -285,9 +308,9 @@ public class GUIControllerTest {
 
     commandProcessor.rgbSplit(testImageName, redName, greenName, blueName);
 
-    assertEquals(redName, ((mockTestCommandProcessor) commandProcessor).rgbSplitRedName);
-    assertEquals(greenName, ((mockTestCommandProcessor) commandProcessor).rgbSplitGreenName);
-    assertEquals(blueName, ((mockTestCommandProcessor) commandProcessor).rgbSplitBlueName);
+    assertEquals(redName, ((MockTestCommandProcessor) commandProcessor).rgbSplitRedName);
+    assertEquals(greenName, ((MockTestCommandProcessor) commandProcessor).rgbSplitGreenName);
+    assertEquals(blueName, ((MockTestCommandProcessor) commandProcessor).rgbSplitBlueName);
   }
 
   @Test
@@ -299,10 +322,10 @@ public class GUIControllerTest {
 
     commandProcessor.rgbCombine(destName, redImageName, greenImageName, blueImageName);
 
-    assertEquals(destName, ((mockTestCommandProcessor) commandProcessor).rgbCombineDestName);
-    assertEquals(redImageName, ((mockTestCommandProcessor) commandProcessor).rgbCombineRedName);
-    assertEquals(greenImageName, ((mockTestCommandProcessor) commandProcessor).rgbCombineGreenName);
-    assertEquals(blueImageName, ((mockTestCommandProcessor) commandProcessor).rgbCombineBlueName);
+    assertEquals(destName, ((MockTestCommandProcessor) commandProcessor).rgbCombineDestName);
+    assertEquals(redImageName, ((MockTestCommandProcessor) commandProcessor).rgbCombineRedName);
+    assertEquals(greenImageName, ((MockTestCommandProcessor) commandProcessor).rgbCombineGreenName);
+    assertEquals(blueImageName, ((MockTestCommandProcessor) commandProcessor).rgbCombineBlueName);
   }
 
   @Test
@@ -315,10 +338,10 @@ public class GUIControllerTest {
 
     commandProcessor.levelsAdjust(testImageName, brightness, midtone, whitePoint, destName, null);
 
-    assertEquals(brightness, ((mockTestCommandProcessor) commandProcessor).levelsAdjustBrightness);
-    assertEquals(midtone, ((mockTestCommandProcessor) commandProcessor).levelsAdjustMidtone);
-    assertEquals(whitePoint, ((mockTestCommandProcessor) commandProcessor).levelsAdjustWhitePoint);
-    assertEquals(destName, ((mockTestCommandProcessor) commandProcessor).levelsAdjustDestName);
+    assertEquals(brightness, ((MockTestCommandProcessor) commandProcessor).levelsAdjustBrightness);
+    assertEquals(midtone, ((MockTestCommandProcessor) commandProcessor).levelsAdjustMidtone);
+    assertEquals(whitePoint, ((MockTestCommandProcessor) commandProcessor).levelsAdjustWhitePoint);
+    assertEquals(destName, ((MockTestCommandProcessor) commandProcessor).levelsAdjustDestName);
   }
 
   @Test
@@ -328,7 +351,7 @@ public class GUIControllerTest {
 
     commandProcessor.colorCorrectImage(testImageName, destName, null);
 
-    assertEquals(destName, ((mockTestCommandProcessor) commandProcessor).colorCorrectDestName);
+    assertEquals(destName, ((MockTestCommandProcessor) commandProcessor).colorCorrectDestName);
   }
 
   @Test
@@ -338,7 +361,7 @@ public class GUIControllerTest {
 
     commandProcessor.getHistogram(testImageName, destName);
 
-    assertEquals(destName, ((mockTestCommandProcessor) commandProcessor).histogramDestName);
+    assertEquals(destName, ((MockTestCommandProcessor) commandProcessor).histogramDestName);
   }
 
   @Test
@@ -349,9 +372,9 @@ public class GUIControllerTest {
 
     commandProcessor.compressImage(percentage, testImageName, destName);
 
-    assertEquals(percentage, ((mockTestCommandProcessor) commandProcessor).compressPercentage,
+    assertEquals(percentage, ((MockTestCommandProcessor) commandProcessor).compressPercentage,
         0.01);
-    assertEquals(destName, ((mockTestCommandProcessor) commandProcessor).compressImageDestName);
+    assertEquals(destName, ((MockTestCommandProcessor) commandProcessor).compressImageDestName);
   }
 
   @Test
@@ -363,9 +386,9 @@ public class GUIControllerTest {
 
     commandProcessor.downscaleImage(testImageName, destName, newWidth, newHeight);
 
-    assertEquals(destName, ((mockTestCommandProcessor) commandProcessor).downscaleImageDestName);
-    assertEquals(newWidth, ((mockTestCommandProcessor) commandProcessor).downscaleNewWidth);
-    assertEquals(newHeight, ((mockTestCommandProcessor) commandProcessor).downscaleNewHeight);
+    assertEquals(destName, ((MockTestCommandProcessor) commandProcessor).downscaleImageDestName);
+    assertEquals(newWidth, ((MockTestCommandProcessor) commandProcessor).downscaleNewWidth);
+    assertEquals(newHeight, ((MockTestCommandProcessor) commandProcessor).downscaleNewHeight);
   }
 
   @Test
@@ -454,7 +477,7 @@ public class GUIControllerTest {
   public void testDownscaleImageWithInvalidDimensions() {
     String testImageName = "Test Image";
     String destName = "Downscaled Image";
-    int newWidth = -100; // Invalid width
+    int newWidth = -100;
     int newHeight = 100;
 
     try {

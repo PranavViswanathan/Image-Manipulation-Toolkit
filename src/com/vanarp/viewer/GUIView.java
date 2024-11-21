@@ -17,6 +17,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+/**
+ * The GUIView class represents the graphical user interface for the Image Processing Application.
+ * It initializes the main window, sets up the layout, and creates all necessary components,
+ * including buttons, panels, and labels for displaying images and histograms.
+ */
 public class GUIView extends JFrame implements GUIViewInterface {
 
   private final JLabel imageLabel;
@@ -266,6 +271,12 @@ public class GUIView extends JFrame implements GUIViewInterface {
     gbc.insets = new Insets(10, 5, 5, 5);
   }
 
+  /**
+   * Creates action listeners for the buttons in the GUI, allowing them to respond to user
+   * interactions.
+   *
+   * @param listener the ActionListener to be added to the buttons.
+   */
   public void createButtons(ActionListener listener) {
     loadButton.addActionListener(listener);
     saveButton.addActionListener(listener);

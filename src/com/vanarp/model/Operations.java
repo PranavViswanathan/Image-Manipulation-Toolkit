@@ -1,7 +1,6 @@
 package com.vanarp.model;
 
 import com.vanarp.controller.ImageFileIO;
-
 import java.io.IOException;
 
 /**
@@ -24,7 +23,7 @@ public class Operations implements ImageOperations {
    */
 
   public Operations(ImageTransformationEnhanced transformation, ImageMaskingFiltering filtering,
-                    ImageCompressionFunctionality compression) {
+      ImageCompressionFunctionality compression) {
     this.transformation = transformation;
     this.filtering = filtering;
     this.compression = compression;
@@ -127,7 +126,7 @@ public class Operations implements ImageOperations {
    * @throws IOException if an error occurs during image processing
    */
   public ImageRepresentation brightenImage(ImageRepresentation image, int increment)
-          throws IOException {
+      throws IOException {
     return transformation.adjustBrightness(image, increment);
   }
 
@@ -199,7 +198,7 @@ public class Operations implements ImageOperations {
    * @throws IOException if an error occurs during image processing
    */
   public ImageRepresentation combineRgb(ImageRepresentation redImage,
-                                        ImageRepresentation greenImage, ImageRepresentation blueImage) throws IOException {
+      ImageRepresentation greenImage, ImageRepresentation blueImage) throws IOException {
     return filtering.rgbCombine(redImage, greenImage, blueImage);
   }
 
@@ -215,7 +214,7 @@ public class Operations implements ImageOperations {
    * @throws IOException if an error occurs during image processing
    */
   public ImageRepresentation levelsAdjust(ImageRepresentation image, int b, int m, int w)
-          throws IOException {
+      throws IOException {
     return filtering.levelsAdjust(image, b, m, w);
   }
 
@@ -251,7 +250,7 @@ public class Operations implements ImageOperations {
    * @throws IOException if an error occurs during image processing
    */
   public ImageRepresentation splitImages(ImageRepresentation image1, ImageRepresentation image2,
-                                         int percent) throws IOException {
+      int percent) throws IOException {
     return transformation.getSplitView(image1, image2, percent);
   }
 
@@ -265,7 +264,7 @@ public class Operations implements ImageOperations {
    * @throws IOException if an error occurs during compression or saving the compressed image
    */
   public ImageRepresentation compressImage(ImageRepresentation image, float quality)
-          throws IOException {
+      throws IOException {
     return compression.apply((Image) image, quality);
   }
 
@@ -279,67 +278,144 @@ public class Operations implements ImageOperations {
    * @throws IOException if an error occurs during the image processing
    */
   public ImageRepresentation downscaleImage(ImageRepresentation image, int newWidth, int newHeight)
-          throws IOException {
+      throws IOException {
     return transformation.downscale(image, newWidth, newHeight);
   }
 
-  @Override
+  /**
+   * Applies a sharpen effect to the given image using a mask.
+   *
+   * @param sourceImageName the input {@link ImageRepresentation} to be sharpened
+   * @param maskImageName   the {@link ImageRepresentation} mask to define the sharpening area
+   * @return a new {@link ImageRepresentation} with the sharpen effect applied based on the mask
+   * @throws IOException if an error occurs during image processing
+   */
   public ImageRepresentation applySharpenWithMask(ImageRepresentation sourceImageName,
-                                                  ImageRepresentation maskImageName) throws IOException {
+      ImageRepresentation maskImageName) throws IOException {
     return filtering.applySharpenWithMask(sourceImageName, maskImageName);
   }
 
-  @Override
+  /**
+   * Applies a sepia tone effect to the given image using a mask.
+   *
+   * @param sourceImageName the input {@link ImageRepresentation} to apply the sepia effect
+   * @param maskImageName   the {@link ImageRepresentation} mask to define the sepia effect area
+   * @return a new {@link ImageRepresentation} with the sepia effect applied based on the mask
+   * @throws IOException if an error occurs during image processing
+   */
   public ImageRepresentation applySepiaWithMask(ImageRepresentation sourceImageName,
-                                                ImageRepresentation maskImageName) throws IOException {
+      ImageRepresentation maskImageName) throws IOException {
     return filtering.applySepiaWithMask(sourceImageName, maskImageName);
   }
 
-  @Override
+  /**
+   * Applies a grayscale effect to the given image using a mask.
+   *
+   * @param sourceImageName the input {@link ImageRepresentation} to apply the grayscale effect
+   * @param maskImageName   the {@link ImageRepresentation} mask to define the grayscale effect
+   *                        area
+   * @return a new {@link ImageRepresentation} with the grayscale effect applied based on the mask
+   * @throws IOException if an error occurs during image processing
+   */
   public ImageRepresentation applyGreyscaleWithMask(ImageRepresentation sourceImageName,
-                                                    ImageRepresentation maskImageName) throws IOException {
+      ImageRepresentation maskImageName) throws IOException {
     return filtering.applyGreyscaleWithMask(sourceImageName, maskImageName);
   }
 
-  @Override
+  /**
+   * Applies a blur effect to the given image using a mask.
+   *
+   * @param sourceImageName the input {@link ImageRepresentation} to be blurred
+   * @param maskImageName   the {@link ImageRepresentation} mask to define the blur area
+   * @return a new {@link ImageRepresentation} with the blur effect applied based on the mask
+   * @throws IOException if an error occurs during image processing
+   */
   public ImageRepresentation applyBlurWithMask(ImageRepresentation sourceImageName,
-                                               ImageRepresentation maskImageName) throws IOException {
+      ImageRepresentation maskImageName) throws IOException {
     return filtering.applyBlurWithMask(sourceImageName, maskImageName);
   }
 
-  @Override
+  /**
+   * Extracts the blue component from the given image using a mask.
+   *
+   * @param sourceImageName the input {@link ImageRepresentation} from which to extract the blue
+   *                        component
+   * @param maskImageName   the {@link ImageRepresentation} mask to define the extraction area
+   * @return a new {@link ImageRepresentation} containing only the blue component based on the mask
+   * @throws IOException if an error occurs during image processing
+   */
   public ImageRepresentation blueComponentWithMask(ImageRepresentation sourceImageName,
-                                                   ImageRepresentation maskImageName) throws IOException {
+      ImageRepresentation maskImageName) throws IOException {
     return filtering.blueComponentWithMask(sourceImageName, maskImageName);
   }
 
-  @Override
+  /**
+   * Extracts the red component from the given image using a mask.
+   *
+   * @param sourceImageName the input {@link ImageRepresentation} from which to extract the red
+   *                        component
+   * @param maskImageName   the {@link ImageRepresentation} mask to define the extraction area
+   * @return a new {@link ImageRepresentation} containing only the red component based on the mask
+   * @throws IOException if an error occurs during image processing
+   */
   public ImageRepresentation redComponentWithMask(ImageRepresentation sourceImageName,
-                                                  ImageRepresentation maskImageName) throws IOException {
+      ImageRepresentation maskImageName) throws IOException {
     return filtering.redComponentWithMask(sourceImageName, maskImageName);
   }
 
-  @Override
+  /**
+   * Extracts the green component from the given image using a mask.
+   *
+   * @param sourceImageName the input {@link ImageRepresentation} from which to extract the green
+   *                        component
+   * @param maskImageName   the {@link ImageRepresentation} mask to define the extraction area
+   * @return a new {@link ImageRepresentation} containing only the green component based on the mask
+   * @throws IOException if an error occurs during image processing
+   */
   public ImageRepresentation greenComponentWithMask(ImageRepresentation sourceImageName,
-                                                    ImageRepresentation maskImageName) throws IOException {
+      ImageRepresentation maskImageName) throws IOException {
     return filtering.greenComponentWithMask(sourceImageName, maskImageName);
   }
 
-  @Override
+  /**
+   * Computes the luma component (perceived brightness) for each pixel in the image using a mask.
+   *
+   * @param sourceImage the input {@link ImageRepresentation} to compute the luma component
+   * @param maskImage   the {@link ImageRepresentation} mask to define the luma calculation area
+   * @return a new {@link ImageRepresentation} representing the luma component based on the mask
+   * @throws IOException if an error occurs during image processing ```java
+   */
   public ImageRepresentation lumaComponentWithMask(ImageRepresentation sourceImage,
-                                                   ImageRepresentation maskImage) throws IOException {
+      ImageRepresentation maskImage) throws IOException {
     return filtering.lumaComponentWithMask(sourceImage, maskImage);
   }
 
-  @Override
+  /**
+   * Computes the intensity component (average of RGB values) for each pixel in the image using a
+   * mask.
+   *
+   * @param sourceImage the input {@link ImageRepresentation} to compute the intensity component
+   * @param maskImage   the {@link ImageRepresentation} mask to define the intensity calculation
+   *                    area
+   * @return a new {@link ImageRepresentation} representing the intensity component based on the
+   *                    mask
+   * @throws IOException if an error occurs during image processing
+   */
   public ImageRepresentation intensityComponentWithMask(ImageRepresentation sourceImage,
-                                                        ImageRepresentation maskImage) throws IOException {
+      ImageRepresentation maskImage) throws IOException {
     return filtering.intensityComponentWithMask(sourceImage, maskImage);
   }
 
-  @Override
+  /**
+   * Computes the value component (maximum RGB value) for each pixel in the image using a mask.
+   *
+   * @param sourceImage the input {@link ImageRepresentation} to compute the value component
+   * @param maskImage   the {@link ImageRepresentation} mask to define the value calculation area
+   * @return a new {@link ImageRepresentation} representing the value component based on the mask
+   * @throws IOException if an error occurs during image processing
+   */
   public ImageRepresentation valueComponentWithMask(ImageRepresentation sourceImage,
-                                                    ImageRepresentation maskImage) throws IOException {
+      ImageRepresentation maskImage) throws IOException {
     return filtering.valueComponentWithMask(sourceImage, maskImage);
   }
 }

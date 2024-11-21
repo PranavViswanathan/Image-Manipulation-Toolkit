@@ -246,7 +246,6 @@ public class MockControllerTesting {
     public ImageRepresentation redComponentWithMask(ImageRepresentation sourceImage,
         ImageRepresentation maskImage) throws IOException {
       log.append("Red component applied with mask to the image.").append(System.lineSeparator());
-      // Implement red component logic with mask here and return the modified image
       return sourceImage;
     }
 
@@ -254,7 +253,6 @@ public class MockControllerTesting {
     public ImageRepresentation greenComponentWithMask(ImageRepresentation sourceImage,
         ImageRepresentation maskImage) throws IOException {
       log.append("Green component applied with mask to the image.").append(System.lineSeparator());
-      // Implement green component logic with mask here and return the modified image
       return sourceImage;
     }
 
@@ -498,7 +496,8 @@ public class MockControllerTesting {
     public void testRGBCombine() {
       StringBuilder log = getOutput(
           "load test/com/vanarp/model/TestResources/SampleOperations/redComponent.png red\n"
-              + "load test/com/vanarp/model/TestResources/SampleOperations/greenComponent.png green\n"
+              + "load test/com/vanarp/model/TestResources/SampleOperations/greenComponent.png
+              + green\n"
               + "load test/com/vanarp/model/TestResources/SampleOperations/blueComponent.png blue\n"
               + "rgb-combine bird red green blue\n");
       assertEquals("RGB combined."
@@ -562,10 +561,10 @@ public class MockControllerTesting {
         "Image brightened by 100", "Image flipped vertically.", "Image flipped horizontally.",
         "Value component applied to the image.", "RGB split applied.",
         "Image brightened by 50", "RGB combined.",
-        "Exception occurred: Cannot invoke \"com.vanarp.model.PixelInterface.getRed()\" because \"pixel\" is null",
+        "Exception occurred: Cannot invoke \"com.vanarp.model.PixelInterface.getRed()\" "
+            + "because \"pixel\" is null",
         ""
     );
-
     assertEquals(expectedOutput, log.toString());
   }
 

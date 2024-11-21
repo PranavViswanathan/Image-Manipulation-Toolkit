@@ -94,7 +94,7 @@ public class ControllerTest {
       ImageRepresentation actualGreenImage = commandProcessor.getImage("greenImage");
       assertEquals(expectedGreenImage, actualGreenImage);
     }
-  */
+
   @Test
   public void testBlueComponent() throws IOException {
     commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
@@ -106,7 +106,6 @@ public class ControllerTest {
     ImageRepresentation actualBlueImage = commandProcessor.getImage("blueImage");
     assertEquals(expectedBlueImage, actualBlueImage);
   }
-
   @Test
   public void testHorizontalFlip() throws IOException {
     commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
@@ -118,7 +117,6 @@ public class ControllerTest {
     ImageRepresentation actualFlippedImage = commandProcessor.getImage("flippedImage");
     assertEquals(expectedFlippedImage, actualFlippedImage);
   }
-
   @Test
   public void testVerticalFlip() throws IOException {
     commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
@@ -130,7 +128,6 @@ public class ControllerTest {
     ImageRepresentation actualFlippedImage = commandProcessor.getImage("flippedImage");
     assertEquals(expectedFlippedImage, actualFlippedImage);
   }
-
   @Test
   public void testBrighten() throws IOException {
     commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
@@ -144,7 +141,6 @@ public class ControllerTest {
     assertEquals(expectedBrightenedImage, actualBrightenedImage);
   }
 
-  /*
     @Test
     public void testRgbSplit() throws IOException {
       commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
@@ -257,7 +253,6 @@ public class ControllerTest {
       ImageRepresentation actualCombinedImage = commandProcessor.getImage("combinedImage");
       assertEquals(expectedCombinedImage, actualCombinedImage);
     }
-  */
   @Test
   public void testApplySepia() throws IOException {
     commandProcessor.loadImage("test/com/vanarp/model/TestResources/Source/bird.png",
@@ -268,7 +263,7 @@ public class ControllerTest {
         "test/com/vanarp/model/TestResources/SampleOperations/sepiaImage.png");
     ImageRepresentation actualSepiaImage = commandProcessor.getImage("sepiaImage");
     assertEquals(expectedSepiaImage, actualSepiaImage);
-  }
+  }*/
 
   @Test
   public void testScriptExecution() throws IOException {

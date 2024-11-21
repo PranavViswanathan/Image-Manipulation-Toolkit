@@ -32,7 +32,7 @@ public class Main {
   public static void main(String[] args) {
     if (args.length == 0) {
       launchGUI();
-    } else if (args.length == 2 && args[0].equals("-file")) {
+    } else if ((args.length == 2) && args[0].equals("-file")) {
       executeScriptFile(args[1]);
     } else if (args.length == 1 && args[0].equals("-text")) {
       launchTextMode();
@@ -101,10 +101,10 @@ public class Main {
    */
   private static void printUsageInstructions() {
     System.err.println(
-        """
-            Invalid command-line arguments. Please use one of the following options:
-            -file <path> : Execute commands from the specified script file.
-            -text        : Launch the application in text mode.
-            No arguments  : Launch the GUI mode.""");
+        "Invalid command-line arguments. Please use one of the following options:\n"
+            + "-file <path> : Execute commands from the specified script file.\n"
+            + "-text        : Launch the application in text mode.\n"
+            + "No arguments  : Launch the GUI mode."
+    );
   }
 }

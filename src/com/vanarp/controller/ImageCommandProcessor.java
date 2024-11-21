@@ -1,9 +1,8 @@
 package com.vanarp.controller;
 
 import com.vanarp.model.ImageRepresentation;
-import com.vanarp.model.PixelOperation;
-
 import java.io.IOException;
+import javax.swing.JDialog;
 
 /**
  * An interface defining operations for processing images.
@@ -46,7 +45,8 @@ public interface ImageCommandProcessor {
    * @param componentType the type of component to extract (e.g., "red", "green", "blue")
    * @throws IOException if an error occurs during the extraction operation
    */
-  void extractComponent(String imageName, String destName, String componentType, String maskName) throws IOException;
+  void extractComponent(String imageName, String destName, String componentType, String maskName)
+      throws IOException;
 
   /**
    * Applies a filter to the specified image and stores the result in the cache.
@@ -57,7 +57,8 @@ public interface ImageCommandProcessor {
    * @param splitPercent optional parameter for split view (0-100)
    * @throws IOException if an error occurs during the filter application
    */
-  void applyFilter(String imageName, String destName, String filterType, Integer splitPercent, String maskImageName) throws IOException;
+  void applyFilter(String imageName, String destName, String filterType, Integer splitPercent,
+      String maskImageName) throws IOException;
 
   /**
    * Flips the specified image in the given direction and stores the result in the cache.
@@ -89,7 +90,7 @@ public interface ImageCommandProcessor {
    * @throws IOException if an error occurs during the RGB split operation
    */
   void rgbSplit(String imageName, String redName, String greenName, String blueName)
-          throws IOException;
+      throws IOException;
 
   /**
    * Combines the RGB components into a single image and stores the result in the cache.
@@ -101,7 +102,7 @@ public interface ImageCommandProcessor {
    * @throws IOException if an error occurs during the RGB combination operation
    */
   void rgbCombine(String destName, String redImageName, String greenImageName, String blueImageName)
-          throws IOException;
+      throws IOException;
 
   /**
    * Adjusts the levels of the specified image by modifying its brightness, midtone, and white point
@@ -116,7 +117,7 @@ public interface ImageCommandProcessor {
    * @throws IOException if an error occurs during the levels adjustment operation
    */
   void levelsAdjust(String imageName, int brightness, int midtone, int whitePoint, String destName,
-                    Integer splitPercent) throws IOException;
+      Integer splitPercent) throws IOException;
 
   /**
    * Applies color correction to the specified image and stores the result in the cache.
@@ -127,7 +128,7 @@ public interface ImageCommandProcessor {
    * @throws IOException if an error occurs during the operation
    */
   void colorCorrectImage(String imageName, String destName, Integer splitPercent)
-          throws IOException;
+      throws IOException;
 
   /**
    * Processes a split operation for various image transformations.
@@ -140,7 +141,7 @@ public interface ImageCommandProcessor {
    * @throws IOException if an error occurs during the operation
    */
   void processSplitOperation(String operation, String imageName, String destName, int splitPercent,
-                             Integer... params) throws IOException;
+      Integer... params) throws IOException;
 
   /**
    * Generates a histogram image from the specified image and stores it in the cache.
@@ -172,5 +173,23 @@ public interface ImageCommandProcessor {
    * @throws IOException if an error occurs during the downscaling operation
    */
   void downscaleImage(String imageName, String destName, int newWidth, int newHeight)
-          throws IOException;
+      throws IOException;
+
+  /**
+   * Functional interface for actions that require a slider value.
+   */
+  @FunctionalInterface
+  interface SliderAction {
+
+    void execute(int splitPercent, JDialog sliderDialog);
+  }
+
+  /**
+   * Functional interface for actions that apply a preview.
+   */
+  @FunctionalInterface
+  interface ApplyAction {
+
+    void apply(String previewName) throws IOException;
+  }
 }

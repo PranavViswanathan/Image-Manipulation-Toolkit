@@ -126,7 +126,8 @@ public class InvalidControllerTest {
   @Test
   public void testScriptExecutionWithInvalidCommand() {
     cliView.processCommand("-file test/com/vanarp/model/TestResources/Script/InvalidScript.txt");
-    String expectedOutput = "Error in handleScript: test\\com\\vanarp\\model\\TestResources\\Script\\InvalidScript.txt (The system cannot find the file specified)";
+    String expectedOutput = "Error in handleScript: test\\com\\vanarp\\model\\TestResources\\Script"
+        + "\\InvalidScript.txt (The system cannot find the file specified)";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
@@ -161,42 +162,48 @@ public class InvalidControllerTest {
   @Test
   public void testHistogramSourceImageNotExists() {
     cliView.processCommand("histogram nonExistentImage");
-    String expectedOutput = "Error in handleHistogram: Usage: histogram <image-name> <dest-image-name>";
+    String expectedOutput = "Error in handleHistogram: Usage: histogram "
+        + "<image-name> <dest-image-name>";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testColorCorrectSourceImageNotExists() {
     cliView.processCommand("color-correct nonExistentImage correctedImage");
-    String expectedOutput = "Error in handleColorCorrect: Image with name nonExistentImage not found.";
+    String expectedOutput = "Error in handleColorCorrect: Image with name nonExistentImage "
+        + "not found.";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testLevelsAdjustSourceImageNotExists() {
     cliView.processCommand("levels-adjust nonExistentImage adjustedImage");
-    String expectedOutput = "Error in handleLevelsAdjust: Usage: levels-adjust <b> <m> <w> <image-name> <dest-image-name> [split <percentage>]";
+    String expectedOutput = "Error in handleLevelsAdjust: Usage: levels-adjust <b> <m> <w> "
+        + "<image-name> <dest-image-name> [split <percentage>]";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testCompressSourceImageNotExists() {
     cliView.processCommand("compress nonExistentImage compressedImage");
-    String expectedOutput = "Error in handleCompress: Usage: compress <percentage> <image-name> <dest-image-name>";
+    String expectedOutput = "Error in handleCompress: Usage: compress <percentage> "
+        + "<image-name> <dest-image-name>";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testRgbCombineMissingChannels() {
     cliView.processCommand("rgb-combine redChannelImage greenChannelImage");
-    String expectedOutput = "Error in handleRgbCombine: Usage: rgb-combine <image-name> <red-image> <green-image> <blue-image>";
+    String expectedOutput = "Error in handleRgbCombine: Usage: rgb-combine <image-name> "
+        + "<red-image> <green-image> <blue-image>";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testBrightenWithInvalidIncrement() {
     cliView.processCommand("brighten ten imageName brightenedImage");
-    String expectedOutput = "Error in handleBrighten: Invalid increment value. It should be an integer.";
+    String expectedOutput = "Error in handleBrighten: Invalid increment value. It should"
+        + " be an integer.";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
@@ -213,7 +220,8 @@ public class InvalidControllerTest {
         "load test/com/vanarp/model/TestResources/Source/P3.ppm loaded-image.ppm");
     cliView.processCommand("compress 70 loaded-image.ppm compress-loaded-image");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
-        + "Error in handleCompress: Compression is not supported for PPM format. Please use JPG or PNG files.";
+        + "Error in handleCompress: Compression is not supported for PPM format. Please use "
+        + "JPG or PNG files.";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
@@ -248,7 +256,8 @@ public class InvalidControllerTest {
   public void testColorCorrectWithInvalidValues() {
     cliView.processCommand("color-correct testImage");
     String expectedOutput =
-        "Error in handleColorCorrect: Usage: color-correct <image-name> <dest-image-name> [split <percentage>]";
+        "Error in handleColorCorrect: Usage: color-correct <image-name> <dest-image-name> "
+            + "[split <percentage>]";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
@@ -268,7 +277,8 @@ public class InvalidControllerTest {
         "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("levels-adjust 128 20 235 testImage adjustedImage");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
-        + "Error in handleLevelsAdjust: Values must be in ascending order: shadow < mid < highlight.";
+        + "Error in handleLevelsAdjust: Values must be in ascending order: "
+        + "shadow < mid < highlight.";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
@@ -278,7 +288,8 @@ public class InvalidControllerTest {
         "load test/com/vanarp/model/TestResources/Source/bird.png " + "testImage");
     cliView.processCommand("levels-adjust -10 128 300 testImage adjustedImage");
     String expectedOutput = "Image loaded successfully." + System.lineSeparator()
-        + "Error in handleLevelsAdjust: Shadow, mid, and highlight values must be between 0 and 255.";
+        + "Error in handleLevelsAdjust: Shadow, mid, and highlight values must be between "
+        + "0 and 255.";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
@@ -286,14 +297,16 @@ public class InvalidControllerTest {
   public void testLevelsAdjustInvalidNumberOfArguments() {
     cliView.processCommand("levels-adjust 20 128 testImage adjustedImage");
     String expectedOutput =
-        "Error in handleLevelsAdjust: Usage: levels-adjust <b> <m> <w> <image-name> <dest-image-name> [split <percentage>]";
+        "Error in handleLevelsAdjust: Usage: levels-adjust <b> <m> <w> <image-name> "
+            + "<dest-image-name> [split <percentage>]";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 
   @Test
   public void testLevelsAdjustNonExistentImage() {
     cliView.processCommand("levels-adjust 20 128 235 nonExistentImage adjustedImage");
-    String expectedOutput = "Error in handleLevelsAdjust: Image with name nonExistentImage not found.";
+    String expectedOutput = "Error in handleLevelsAdjust: Image with name nonExistentImage "
+        + "not found.";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
 

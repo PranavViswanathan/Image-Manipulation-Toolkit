@@ -1,244 +1,244 @@
 # Loading a PNG image
-load res\Scripts\bird.png l1
+load Scripts\bird.png l1
 
 # Getting just the Red-component
 red-component l1 l1-red-component
 
 # Saving the red component
-save res\Scripts\ScriptImages\bird-red-component.png l1-red-component
+save Scripts\ScriptImages\bird-red-component.png l1-red-component
 
 # Getting just the Green-component
 green-component l1 l1-green-component
 
 # Saving the green component
-save res\Scripts\ScriptImages\bird-green-component.png l1-green-component
+save Scripts\ScriptImages\bird-green-component.png l1-green-component
 
 # Getting just the Blue-component
 blue-component l1 l1-blue-component
 
 # Saving the blue component
-save res\Scripts\ScriptImages\bird-blue-component.png l1-blue-component
+save Scripts\ScriptImages\bird-blue-component.png l1-blue-component
 
 # Blurring the image
 blur l1 l1-blur
 
 # Saving the blurred image
-save res\Scripts\ScriptImages\bird-blur.png l1-blur
+save Scripts\ScriptImages\bird-blur.png l1-blur
 
 # Sharpening the image
 sharpen l1 l1-sharper
 
 # Saving the sharper image
-save res\Scripts\ScriptImages\bird-sharper.png l1-sharper
+save Scripts\ScriptImages\bird-sharper.png l1-sharper
 
 # Brightening the image
 brighten 20 l1 l1-brighter
 
 # Saving the brighter image
-save res\Scripts\ScriptImages\bird-brighter.png l1-brighter
+save Scripts\ScriptImages\bird-brighter.png l1-brighter
 
 # Splitting the image into three i.e., red, green, and blue components
 rgb-split l1 l1-red-split l1-green-split l1-blue-split
 
 # Save the 3 split images
-save res\Scripts\ScriptImages\bird-red-split.png l1-red-split
-save res\Scripts\ScriptImages\bird-green-split.png l1-green-split
-save res\Scripts\ScriptImages\bird-blue-split.png l1-blue-split
+save Scripts\ScriptImages\bird-red-split.png l1-red-split
+save Scripts\ScriptImages\bird-green-split.png l1-green-split
+save Scripts\ScriptImages\bird-blue-split.png l1-blue-split
 
 # Combine the 3 color components
 rgb-combine l1-combine l1-red-split l1-green-split l1-blue-split
 
 # Save the combined image
-save res\Scripts\ScriptImages\bird-combine.png l1-combine
+save Scripts\ScriptImages\bird-combine.png l1-combine
 
 # Flip the image vertically
 vertical-flip l1 l1-vertical-flip
 
 # Save the vertically flipped image
-save res\Scripts\ScriptImages\bird-vertical-flip.png l1-vertical-flip
+save Scripts\ScriptImages\bird-vertical-flip.png l1-vertical-flip
 
 # Flip the image horizontally
 horizontal-flip l1 l1-horizontal-flip
 
 # Save the horizontally flipped image
-save res\Scripts\ScriptImages\bird-horizontal-flip.png l1-horizontal-flip
+save Scripts\ScriptImages\bird-horizontal-flip.png l1-horizontal-flip
 
 # Convert the image into greyscale
 greyscale l1 l1-greyscale
 
 # Save the greyscale image
-save res\Scripts\ScriptImages\bird-greyscale.png l1-greyscale
+save Scripts\ScriptImages\bird-greyscale.png l1-greyscale
 
 # Convert the image into sepia
 sepia l1 l1-sepia
 
 # Save the sepia image
-save res\Scripts\ScriptImages\bird-sepia.png l1-sepia
+save Scripts\ScriptImages\bird-sepia.png l1-sepia
 
 # Convert the image into luma
 luma-component l1 l1-luma
 
 # Save the luma image
-save res\Scripts\ScriptImages\bird-luma.png l1-luma
+save Scripts\ScriptImages\bird-luma.png l1-luma
 
 # Convert the image into value
 value-component l1 l1-value
 
 # Save the value component image
-save res\Scripts\ScriptImages\bird-value.png l1-value
+save Scripts\ScriptImages\bird-value.png l1-value
 
 # Convert the image into intensity
 intensity-component l1 l1-intensity
 
 # Save the intensity component image
-save res\Scripts\ScriptImages\bird-intensity.png l1-intensity
+save Scripts\ScriptImages\bird-intensity.png l1-intensity
 
 # Load a PNG image
-load res\Scripts\bird.png l1
+load Scripts\bird.png l1
 
 # Compress the image to reduce its size
 compress 100 l1 l1-compressed
 
 # Save the compressed image
-save res\Scripts\ScriptImages\bird-compressed.png l1-compressed
+save Scripts\ScriptImages\bird-compressed.png l1-compressed
 
 # Generate a histogram of the image
 histogram l1 l1-histogram
 
 # Save the histogram
-save res\Scripts\ScriptImages\bird-histogram.png l1-histogram
+save Scripts\ScriptImages\bird-histogram.png l1-histogram
 
 # Generate a histogram of the compressed image
 histogram l1-compressed l1-compressed-histogram
 
 # Save the histogram
-save res\Scripts\ScriptImages\bird-compressed-histogram.png l1-compressed-histogram
+save Scripts\ScriptImages\bird-compressed-histogram.png l1-compressed-histogram
 
 # Color correct the image
 color-correct l1 l1-color-corrected
 
 # Save the color-corrected image
-save res\Scripts\ScriptImages\bird-color-corrected.png l1-color-corrected
+save Scripts\ScriptImages\bird-color-corrected.png l1-color-corrected
 
 # Generate a histogram of the color-corrected image
 histogram l1-color-corrected l1-color-corrected-histogram
 
 # Save the histogram
-save res\Scripts\ScriptImages\bird-color-corrected-histogram.png l1-color-corrected-histogram
+save Scripts\ScriptImages\bird-color-corrected-histogram.png l1-color-corrected-histogram
 
 # Levels-Adjust the image with brightness=10, midtone=100, white point=255
 levels-adjust 10 100 255 l1 l1-levels-adjusted
 
 # Save the Levels-Adjusted image
-save res\Scripts\ScriptImages\bird-levels-adjusted.png l1-levels-adjusted
+save Scripts\ScriptImages\bird-levels-adjusted.png l1-levels-adjusted
 
 # Generate a histogram of the levels-adjusted image
 histogram l1-levels-adjusted l1-levels-adjusted-histogram
 
 # Save the histogram
-save res\Scripts\ScriptImages\bird-levels-adjusted-histogram.png l1-levels-adjusted-histogram
+save Scripts\ScriptImages\bird-levels-adjusted-histogram.png l1-levels-adjusted-histogram
 
 # Blur the image and split
 blur l1 l1-blurred-split split 70
 
 # Save the blurred image and split
-save res\Scripts\ScriptImages\bird-blurred-split.png l1-blurred-split
+save Scripts\ScriptImages\bird-blurred-split.png l1-blurred-split
 
 # Sharpen the image and split
 sharpen l1 l1-sharpened-split split 70
 
 # Save the sharpened image
-save res\Scripts\ScriptImages\bird-sharpened-split.png l1-sharpened-split
+save Scripts\ScriptImages\bird-sharpened-split.png l1-sharpened-split
 
 # Apply Sepia tone to the image and split
 sepia l1 l1-sepia-split split 70
 
 # Save the sepia-toned image
-save res\Scripts\ScriptImages\bird-sepia-split.png l1-sepia-split
+save Scripts\ScriptImages\bird-sepia-split.png l1-sepia-split
 
 # Apply Greyscale to the image and split
 greyscale l1 l1-greyscale-split split 70
 
 # Save the greyscale image
-save res\Scripts\ScriptImages\bird-greyscale-split.png l1-greyscale-split
+save Scripts\ScriptImages\bird-greyscale-split.png l1-greyscale-split
 
 # Apply levels-adjust to the image and split
 levels-adjust 10 100 255 l1 l1-levels-adjust-split split 70
 
 # Save the levels-adjusted split image
-save res\Scripts\ScriptImages\levels-adjust-split.png l1-levels-adjust-split
+save Scripts\ScriptImages\levels-adjust-split.png l1-levels-adjust-split
 
 # Apply color-correct to the image and split
 color-correct l1 l1-color-correct-split split 70
 
 # Save the color-corrected split image
-save res\Scripts\ScriptImages\bird-color-correct-split.png l1-color-correct-split
+save Scripts\ScriptImages\bird-color-correct-split.png l1-color-correct-split
 
 # Apply downscale to Image
 downscale l1 l1-downscale 50 50 
 
 # Save the downscaled Image
-save res\Scripts\ScriptImages\bird-downscale-50x50.png l1-downscale
+save Scripts\ScriptImages\bird-downscale-50x50.png l1-downscale
 
 #Loading Mask Image
-load res\Scripts\bird-masked.png l1mask
+load Scripts\bird-masked.png l1mask
 
 #Apply Blur-Masking to Image
 blur l1 l1mask l1-blur-masked
 
 #Save the Masked Image
-save res\Scripts\ScriptImages\bird-blur-masked.png l1-blur-masked
+save Scripts\ScriptImages\bird-blur-masked.png l1-blur-masked
 
 #Apply Sharpen-Masking to Image
 sharpen l1 l1mask l1-sharpen-masked
 
 #Save the Masked Image
-save res\Scripts\ScriptImages\bird-sharpen-masked.png l1-sharpen-masked	
+save Scripts\ScriptImages\bird-sharpen-masked.png l1-sharpen-masked	
 
 #Apply Sepia-Masking to Image
 sepia l1 l1mask l1-sepia-masked
 
 #Save the Masked Image
-save res\Scripts\ScriptImages\bird-sepia-masked.png l1-sepia-masked
+save Scripts\ScriptImages\bird-sepia-masked.png l1-sepia-masked
 
 #Apply Greyscale-Masking to Image
 Greyscale l1 l1mask l1-Greyscale-masked
 
 #Save the Masked Image
-save res\Scripts\ScriptImages\bird-Greyscale-masked.png l1-Greyscale-masked
+save Scripts\ScriptImages\bird-Greyscale-masked.png l1-Greyscale-masked
 
 #Apply BlueComponent-Masking to Image
 blue-component l1 l1mask l1-BlueComponent-masked
 
 #Save the Masked Image
-save res\Scripts\ScriptImages\bird-BlueComponent-masked.png l1-BlueComponent-masked
+save Scripts\ScriptImages\bird-BlueComponent-masked.png l1-BlueComponent-masked
 
 #Apply GreenComponent-Masking to Image
 green-component l1 l1mask l1-GreenComponent-masked
 
 #Save the Masked Image
-save res\Scripts\ScriptImages\bird-GreenComponent-masked.png l1-GreenComponent-masked
+save Scripts\ScriptImages\bird-GreenComponent-masked.png l1-GreenComponent-masked
 
 #Apply RedComponent-Masking to Image
 red-component l1 l1mask l1-RedComponent-masked
 
 #Save the Masked Image
-save res\Scripts\ScriptImages\bird-RedComponent-masked.png l1-RedComponent-masked
+save Scripts\ScriptImages\bird-RedComponent-masked.png l1-RedComponent-masked
 
 #Apply ValueComponent-Masking to Image
 value-component l1 l1mask l1-ValueComponent-masked
 
 #Save the Masked Image
-save res\Scripts\ScriptImages\bird-ValueComponent-masked.png l1-ValueComponent-masked
+save Scripts\ScriptImages\bird-ValueComponent-masked.png l1-ValueComponent-masked
 
 #Apply IntensityComponent-Masking to Image
 Intensity-component l1 l1mask l1-IntensityComponent-masked
 
 #Save the Masked Image
-save res\Scripts\ScriptImages\bird-IntensityComponent-masked.png l1-IntensityComponent-masked
+save Scripts\ScriptImages\bird-IntensityComponent-masked.png l1-IntensityComponent-masked
 
 #Apply LumaComponent-Masking to Image
 luma-component l1 l1mask l1-lumaComponent-masked
 
 #Save the Masked Image
-save res\Scripts\ScriptImages\bird-LumaComponent-masked.png l1-lumaComponent-masked
+save Scripts\ScriptImages\bird-LumaComponent-masked.png l1-lumaComponent-masked

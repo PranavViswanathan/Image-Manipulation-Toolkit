@@ -520,9 +520,9 @@ there we implemented the functions related to masking.
 
 ## Testing Resources
 
-- **Running Jar File:** Navigate to the folder of jar file in the terminal and type `java -jar ImageManipulationJava4.jar`.
-- **Main Script for testing:** The script is located in `res\Scripts\script.txt` and is run using the
-  command `script Scripts\script.txt`
+- **Running Jar File:** Navigate to the folder of jar file in the terminal and type `java -jar ImageManipulation.jar`.
+- **Main Script for testing:** The script is located in `Scripts/script.txt` and is run using the
+  command `java -jar ImageManipulation.jar -file Scripts/script.txt`
 - **Scripts for testing:** The scripts are located in `res\Scripts\script.txt`.
 - **Example Source Images:** The example source image and the outputs are present in `res\Images`.
 - **Testing resources:** All resources required for testing are located in the `\test` folder.
