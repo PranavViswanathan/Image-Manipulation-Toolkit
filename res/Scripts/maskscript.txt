@@ -1,0 +1,65 @@
+# Loading a PNG image
+load res\Scripts\bird.png l1
+
+#Loading Mask Image
+load res\Scripts\bird-masked.png l1mask
+
+#Apply Blur-Masking to Image
+blur l1 l1mask l1-blur-masked
+
+#Save the Masked Image
+save res\Scripts\ScriptImages\bird-blur-masked.png l1-blur-masked
+
+#Apply Sharpen-Masking to Image
+sharpen l1 l1mask l1-sharpen-masked
+
+#Save the Masked Image
+save res\Scripts\ScriptImages\bird-sharpen-masked.png l1-sharpen-masked	
+
+#Apply Sepia-Masking to Image
+sepia l1 l1mask l1-sepia-masked
+
+#Save the Masked Image
+save res\Scripts\ScriptImages\bird-sepia-masked.png l1-sepia-masked
+
+#Apply Greyscale-Masking to Image
+Greyscale l1 l1mask l1-Greyscale-masked
+
+#Save the Masked Image
+save res\Scripts\ScriptImages\bird-Greyscale-masked.png l1-Greyscale-masked
+
+#Apply BlueComponent-Masking to Image
+blue-component l1 l1mask l1-BlueComponent-masked
+
+#Save the Masked Image
+save res\Scripts\ScriptImages\bird-BlueComponent-masked.png l1-BlueComponent-masked
+
+#Apply GreenComponent-Masking to Image
+green-component l1 l1mask l1-GreenComponent-masked
+
+#Save the Masked Image
+save res\Scripts\ScriptImages\bird-GreenComponent-masked.png l1-GreenComponent-masked
+
+#Apply RedComponent-Masking to Image
+red-component l1 l1mask l1-RedComponent-masked
+
+#Save the Masked Image
+save res\Scripts\ScriptImages\bird-RedComponent-masked.png l1-RedComponent-masked
+
+#Apply ValueComponent-Masking to Image
+value-component l1 l1mask l1-ValueComponent-masked
+
+#Save the Masked Image
+save res\Scripts\ScriptImages\bird-ValueComponent-masked.png l1-ValueComponent-masked
+
+#Apply IntensityComponent-Masking to Image
+Intensity-component l1 l1mask l1-IntensityComponent-masked
+
+#Save the Masked Image
+save res\Scripts\ScriptImages\bird-IntensityComponent-masked.png l1-IntensityComponent-masked
+
+#Apply LumaComponent-Masking to Image
+luma-component l1 l1mask l1-lumaComponent-masked
+
+#Save the Masked Image
+save res\Scripts\ScriptImages\bird-LumaComponent-masked.png l1-lumaComponent-masked

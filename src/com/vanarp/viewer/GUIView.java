@@ -51,9 +51,9 @@ public class GUIView extends JFrame implements GUIViewInterface {
   private JCheckBox adjustLevelsSplitCheckBox;
 
   /**
-   * Constructs a GUIView for the Image Processing Application.
-   * This initializes the main window, sets up the layout, and creates
-   * all necessary components, including buttons, panels, and labels.
+   * Constructs a GUIView for the Image Processing Application. This initializes the main window,
+   * sets up the layout, and creates all necessary components, including buttons, panels, and
+   * labels.
    */
   public GUIView() {
     setTitle("Image Processing Application");
@@ -68,7 +68,9 @@ public class GUIView extends JFrame implements GUIViewInterface {
     JScrollPane imageScrollPane = new JScrollPane(imageLabel);
     imageScrollPane.setPreferredSize(new Dimension(300, 50));
     imagePanel.add(imageScrollPane, BorderLayout.CENTER);
-
+    JLabel imagePanelHeading = new JLabel("Image Display");
+    imagePanelHeading.setHorizontalAlignment(JLabel.CENTER);
+    imagePanel.add(imagePanelHeading, BorderLayout.NORTH);
     JPanel histogramPanel = new JPanel();
     histogramPanel.setLayout(new BorderLayout());
     histogramLabel = new JLabel();
@@ -76,7 +78,9 @@ public class GUIView extends JFrame implements GUIViewInterface {
     JScrollPane histogramScrollPane = new JScrollPane(histogramLabel);
     histogramScrollPane.setPreferredSize(new Dimension(300, 25));
     histogramPanel.add(histogramScrollPane, BorderLayout.EAST);
-
+    JLabel histogramPanelHeading = new JLabel("Histogram");
+    histogramPanelHeading.setHorizontalAlignment(JLabel.CENTER);
+    histogramPanel.add(histogramPanelHeading, BorderLayout.NORTH);
     JPanel displayPanel = new JPanel();
     displayPanel.setLayout(new BorderLayout());
     displayPanel.add(imagePanel, BorderLayout.CENTER);
@@ -117,13 +121,12 @@ public class GUIView extends JFrame implements GUIViewInterface {
   }
 
   /**
-   * Displays a file chooser dialog that allows the user to select a file.
-   * If the user selects a file and approves the selection, the chosen file
-   * is passed to the provided callback function for further processing.
+   * Displays a file chooser dialog that allows the user to select a file. If the user selects a
+   * file and approves the selection, the chosen file is passed to the provided callback function
+   * for further processing.
    *
-   * @param callback the callback to handle the selected file. This should implement
-   *                 the {@link FileChooserCallback} interface, which defines the
-   *                 file chooser method.
+   * @param callback the callback to handle the selected file. This should implement the
+   *                 {@link FileChooserCallback} interface, which defines the file chooser method.
    */
   public void showFileChooser(FileChooserCallback callback) {
     JFileChooser fileChooser = new JFileChooser();
@@ -133,14 +136,12 @@ public class GUIView extends JFrame implements GUIViewInterface {
   }
 
   /**
-   * Displays a file chooser dialog that allows the user to select a location
-   * and filename for saving a file. If the user selects a file and approves
-   * the selection, the chosen file is passed to the provided callback function
-   * for further processing.
+   * Displays a file chooser dialog that allows the user to select a location and filename for
+   * saving a file. If the user selects a file and approves the selection, the chosen file is passed
+   * to the provided callback function for further processing.
    *
-   * @param callback the callback to handle the selected file. This should implement
-   *                 the {@link FileChooserCallback} interface, which defines the
-   *                 {@link FileChooserCallback#onFileChosen(File)} method.
+   * @param callback the callback to handle the selected file. This should implement the
+   *                 {@link FileChooserCallback} interface, which defines the method.
    */
   public void showSaveFileChooser(FileChooserCallback callback) {
     JFileChooser fileChooser = new JFileChooser();
@@ -317,7 +318,7 @@ public class GUIView extends JFrame implements GUIViewInterface {
     });
 
     colorCorrectButton.addActionListener(e -> {
-     if (colorCorrectSplitCheckBox.isSelected()) {
+      if (colorCorrectSplitCheckBox.isSelected()) {
         listener.actionPerformed(new ActionEvent(colorCorrectButton, ActionEvent.ACTION_PERFORMED,
             "Color Correct Preview"));
       } else {
