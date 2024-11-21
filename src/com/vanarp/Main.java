@@ -23,8 +23,7 @@ public class Main {
     } else if (args.length == 1 && args[0].equals("-text")) {
       launchTextMode();
     } else {
-      System.err.println(
-          "Invalid command-line arguments. Use -file <path>, -text, or no arguments for GUI.");
+      printUsageInstructions();
       System.exit(1);
     }
   }
@@ -36,7 +35,6 @@ public class Main {
       Transform transformation = new Transform();
       Filtering filtering = new Filtering();
       ImageCompressionFunctionality compress = new ImageCompression();
-
       Operations operations = new Operations(transformation, filtering, compress);
       ImageCommandProcessor controllerInterface = new GUIController(operations, commandProcessor,
           view);
@@ -62,11 +60,21 @@ public class Main {
   }
 
   private static CommandProcessor createCommandProcessor() {
+    // Create and return a new CommandProcessor instance
     Transform transformation = new Transform();
     Filtering filtering = new Filtering();
     ImageCompressionFunctionality compress = new ImageCompression();
 
     Operations operations = new Operations(transformation, filtering, compress);
     return new CommandProcessor(operations);
+  }
+
+  private static void printUsageInstructions() {
+    System.err.println(
+        """
+            Invalid command-line arguments. Please use one of the following options:
+            -file <path> : Execute commands from the specified script file.
+            -text        : Launch the application in text mode.
+            No arguments  : Launch the GUI mode.""");
   }
 }
