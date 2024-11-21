@@ -444,6 +444,14 @@ and perform operations on images before saving them.
 - Image filtering operations (blur, sharpen, greyscale, sepia, component visualizations) now support
 image masking operations which allow you to perform operations on a specific part of the image.
 
+- To implement these functions we first created a new interface ```ImageMaksingFiltering``` and made it extend the existing interface
+there we implemented the functions related to masking.
+
+- We had to add a line in the ```Operations``` class to support this as well.
+
+### 8. Downscaling.
+
+
 
 ### 1. `ImageCompressor` Class
 
