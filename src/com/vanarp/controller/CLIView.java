@@ -22,12 +22,22 @@ public class CLIView {
     EXTENSION_TO_FORMAT.put(".jpeg", "JPG");
   }
 
+  /**
+   * Constructs a CLIView with the specified command processor.
+   *
+   * @param commandProcessor the command processor used to execute image processing commands
+   */
   public CLIView(ImageCommandProcessor commandProcessor) {
     this.commandProcessor = commandProcessor;
     this.commandMap = new HashMap<>();
     initializeCommands();
   }
 
+  /**
+   * Processes a command entered by the user.
+   *
+   * @param input the command input from the user
+   */
   public void processCommand(String input) {
     String[] tokens = input.split("\\s+");
     if (tokens.length == 0) {
@@ -42,10 +52,13 @@ public class CLIView {
       commandAction.accept(tokens);
     } else {
       handleException("processCommand",
-          new IllegalArgumentException("Unknown command: " + command));
+              new IllegalArgumentException("Unknown command: " + command));
     }
   }
 
+  /**
+   * Initializes the command map with available commands and their corresponding handlers.
+   */
   private void initializeCommands() {
     commandMap.put("load", tokens -> handleLoad(tokens));
     commandMap.put("save", tokens -> handleSave(tokens));
@@ -72,6 +85,11 @@ public class CLIView {
     commandMap.put("downscale", tokens -> handleDownscale(tokens));
   }
 
+  /**
+   * Handles the 'load' command to load an image.
+   *
+   * @param tokens the command tokens containing image path and name
+   */
   private void handleLoad(String[] tokens) {
     if (tokens.length == 3) {
       try {
@@ -82,10 +100,15 @@ public class CLIView {
       }
     } else {
       handleException("handleLoad",
-          new IllegalArgumentException("Usage: load <image-path> <image-name>"));
+              new IllegalArgumentException("Usage: load <image-path> <image-name>"));
     }
   }
 
+  /**
+   * Handles the 'save' command to save an image.
+   *
+   * @param tokens the command tokens containing image name and path
+   */
   private void handleSave(String[] tokens) {
     if (tokens.length == 3) {
       String format = getFormatFromFileName(tokens[2]);
@@ -97,10 +120,16 @@ public class CLIView {
       }
     } else {
       handleException("handleSave",
-          new IllegalArgumentException("Usage: save <image-name> <image-path>"));
+              new IllegalArgumentException("Usage: save <image-name> <image-path>"));
     }
   }
 
+  /**
+   * Handles the command to extract a specific color component from an image.
+   *
+   * @param tokens   the command tokens containing image name, mask image name, and destination image name
+   * @param component the color component to extract (e.g., red, green, blue)
+   */
   private void handleComponent(String[] tokens, String component) {
     if (tokens.length == 4) { // Expecting exactly 4 tokens
       String imageName = tokens[1]; // First token (index 1) is the image name
@@ -110,7 +139,7 @@ public class CLIView {
       try {
         commandProcessor.extractComponent(imageName, destImageName, component, maskImageName);
         System.out.println(component.substring(0, 1).toUpperCase() + component.substring(1)
-            + " component applied to the image with mask.");
+                + " component applied to the image with mask.");
       } catch (IOException e) {
         handleException("handleComponent", e);
       }
@@ -121,16 +150,22 @@ public class CLIView {
       try {
         commandProcessor.extractComponent(imageName, destImageName, component, null);
         System.out.println(component.substring(0, 1).toUpperCase() + component.substring(1)
-            + " component applied to the image.");
+                + " component applied to the image.");
       } catch (IOException e) {
         handleException("handleComponent", e);
       }
     } else {
       handleException("handleComponent", new IllegalArgumentException(
-          "Usage: " + component + "-component <image-name> <mask-image-name> <dest-image-name>"));
+              "Usage: " + component + "-component <image-name> <mask-image-name> <dest-image-name>"));
     }
   }
 
+  /**
+   * Handles the command to flip an image in a specified direction.
+   *
+   * @param tokens    the command tokens containing image name and destination image name
+   * @param direction the direction to flip the image (horizontal or vertical)
+   */
   private void handleFlip(String[] tokens, String direction) {
     if (tokens.length == 3) {
       try {
@@ -141,10 +176,15 @@ public class CLIView {
       }
     } else {
       handleException("handleFlip", new IllegalArgumentException(
-          "Usage: " + direction + "-flip <image-name> <dest-image-name>"));
+              "Usage: " + direction + "-flip <image-name> <dest-image-name>"));
     }
   }
 
+  /**
+   * Handles the command to brighten an image.
+   *
+   * @param tokens the command tokens containing increment value, image name, and destination image name
+   */
   private void handleBrighten(String[] tokens) {
     if (tokens.length == 4) {
       try {
@@ -153,35 +193,46 @@ public class CLIView {
         System.out.println("Image brightened by " + increment + " and saved as " + tokens[3]);
       } catch (NumberFormatException e) {
         handleException("handleBrighten",
-            new IllegalArgumentException("Invalid increment value. It should be an integer."));
+                new IllegalArgumentException("Invalid increment value. It should be an integer."));
       } catch (IOException e) {
         handleException("handleBrighten", e);
       }
     } else {
       handleException("handleBrighten", new IllegalArgumentException(
-          "Usage: brighten <increment> <image-name> <dest-image-name>"));
+              "Usage: brighten <increment> <image-name> <dest-image-name>"));
     }
   }
 
+  /**
+   * Handles the command to split an image into its RGB components.
+   *
+   * @param tokens the command tokens containing image name and destination names for red, green, and blue images
+   */
   private void handleRgbSplit(String[] tokens) {
     if (tokens.length == 5) {
       try {
         commandProcessor.rgbSplit(tokens[1], tokens[2], tokens[3], tokens[4]);
         System.out.println(
-            "RGB split completed. Exists in cache as " + tokens[2] + ", " + tokens[3] + ", "
-                + tokens[4]);
+                "RGB split completed. Exists in cache as " + tokens[2] + ", " + tokens[3] + ", "
+                        + tokens[4]);
       } catch (IOException e) {
         handleException("handleRgbSplit", e);
       }
     } else {
       handleException("handleRgbSplit", new IllegalArgumentException(
-          "Usage: rgb-split <image-name> <dest-red-image> <dest-green-image> <dest-blue-image>"));
+              "Usage: rgb-split <image-name> <dest-red-image> <dest-green-image> <dest-blue-image>"));
     }
   }
 
+  /**
+   * Handles the command to apply a filter to an image.
+   *
+   * @param tokens the command tokens containing source image, destination image, and optional parameters
+   * @param filter the filter to apply (e.g., blur, sharpen, sepia, greyscale)
+   */
   private void handleFilter(String[] tokens, String filter) {
     if (tokens.length == 3 || (tokens.length == 4) || (tokens.length == 5
-        && tokens[3].equalsIgnoreCase("split"))) {
+            && tokens[3].equalsIgnoreCase("split"))) {
       try {
         if (tokens.length == 3) {
           commandProcessor.applyFilter(tokens[1], tokens[2], filter, null, null);
@@ -199,10 +250,15 @@ public class CLIView {
       }
     } else {
       handleException("handleFilter", new IllegalArgumentException(
-          "Usage: " + filter + " <source-image> <mask-image> <dest-image> [split <percentage>]"));
+              "Usage: " + filter + " <source-image> <mask-image> <dest-image> [split <percentage>]"));
     }
   }
 
+  /**
+   * Handles the command to apply color correction to an image.
+   *
+   * @param tokens the command tokens containing image name, destination image name, and optional split percentage
+   */
   private void handleColorCorrect(String[] tokens) {
     if (tokens.length == 3 || (tokens.length == 5 && tokens[3].equalsIgnoreCase("split"))) {
       try {
@@ -218,10 +274,15 @@ public class CLIView {
       }
     } else {
       handleException("handleColorCorrect", new IllegalArgumentException(
-          "Usage: color-correct <image-name> <dest-image-name> [split <percentage>]"));
+              "Usage: color-correct <image-name> <dest-image-name> [split <percentage>]"));
     }
   }
 
+  /**
+   * Handles the command to adjust the levels of an image.
+   *
+   * @param tokens the command tokens containing black, mid, white levels, image name, destination name, and optional split percentage
+   */
   private void handleLevelsAdjust(String[] tokens) {
     if (tokens.length == 6 || (tokens.length == 8 && tokens[6].equalsIgnoreCase("split"))) {
       try {
@@ -243,10 +304,15 @@ public class CLIView {
       }
     } else {
       handleException("handleLevelsAdjust", new IllegalArgumentException(
-          "Usage: levels-adjust <b> <m> <w> <image-name> <dest-image-name> [split <percentage>]"));
+              "Usage: levels-adjust <b> <m> <w> <image-name> <dest-image-name> [split <percentage>]"));
     }
   }
 
+  /**
+   * Handles the command to combine RGB components into a single image.
+   *
+   * @param tokens the command tokens containing image name and names of the red, green, and blue images
+   */
   private void handleRgbCombine(String[] tokens) {
     if (tokens.length == 5) {
       try {
@@ -261,10 +327,15 @@ public class CLIView {
       }
     } else {
       handleException("handleRgbCombine", new IllegalArgumentException(
-          "Usage: rgb-combine <image-name> <red-image> <green-image> <blue-image>"));
+              "Usage: rgb-combine <image-name> <red-image> <green-image> <blue-image>"));
     }
   }
 
+  /**
+   * Handles the command to execute a script file.
+   *
+   * @param tokens the command tokens containing the script file path
+   */
   public void handleScript(String[] tokens) {
     if (tokens.length == 2) {
       try {
@@ -276,10 +347,15 @@ public class CLIView {
       }
     } else {
       handleException("handleScript",
-          new IllegalArgumentException("Usage: -file <script-file-path>"));
+              new IllegalArgumentException("Usage: -file <script-file-path>"));
     }
   }
 
+  /**
+   * Handles the command to create a histogram from an image.
+   *
+   * @param tokens the command tokens containing image name and destination name for the histogram
+   */
   private void handleHistogram(String[] tokens) {
     if (tokens.length == 3) {
       try {
@@ -290,17 +366,22 @@ public class CLIView {
       }
     } else {
       handleException("handleHistogram",
-          new IllegalArgumentException("Usage: histogram <image-name> <dest-image-name>"));
+              new IllegalArgumentException("Usage: histogram <image-name> <dest-image-name>"));
     }
   }
 
+  /**
+   * Handles the command to compress an image.
+   *
+   * @param tokens the command tokens containing compression percentage, image name, and destination name
+   */
   private void handleCompress(String[] tokens) {
     if (tokens.length == 4) {
       try {
         int percentage = Integer.parseInt(tokens[1]);
         if (percentage < 0 || percentage > 100) {
           handleException("handleCompress",
-              new IllegalArgumentException("Compression percentage must be between 0 and 100."));
+                  new IllegalArgumentException("Compression percentage must be between 0 and 100."));
           return;
         }
         String imageName = tokens[2];
@@ -310,7 +391,7 @@ public class CLIView {
 
         if (inputFormat.equals("PPM") || outputFormat.equals("PPM")) {
           handleException("handleCompress", new UnsupportedOperationException(
-              "Compression is not supported for PPM format. Please use JPG or PNG files."));
+                  "Compression is not supported for PPM format. Please use JPG or PNG files."));
           return;
         }
 
@@ -321,10 +402,15 @@ public class CLIView {
       }
     } else {
       handleException("handleCompress", new IllegalArgumentException(
-          "Usage: compress <percentage> <image-name> <dest-image-name>"));
+              "Usage: compress <percentage> <image-name> <dest-image-name>"));
     }
   }
 
+  /**
+   * Handles the command to downscale an image.
+   *
+   * @param tokens the command tokens containing image name, destination name, new width, and new height
+   */
   private void handleDownscale(String[] tokens) {
     if (tokens.length == 5) {
       try {
@@ -336,16 +422,22 @@ public class CLIView {
         System.out.println("Image downscaled and saved as " + destName);
       } catch (NumberFormatException e) {
         handleException("handleDownscale", new IllegalArgumentException(
-            "Invalid width or height value. They should be integers."));
+                "Invalid width or height value. They should be integers."));
       } catch (IOException | IllegalArgumentException e) {
         handleException("handleDownscale", e);
       }
     } else {
       handleException("handleDownscale", new IllegalArgumentException(
-          "Usage: downscale <image-name> <dest-image-name> <new-width> <new-height>"));
+              "Usage: downscale <image-name> <dest-image-name> <new-width> <new-height>"));
     }
   }
 
+  /**
+   * Retrieves the format of an image based on its file name.
+   *
+   * @param filePath the file path of the image
+   * @return the format of the image (e.g., PPM, PNG, JPG)
+   */
   private String getFormatFromFileName(String filePath) {
     for (Map.Entry<String, String> entry : EXTENSION_TO_FORMAT.entrySet()) {
       if (filePath.endsWith(entry.getKey())) {
@@ -355,6 +447,12 @@ public class CLIView {
     return "PNG";
   }
 
+  /**
+   * Handles exceptions that occur during command processing.
+   *
+   * @param context the context in which the exception occurred
+   * @param e      the exception that was thrown
+   */
   private void handleException(String context, Exception e) {
     System.out.println("Error in " + context + ": " + e.getMessage());
   }

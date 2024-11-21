@@ -3,12 +3,14 @@ package com.vanarp.controller;
 import com.vanarp.model.ImageOperations;
 import com.vanarp.model.ImageRepresentation;
 import com.vanarp.viewer.GUIView;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.Stack;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -25,8 +27,15 @@ public class GUIController extends CommandProcessor {
   private ImageRepresentation loadedImage;
   private String currentImageName;
 
+  /**
+   * Constructs a GUIController with the specified image operations, command processor, and GUI view.
+   *
+   * @param operations       the ImageOperations to be used for processing image commands
+   * @param commandProcessor the command processor that executes image commands
+   * @param view             the GUIView for user interaction and display
+   */
   public GUIController(ImageOperations operations, ImageCommandProcessor commandProcessor,
-      GUIView view) {
+                       GUIView view) {
     super(operations);
     this.commandProcessor = commandProcessor;
     this.view = view;
@@ -132,7 +141,7 @@ public class GUIController extends CommandProcessor {
 
   private void compressImageDialog() {
     String input = JOptionPane.showInputDialog(view, "Enter the compression percentage (0-100):",
-        "Compress Image", JOptionPane.PLAIN_MESSAGE);
+            "Compress Image", JOptionPane.PLAIN_MESSAGE);
     if (input != null) {
       try {
         int percentage = Integer.parseInt(input);
@@ -274,7 +283,7 @@ public class GUIController extends CommandProcessor {
     saveImageState();
     if (loadedImage != null) {
       String input = JOptionPane.showInputDialog(view, "Enter the increment value for brightness:",
-          "Brighten Image", JOptionPane.PLAIN_MESSAGE);
+              "Brighten Image", JOptionPane.PLAIN_MESSAGE);
       if (input != null) {
         try {
           int increment = Integer.parseInt(input);
@@ -336,12 +345,12 @@ public class GUIController extends CommandProcessor {
     saveImageState();
     if (loadedImage != null) {
       String inputBrightness = JOptionPane.showInputDialog(view,
-          "Enter brightness adjustment value (0-255):", "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
+              "Enter brightness adjustment value (0-255):", "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
       String inputMidtone = JOptionPane.showInputDialog(view,
-          "Enter midtone adjustment value (0-255):", "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
+              "Enter midtone adjustment value (0-255):", "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
       String inputWhitePoint = JOptionPane.showInputDialog(view,
-          "Enter white point adjustment value (0-255):", "Adjust Levels",
-          JOptionPane.PLAIN_MESSAGE);
+              "Enter white point adjustment value (0-255):", "Adjust Levels",
+              JOptionPane.PLAIN_MESSAGE);
       if (inputBrightness != null && inputMidtone != null && inputWhitePoint != null) {
         try {
           int brightness = Integer.parseInt(inputBrightness);
@@ -349,7 +358,7 @@ public class GUIController extends CommandProcessor {
           int whitePoint = Integer.parseInt(inputWhitePoint);
           String destName = generateDestinationName("levels_adjusted");
           commandProcessor.levelsAdjust(currentImageName, brightness, midtone, whitePoint, destName,
-              null);
+                  null);
           loadedImage = commandProcessor.getImage(destName);
           currentImageName = destName;
           view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
@@ -368,9 +377,9 @@ public class GUIController extends CommandProcessor {
     saveImageState();
     if (loadedImage != null) {
       String widthInput = JOptionPane.showInputDialog(view, "Enter the new width:",
-          "Downscale Image", JOptionPane.PLAIN_MESSAGE);
+              "Downscale Image", JOptionPane.PLAIN_MESSAGE);
       String heightInput = JOptionPane.showInputDialog(view, "Enter the new height:",
-          "Downscale Image", JOptionPane.PLAIN_MESSAGE);
+              "Downscale Image", JOptionPane.PLAIN_MESSAGE);
       if (widthInput != null && heightInput != null) {
         try {
           int newWidth = Integer.parseInt(widthInput);
@@ -413,7 +422,7 @@ public class GUIController extends CommandProcessor {
         try {
           // Generate the preview image using the specified filter
           commandProcessor.applyFilter(currentImageName, previewName, filterType, splitPercent,
-              null);
+                  null);
 
           // Show the preview dialog with the appropriate apply action
           showPreview(previewName, "Preview - " + filterType, sliderDialog, (name) -> {
@@ -455,13 +464,13 @@ public class GUIController extends CommandProcessor {
     if (loadedImage != null) {
       createSliderDialog("Levels Adjustment", (splitPercent, sliderDialog) -> {
         String inputBrightness = JOptionPane.showInputDialog(view,
-            "Enter brightness adjustment value (0-255):", "Adjust Levels",
-            JOptionPane.PLAIN_MESSAGE);
+                "Enter brightness adjustment value (0-255):", "Adjust Levels",
+                JOptionPane.PLAIN_MESSAGE);
         String inputMidtone = JOptionPane.showInputDialog(view,
-            "Enter midtone adjustment value (0-255):", "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
+                "Enter midtone adjustment value (0-255):", "Adjust Levels", JOptionPane.PLAIN_MESSAGE);
         String inputWhitePoint = JOptionPane.showInputDialog(view,
-            "Enter white point adjustment value (0-255):", "Adjust Levels",
-            JOptionPane.PLAIN_MESSAGE);
+                "Enter white point adjustment value (0-255):", "Adjust Levels",
+                JOptionPane.PLAIN_MESSAGE);
         if (inputBrightness != null && inputMidtone != null && inputWhitePoint != null) {
           try {
             int brightness = Integer.parseInt(inputBrightness);
@@ -469,10 +478,10 @@ public class GUIController extends CommandProcessor {
             int whitePoint = Integer.parseInt(inputWhitePoint);
             String previewName = generateDestinationName("levels_adjusted_preview");
             commandProcessor.levelsAdjust(currentImageName, brightness, midtone, whitePoint,
-                previewName, splitPercent);
+                    previewName, splitPercent);
             showPreview(previewName, "Preview - Levels Adjusted", sliderDialog, (name) -> {
               commandProcessor.levelsAdjust(currentImageName, brightness, midtone, whitePoint, name,
-                  null);
+                      null);
               loadedImage = commandProcessor.getImage(name);
               currentImageName = name;
               view.setImageIcon(new ImageIcon(loadedImage.toBufferedImage()));
@@ -505,7 +514,7 @@ public class GUIController extends CommandProcessor {
   }
 
   private void showPreview(String previewName, String title, JDialog sliderDialog,
-      ApplyAction applyAction) {
+                           ApplyAction applyAction) {
     ImageRepresentation previewImage = commandProcessor.getImage(previewName);
     JDialog previewDialog = new JDialog(view, title, true);
     previewDialog.setSize(600, 400);
@@ -556,7 +565,7 @@ public class GUIController extends CommandProcessor {
   private String generateDestinationName(String suffix) {
     int lastDotIndex = currentImageName.lastIndexOf('.');
     return (lastDotIndex != -1 ? currentImageName.substring(0, lastDotIndex) : currentImageName)
-        + "_" + suffix + (lastDotIndex != -1 ? currentImageName.substring(lastDotIndex) : "");
+            + "_" + suffix + (lastDotIndex != -1 ? currentImageName.substring(lastDotIndex) : "");
   }
 
   private void showError(String message) {
@@ -565,8 +574,8 @@ public class GUIController extends CommandProcessor {
 
   private void promptBeforeExit() {
     int option = JOptionPane.showConfirmDialog(view,
-        "Do you want to save the image before exiting?", "Exit Confirmation",
-        JOptionPane.YES_NO_CANCEL_OPTION);
+            "Do you want to save the image before exiting?", "Exit Confirmation",
+            JOptionPane.YES_NO_CANCEL_OPTION);
     if (option == JOptionPane.YES_OPTION) {
       saveImage();
       System.exit(0);
