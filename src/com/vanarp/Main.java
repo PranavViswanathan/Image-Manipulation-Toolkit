@@ -11,13 +11,11 @@ import com.vanarp.model.Operations;
 import com.vanarp.model.Transform;
 import com.vanarp.viewer.CommandInputHandler;
 import com.vanarp.viewer.GUIView;
-
 import javax.swing.SwingUtilities;
 
 /**
- * The {@code Main} class serves as the entry point for the application,
- * providing multiple modes of interaction including GUI, text mode,
- * and script execution.
+ * The {@code Main} class serves as the entry point for the application, providing multiple modes of
+ * interaction including GUI, text mode, and script execution.
  */
 public class Main {
 
@@ -103,10 +101,10 @@ public class Main {
    */
   private static void printUsageInstructions() {
     System.err.println(
-            """
-                    Invalid command-line arguments. Please use one of the following options:
-                    -file <path> : Execute commands from the specified script file.
-                    -text        : Launch the application in text mode.
-                    No arguments  : Launch the GUI mode.""");
+        """
+            Invalid command-line arguments. Please use one of the following options:
+            -file <path> : Execute commands from the specified script file.
+            -text        : Launch the application in text mode.
+            No arguments  : Launch the GUI mode.""");
   }
 }
