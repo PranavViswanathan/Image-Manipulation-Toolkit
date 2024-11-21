@@ -1,6 +1,7 @@
 package com.vanarp.viewer;
 
 import com.vanarp.controller.CLIView;
+
 import java.util.Scanner;
 
 /**

@@ -1,6 +1,7 @@
 package com.vanarp.model;
 
 import com.vanarp.controller.ImageFileIO;
+
 import java.io.IOException;
 
 /**
@@ -23,7 +24,7 @@ public class Operations implements ImageOperations {
    */
 
   public Operations(ImageTransformationEnhanced transformation, ImageMaskingFiltering filtering,
-      ImageCompressionFunctionality compression) {
+                    ImageCompressionFunctionality compression) {
     this.transformation = transformation;
     this.filtering = filtering;
     this.compression = compression;
@@ -126,7 +127,7 @@ public class Operations implements ImageOperations {
    * @throws IOException if an error occurs during image processing
    */
   public ImageRepresentation brightenImage(ImageRepresentation image, int increment)
-      throws IOException {
+          throws IOException {
     return transformation.adjustBrightness(image, increment);
   }
 
@@ -198,7 +199,7 @@ public class Operations implements ImageOperations {
    * @throws IOException if an error occurs during image processing
    */
   public ImageRepresentation combineRgb(ImageRepresentation redImage,
-      ImageRepresentation greenImage, ImageRepresentation blueImage) throws IOException {
+                                        ImageRepresentation greenImage, ImageRepresentation blueImage) throws IOException {
     return filtering.rgbCombine(redImage, greenImage, blueImage);
   }
 
@@ -214,7 +215,7 @@ public class Operations implements ImageOperations {
    * @throws IOException if an error occurs during image processing
    */
   public ImageRepresentation levelsAdjust(ImageRepresentation image, int b, int m, int w)
-      throws IOException {
+          throws IOException {
     return filtering.levelsAdjust(image, b, m, w);
   }
 
@@ -250,7 +251,7 @@ public class Operations implements ImageOperations {
    * @throws IOException if an error occurs during image processing
    */
   public ImageRepresentation splitImages(ImageRepresentation image1, ImageRepresentation image2,
-      int percent) throws IOException {
+                                         int percent) throws IOException {
     return transformation.getSplitView(image1, image2, percent);
   }
 
@@ -264,7 +265,7 @@ public class Operations implements ImageOperations {
    * @throws IOException if an error occurs during compression or saving the compressed image
    */
   public ImageRepresentation compressImage(ImageRepresentation image, float quality)
-      throws IOException {
+          throws IOException {
     return compression.apply((Image) image, quality);
   }
 
@@ -278,67 +279,67 @@ public class Operations implements ImageOperations {
    * @throws IOException if an error occurs during the image processing
    */
   public ImageRepresentation downscaleImage(ImageRepresentation image, int newWidth, int newHeight)
-      throws IOException {
+          throws IOException {
     return transformation.downscale(image, newWidth, newHeight);
   }
 
   @Override
   public ImageRepresentation applySharpenWithMask(ImageRepresentation sourceImageName,
-      ImageRepresentation maskImageName) throws IOException {
+                                                  ImageRepresentation maskImageName) throws IOException {
     return filtering.applySharpenWithMask(sourceImageName, maskImageName);
   }
 
   @Override
   public ImageRepresentation applySepiaWithMask(ImageRepresentation sourceImageName,
-      ImageRepresentation maskImageName) throws IOException {
+                                                ImageRepresentation maskImageName) throws IOException {
     return filtering.applySepiaWithMask(sourceImageName, maskImageName);
   }
 
   @Override
   public ImageRepresentation applyGreyscaleWithMask(ImageRepresentation sourceImageName,
-      ImageRepresentation maskImageName) throws IOException {
+                                                    ImageRepresentation maskImageName) throws IOException {
     return filtering.applyGreyscaleWithMask(sourceImageName, maskImageName);
   }
 
   @Override
   public ImageRepresentation applyBlurWithMask(ImageRepresentation sourceImageName,
-      ImageRepresentation maskImageName) throws IOException {
+                                               ImageRepresentation maskImageName) throws IOException {
     return filtering.applyBlurWithMask(sourceImageName, maskImageName);
   }
 
   @Override
   public ImageRepresentation blueComponentWithMask(ImageRepresentation sourceImageName,
-      ImageRepresentation maskImageName) throws IOException {
+                                                   ImageRepresentation maskImageName) throws IOException {
     return filtering.blueComponentWithMask(sourceImageName, maskImageName);
   }
 
   @Override
   public ImageRepresentation redComponentWithMask(ImageRepresentation sourceImageName,
-      ImageRepresentation maskImageName) throws IOException {
+                                                  ImageRepresentation maskImageName) throws IOException {
     return filtering.redComponentWithMask(sourceImageName, maskImageName);
   }
 
   @Override
   public ImageRepresentation greenComponentWithMask(ImageRepresentation sourceImageName,
-      ImageRepresentation maskImageName) throws IOException {
+                                                    ImageRepresentation maskImageName) throws IOException {
     return filtering.greenComponentWithMask(sourceImageName, maskImageName);
   }
 
   @Override
   public ImageRepresentation lumaComponentWithMask(ImageRepresentation sourceImage,
-      ImageRepresentation maskImage) throws IOException {
+                                                   ImageRepresentation maskImage) throws IOException {
     return filtering.lumaComponentWithMask(sourceImage, maskImage);
   }
 
   @Override
   public ImageRepresentation intensityComponentWithMask(ImageRepresentation sourceImage,
-      ImageRepresentation maskImage) throws IOException {
+                                                        ImageRepresentation maskImage) throws IOException {
     return filtering.intensityComponentWithMask(sourceImage, maskImage);
   }
 
   @Override
   public ImageRepresentation valueComponentWithMask(ImageRepresentation sourceImage,
-      ImageRepresentation maskImage) throws IOException {
+                                                    ImageRepresentation maskImage) throws IOException {
     return filtering.valueComponentWithMask(sourceImage, maskImage);
   }
 }

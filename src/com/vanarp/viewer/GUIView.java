@@ -50,6 +50,11 @@ public class GUIView extends JFrame implements GUIViewInterface {
   private JCheckBox colorCorrectSplitCheckBox;
   private JCheckBox adjustLevelsSplitCheckBox;
 
+  /**
+   * Constructs a GUIView for the Image Processing Application.
+   * This initializes the main window, sets up the layout, and creates
+   * all necessary components, including buttons, panels, and labels.
+   */
   public GUIView() {
     setTitle("Image Processing Application");
     setSize(1075, 600);
@@ -111,6 +116,15 @@ public class GUIView extends JFrame implements GUIViewInterface {
     addCheckBoxListeners();
   }
 
+  /**
+   * Displays a file chooser dialog that allows the user to select a file.
+   * If the user selects a file and approves the selection, the chosen file
+   * is passed to the provided callback function for further processing.
+   *
+   * @param callback the callback to handle the selected file. This should implement
+   *                 the {@link FileChooserCallback} interface, which defines the
+   *                 file chooser method.
+   */
   public void showFileChooser(FileChooserCallback callback) {
     JFileChooser fileChooser = new JFileChooser();
     if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -118,6 +132,16 @@ public class GUIView extends JFrame implements GUIViewInterface {
     }
   }
 
+  /**
+   * Displays a file chooser dialog that allows the user to select a location
+   * and filename for saving a file. If the user selects a file and approves
+   * the selection, the chosen file is passed to the provided callback function
+   * for further processing.
+   *
+   * @param callback the callback to handle the selected file. This should implement
+   *                 the {@link FileChooserCallback} interface, which defines the
+   *                 {@link FileChooserCallback#onFileChosen(File)} method.
+   */
   public void showSaveFileChooser(FileChooserCallback callback) {
     JFileChooser fileChooser = new JFileChooser();
     if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -319,18 +343,36 @@ public class GUIView extends JFrame implements GUIViewInterface {
     compressButton.addActionListener(listener);
   }
 
+  /**
+   * Sets the icon of the main image label to the specified {@code ImageIcon}.
+   *
+   * @param icon the {@code ImageIcon} to be displayed in the main image label.
+   */
   public void setImageIcon(ImageIcon icon) {
     imageLabel.setIcon(icon);
   }
 
+  /**
+   * Sets the icon of the histogram label to the specified {@code ImageIcon}.
+   *
+   * @param icon the {@code ImageIcon} to be displayed in the histogram label.
+   */
   public void setHistogramIcon(ImageIcon icon) {
     histogramLabel.setIcon(icon);
   }
 
+  /**
+   * Displays an error dialog with the specified error message.
+   *
+   * @param message the error message to be displayed in the dialog.
+   */
   public void showErrorDialog(String message) {
     JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
   }
 
+  /**
+   * Unselects all checkboxes used for split-view options in the interface.
+   */
   public void untickCheckBoxes() {
     blurSplitCheckBox.setSelected(false);
     sharpenSplitCheckBox.setSelected(false);
@@ -340,7 +382,13 @@ public class GUIView extends JFrame implements GUIViewInterface {
     adjustLevelsSplitCheckBox.setSelected(false);
   }
 
+  /**
+   * Displays an information dialog with the specified message.
+   *
+   * @param message the information message to be displayed in the dialog.
+   */
   public void showMessage(String message) {
     JOptionPane.showMessageDialog(this, message, "Information", JOptionPane.INFORMATION_MESSAGE);
   }
+
 }

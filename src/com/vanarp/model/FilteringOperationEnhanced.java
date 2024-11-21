@@ -14,9 +14,9 @@ public interface FilteringOperationEnhanced extends FilteringOperations {
    * values.
    *
    * @param image the input {@link ImageRepresentation} to adjust
-   * @param b the shadow point (0-255)
-   * @param m the mid point (0-255)
-   * @param w the highlight point (0-255)
+   * @param b     the shadow point (0-255)
+   * @param m     the mid point (0-255)
+   * @param w     the highlight point (0-255)
    * @return a new {@link ImageRepresentation} with adjusted levels
    * @throws IOException if an error occurs during image processing
    */

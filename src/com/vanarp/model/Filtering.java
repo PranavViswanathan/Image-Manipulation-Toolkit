@@ -319,6 +319,7 @@ public class Filtering extends AbstractFilteringOperations {
     return blendWithMask(sourceImage, bluredImage, maskImage);
   }
 
+  @Override
   public ImageRepresentation blueComponentWithMask(ImageRepresentation sourceImage,
       ImageRepresentation maskImage) throws IOException {
     Filtering filter = new Filtering();
@@ -326,6 +327,7 @@ public class Filtering extends AbstractFilteringOperations {
     return blendWithMask(sourceImage, blue, maskImage);
   }
 
+  @Override
   public ImageRepresentation redComponentWithMask(ImageRepresentation sourceImage,
       ImageRepresentation maskImage) throws IOException {
     Filtering filter = new Filtering();
@@ -333,6 +335,7 @@ public class Filtering extends AbstractFilteringOperations {
     return blendWithMask(sourceImage, red, maskImage);
   }
 
+  @Override
   public ImageRepresentation greenComponentWithMask(ImageRepresentation sourceImage,
       ImageRepresentation maskImage) throws IOException {
     Filtering filter = new Filtering();

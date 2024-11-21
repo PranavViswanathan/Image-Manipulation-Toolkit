@@ -32,7 +32,7 @@ public interface ImageTransformationEnhanced extends ImageTransformation {
    * @throws IOException if an error occurs during the operation
    */
   ImageRepresentation getSplitView(ImageRepresentation image1, ImageRepresentation image2,
-      int percent) throws IOException;
+                                   int percent) throws IOException;
 
   /**
    * Downscales the specified image to the given width and height.
@@ -44,6 +44,6 @@ public interface ImageTransformationEnhanced extends ImageTransformation {
    * @throws IOException if an error occurs during the image processing
    */
   ImageRepresentation downscale(ImageRepresentation original, int newWidth, int newHeight)
-      throws IOException;
+          throws IOException;
 
 }

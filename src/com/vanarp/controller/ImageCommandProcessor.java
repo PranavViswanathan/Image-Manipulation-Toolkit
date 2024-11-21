@@ -89,7 +89,7 @@ public interface ImageCommandProcessor {
    * @throws IOException if an error occurs during the RGB split operation
    */
   void rgbSplit(String imageName, String redName, String greenName, String blueName)
-      throws IOException;
+          throws IOException;
 
   /**
    * Combines the RGB components into a single image and stores the result in the cache.
@@ -101,7 +101,7 @@ public interface ImageCommandProcessor {
    * @throws IOException if an error occurs during the RGB combination operation
    */
   void rgbCombine(String destName, String redImageName, String greenImageName, String blueImageName)
-      throws IOException;
+          throws IOException;
 
   /**
    * Adjusts the levels of the specified image by modifying its brightness, midtone, and white point
@@ -116,7 +116,7 @@ public interface ImageCommandProcessor {
    * @throws IOException if an error occurs during the levels adjustment operation
    */
   void levelsAdjust(String imageName, int brightness, int midtone, int whitePoint, String destName,
-      Integer splitPercent) throws IOException;
+                    Integer splitPercent) throws IOException;
 
   /**
    * Applies color correction to the specified image and stores the result in the cache.
@@ -127,7 +127,7 @@ public interface ImageCommandProcessor {
    * @throws IOException if an error occurs during the operation
    */
   void colorCorrectImage(String imageName, String destName, Integer splitPercent)
-      throws IOException;
+          throws IOException;
 
   /**
    * Processes a split operation for various image transformations.
@@ -140,7 +140,7 @@ public interface ImageCommandProcessor {
    * @throws IOException if an error occurs during the operation
    */
   void processSplitOperation(String operation, String imageName, String destName, int splitPercent,
-      Integer... params) throws IOException;
+                             Integer... params) throws IOException;
 
   /**
    * Generates a histogram image from the specified image and stores it in the cache.
@@ -172,5 +172,5 @@ public interface ImageCommandProcessor {
    * @throws IOException if an error occurs during the downscaling operation
    */
   void downscaleImage(String imageName, String destName, int newWidth, int newHeight)
-      throws IOException;
+          throws IOException;
 }

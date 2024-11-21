@@ -50,14 +50,14 @@ public class Transform extends AbstractImageTransformation {
    */
   @Override
   public ImageRepresentation adjustBrightness(ImageRepresentation image, int increment)
-      throws IOException {
+          throws IOException {
     validateImage(image);
     return applyTransformation(image, (x, y) -> {
       PixelInterface originalPixel = image.getPixel(x, y);
       return createBoundedPixel(
-          originalPixel.getRed() + increment,
-          originalPixel.getGreen() + increment,
-          originalPixel.getBlue() + increment
+              originalPixel.getRed() + increment,
+              originalPixel.getGreen() + increment,
+              originalPixel.getBlue() + increment
       );
     });
   }
@@ -74,9 +74,9 @@ public class Transform extends AbstractImageTransformation {
       throw new IllegalArgumentException("Image dimensions must be greater than zero.");
     }
     double[][] kernel = {
-        {1.0 / 16, 1.0 / 8, 1.0 / 16},
-        {1.0 / 8, 1.0 / 4, 1.0 / 8},
-        {1.0 / 16, 1.0 / 8, 1.0 / 16}
+            {1.0 / 16, 1.0 / 8, 1.0 / 16},
+            {1.0 / 8, 1.0 / 4, 1.0 / 8},
+            {1.0 / 16, 1.0 / 8, 1.0 / 16}
     };
     return applyKernel(original, kernel);
   }
@@ -90,11 +90,11 @@ public class Transform extends AbstractImageTransformation {
    */
   public ImageRepresentation sharpen(ImageRepresentation original) throws IOException {
     double[][] kernel = {
-        {-1.0 / 8, -1.0 / 8, -1.0 / 8, -1.0 / 8, -1.0 / 8},
-        {-1.0 / 8, 1.0 / 4, 1.0 / 4, 1.0 / 4, -1.0 / 8},
-        {-1.0 / 8, 1.0 / 4, 1.0, 1.0 / 4, -1.0 / 8},
-        {-1.0 / 8, 1.0 / 4, 1.0 / 4, 1.0 / 4, -1.0 / 8},
-        {-1.0 / 8, -1.0 / 8, -1.0 / 8, -1.0 / 8, -1.0 / 8}
+            {-1.0 / 8, -1.0 / 8, -1.0 / 8, -1.0 / 8, -1.0 / 8},
+            {-1.0 / 8, 1.0 / 4, 1.0 / 4, 1.0 / 4, -1.0 / 8},
+            {-1.0 / 8, 1.0 / 4, 1.0, 1.0 / 4, -1.0 / 8},
+            {-1.0 / 8, 1.0 / 4, 1.0 / 4, 1.0 / 4, -1.0 / 8},
+            {-1.0 / 8, -1.0 / 8, -1.0 / 8, -1.0 / 8, -1.0 / 8}
     };
     return applyKernel(original, kernel);
   }
@@ -156,7 +156,7 @@ public class Transform extends AbstractImageTransformation {
       maxFrequency = Math.max(maxFrequency, blueHistogram[i]);
     }
     BufferedImage histogramImage = new BufferedImage(histogramWidth, histogramHeight,
-        BufferedImage.TYPE_INT_RGB);
+            BufferedImage.TYPE_INT_RGB);
     Graphics2D graphics = histogramImage.createGraphics();
     graphics.setColor(Color.WHITE);
     graphics.fillRect(0, 0, histogramWidth, histogramHeight);
@@ -171,8 +171,8 @@ public class Transform extends AbstractImageTransformation {
 
   @Override
   public ImageRepresentation getSplitView(ImageRepresentation image1,
-      ImageRepresentation image2, int percent)
-      throws IOException {
+                                          ImageRepresentation image2, int percent)
+          throws IOException {
     validateImage(image1);
     validateImage(image2);
     if (percent < 0 || percent > 100) {
@@ -182,10 +182,10 @@ public class Transform extends AbstractImageTransformation {
     int width2 = image2.getWidth() - width1;
     int height = Math.max(image1.getHeight(), image2.getHeight());
     BufferedImage splitImage = new BufferedImage(image1.getWidth(), height,
-        BufferedImage.TYPE_INT_RGB);
+            BufferedImage.TYPE_INT_RGB);
     Graphics2D g2d = splitImage.createGraphics();
     ImageRepresentation transformedImage =
-        applyTransformation(image1, (x, y) -> image1.getPixel(x, y));
+            applyTransformation(image1, (x, y) -> image1.getPixel(x, y));
     for (int x = 0; x < width1; x++) {
       for (int y = 0; y < height; y++) {
         if (x < transformedImage.getWidth() && y < transformedImage.getHeight()) {
@@ -223,7 +223,7 @@ public class Transform extends AbstractImageTransformation {
    */
   @Override
   public ImageRepresentation downscale(ImageRepresentation original, int newWidth, int newHeight)
-      throws IOException {
+          throws IOException {
     if (original.getWidth() <= 0 || original.getHeight() <= 0) {
       throw new IllegalArgumentException("Image dimensions must be greater than zero.");
     }
@@ -231,7 +231,7 @@ public class Transform extends AbstractImageTransformation {
       throw new IllegalArgumentException("New dimensions must be greater than zero.");
     }
     BufferedImage downscaledImage = new BufferedImage(newWidth, newHeight,
-        BufferedImage.TYPE_INT_RGB);
+            BufferedImage.TYPE_INT_RGB);
 
     for (int y = 0; y < newHeight; y++) {
       for (int x = 0; x < newWidth; x++) {
@@ -243,7 +243,7 @@ public class Transform extends AbstractImageTransformation {
 
         PixelInterface pixel = original.getPixel(origX, origY);
         downscaledImage.setRGB(x, y,
-            new Color(pixel.getRed(), pixel.getGreen(), pixel.getBlue()).getRGB());
+                new Color(pixel.getRed(), pixel.getGreen(), pixel.getBlue()).getRGB());
       }
     }
 
