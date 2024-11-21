@@ -376,4 +376,47 @@ public class InvalidControllerTest {
         + "Error in handleCompress: Compression percentage must be between 0 and 100.";
     assertEquals(expectedOutput, outputStream.toString().trim());
   }
+
+  @Test
+  public void testDownscaleWithNonExistentImage() {
+    cliView.processCommand("downscale nonExistentImage downscaledImage 100 50");
+    String expectedOutput = "Error in handleDownscale: Image with name nonExistentImage not found.";
+    assertEquals(expectedOutput, outputStream.toString().trim());
+  }
+
+  @Test
+  public void testDownscaleWithNegativeDimensions() {
+    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png testImage");
+    cliView.processCommand("downscale testImage downscaledImage -100 -50");
+    String expectedOutput = "Image loaded successfully." + System.lineSeparator()
+        + "Error in handleDownscale: New dimensions must be greater than zero.";
+    assertEquals(expectedOutput, outputStream.toString().trim());
+  }
+
+  @Test
+  public void testDownscaleWithNonNumericDimensions() {
+    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png testImage");
+    cliView.processCommand("downscale testImage downscaledImage abc def");
+    String expectedOutput = "Image loaded successfully." + System.lineSeparator()
+        + "Error in handleDownscale: Invalid width or height value. They should be integers.";
+    assertEquals(expectedOutput, outputStream.toString().trim());
+  }
+
+  @Test
+  public void testMaskingWithNonExistentImage() {
+    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png testImage");
+    cliView.processCommand("blur nonExistentImage maskImage blurredImage");
+    String expectedOutput = "Image loaded successfully." + System.lineSeparator()
+        + "Error in handleFilter: Image with name nonExistentImage not found.";
+    assertEquals(expectedOutput, outputStream.toString().trim());
+  }
+
+  @Test
+  public void testMaskingWithInvalidCommand() {
+    cliView.processCommand("load test/com/vanarp/model/TestResources/Source/bird.png testImage");
+    cliView.processCommand("blur testImage maskImage destImage");
+    String expectedOutput = "Image loaded successfully." + System.lineSeparator()
+        + "Error in handleFilter: Image with name maskImage not found.";
+    assertEquals(expectedOutput, outputStream.toString().trim());
+  }
 }

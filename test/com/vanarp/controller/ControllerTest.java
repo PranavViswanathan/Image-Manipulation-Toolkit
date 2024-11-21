@@ -564,7 +564,7 @@ public class ControllerTest {
         "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
     commandProcessor.loadImage(
         "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
-    cliView.processCommand("blue-component testImage maskImage redComponentImage");
+    cliView.processCommand("red-component testImage maskImage redComponentImage");
     commandProcessor.getImage("redComponentImage");
     ImageRepresentation expectedMask = loadImage(
         "test/com/vanarp/model/TestResources/SampleOperations/bird-redComponent-mask.png");
@@ -578,7 +578,7 @@ public class ControllerTest {
         "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
     commandProcessor.loadImage(
         "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
-    cliView.processCommand("blue-component testImage maskImage greenComponentImage");
+    cliView.processCommand("green-component testImage maskImage greenComponentImage");
     commandProcessor.getImage("greenComponentImage");
     ImageRepresentation expectedMask = loadImage(
         "test/com/vanarp/model/TestResources/SampleOperations/bird-greenComponent-mask.png");
@@ -592,7 +592,7 @@ public class ControllerTest {
         "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
     commandProcessor.loadImage(
         "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
-    cliView.processCommand("blue-component testImage maskImage intensityComponentImage");
+    cliView.processCommand("intensity-component testImage maskImage intensityComponentImage");
     commandProcessor.getImage("intensityComponentImage");
     ImageRepresentation expectedMask = loadImage(
         "test/com/vanarp/model/TestResources/SampleOperations/bird-intensityComponent-mask.png");
@@ -606,7 +606,7 @@ public class ControllerTest {
         "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
     commandProcessor.loadImage(
         "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
-    cliView.processCommand("blue-component testImage maskImage valueComponentImage");
+    cliView.processCommand("value-component testImage maskImage valueComponentImage");
     commandProcessor.getImage("valueComponentImage");
     ImageRepresentation expectedMask = loadImage(
         "test/com/vanarp/model/TestResources/SampleOperations/bird-valueComponent-mask.png");
@@ -620,7 +620,7 @@ public class ControllerTest {
         "test/com/vanarp/model/TestResources/Source/bird.png", "testImage");
     commandProcessor.loadImage(
         "test/com/vanarp/model/TestResources/Source/bird-masked.png", "maskImage");
-    cliView.processCommand("blue-component testImage maskImage lumaComponentImage");
+    cliView.processCommand("luma-component testImage maskImage lumaComponentImage");
     commandProcessor.getImage("lumaComponentImage");
     ImageRepresentation expectedMask = loadImage(
         "test/com/vanarp/model/TestResources/SampleOperations/bird-lumaComponent-mask.png");
