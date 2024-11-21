@@ -450,9 +450,9 @@ there we implemented the functions related to masking.
 - We had to add a line in the ```Operations``` class to support this as well.
 
 ### 8. Downscaling.
-- For Downscaling we had to extend the filtering interface into filtering enhanced interface which implemented this same function. 
+- For Downscaling we had to extend the ```filteringoperation``` into ```filteringoperationenhanced``` interface which implemented this same function. 
 - The actual method itself is defined in the filtering class which accepts the image name, new width and new height . 
-- We had to add a line in the Operations class to support this as well.
+- We had to add a line in the ```Operations``` class to support this as well.
 
   
 ### 1. `ImageCompressor` Class
