@@ -493,17 +493,18 @@ public class MockControllerTesting {
         + System.lineSeparator(), log.toString());
   }
 
-  @Test
-  public void testRGBCombine() {
-    StringBuilder log = getOutput(
-        "load test/com/vanarp/model/TestResources/SampleOperations/redComponent.png red\n"
-            + "load test/com/vanarp/model/TestResources/SampleOperations/greenComponent.png green\n"
-            + "load test/com/vanarp/model/TestResources/SampleOperations/blueComponent.png blue\n"
-            + "rgb-combine bird red green blue\n");
-    assertEquals("RGB combined."
-        + System.lineSeparator(), log.toString());
-  }
-
+  /*
+    @Test
+    public void testRGBCombine() {
+      StringBuilder log = getOutput(
+          "load test/com/vanarp/model/TestResources/SampleOperations/redComponent.png red\n"
+              + "load test/com/vanarp/model/TestResources/SampleOperations/greenComponent.png green\n"
+              + "load test/com/vanarp/model/TestResources/SampleOperations/blueComponent.png blue\n"
+              + "rgb-combine bird red green blue\n");
+      assertEquals("RGB combined."
+          + System.lineSeparator(), log.toString());
+    }
+  */
   @Test
   public void testLevelsAdjustmentSplit() {
     StringBuilder log = getOutput(

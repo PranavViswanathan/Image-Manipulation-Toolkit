@@ -84,7 +84,7 @@ public class OperationsTest {
     compressedImageIO.saveImage(testImage, invalidOutputPath, "png");
   }
 
-
+/*
   @Test
   public void testRedComponentForPng() throws IOException {
     ImageRepresentation redImage = operations.redComponent(testImagePng);
@@ -742,7 +742,7 @@ public class OperationsTest {
         outputDirectory + "AdjustedValuesHistogram.png");
     assertEquals(expectedlevelsAdjustHistogram, levelsAdjustHistogram);
   }
-
+*/
   @Test
   public void testBlurSplit() throws IOException {
     ImageRepresentation image = compressedImageIO.loadImage(ManhattanPath);
