@@ -71,9 +71,9 @@ java com.vanarp.controller.CLIView
 
 ## The Graphical User Interface
 
-![GUI](GUI.png)
+![GUI](res/GUI.png)
 
-To know more about how to use the GUI refer to [GUI User Manuel](GUI.md)
+To know more about how to use the GUI refer to [GUI User Manuel](res/GUI.md)
 
 ## Command Reference
 
@@ -388,7 +388,7 @@ The project is organized into three main packages:
 - `ScriptProcessor`: Processes script files
 
 For a more detailed explaination on the project structure refer
-to [Project Structure](PROJECT_STRUCTURE.md)
+to [Project Structure](res/PROJECT_STRUCTURE.md)
 
 ## Change log
 
@@ -529,12 +529,12 @@ there we implemented the functions related to masking.
 
 ## How to use the project
 
-For more information on how to use the project please refer to the [USEME](USEME.md)
+For more information on how to use the project please refer to the [USEME](res/USEME.md)
 
 ## Class Structure
 
 Refer to the image below for the class structure class diagram
-![Class Image](ImageOperations.png)
+![Class Image](res/ImageOperations.png)
 
 ## Contributors
 
